@@ -32,7 +32,7 @@ login_manager.init_app(app)
 def load_user(user_id):
     from authentication.models import User  # import in-function to avoid circular import
 
-    return User.objects(_id=user_id).first()
+    return User.objects(id=user_id).first()
     
 
 # Register blueprints to get the routes working

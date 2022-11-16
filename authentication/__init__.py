@@ -1,6 +1,8 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 
-from werkzeug.security import generate_password_hash
+from flask_login import login_required, login_user, logout_user
+
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from .models import User
 
@@ -12,9 +14,21 @@ def login():
     return render_template("authentication/login.html")
 
 
-# @auth.route('/login', methods=['POST'])
-# def login_post():
-#     return render_template('index.html')
+@auth.route('/login', methods=['POST'])
+def login_post():
+    email = request.form.get('email')
+    password = request.form.get('password')
+    remember = bool(request.form.get('remember'))
+
+    user = User.objects(email=email).first()
+
+    # Check if user actually exists and check the password
+    if not user or not check_password_hash(user.password_hash, password):
+        flash('Please check your login details and try again.')
+        return redirect(url_for('auth.login'))
+
+    login_user(user, remember=remember)
+    return redirect(url_for('pastebin.profile'))
 
 
 @auth.route("/signup")
@@ -36,11 +50,13 @@ def signup_post():
         return redirect(url_for("auth.signup"))
 
     # Add user
-    User(email=email, name=name, password=generate_password_hash(password)).save()
+    User(email=email, name=name, password_hash=generate_password_hash(password)).save()
 
     return redirect(url_for("auth.login"))
 
 
 @auth.route("/logout")
+@login_required
 def logout():
+    logout_user()
     return redirect(url_for("pastebin.index"))
