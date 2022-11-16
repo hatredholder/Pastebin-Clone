@@ -14,21 +14,21 @@ def login():
     return render_template("authentication/login.html")
 
 
-@auth.route('/login', methods=['POST'])
+@auth.route("/login", methods=["POST"])
 def login_post():
-    email = request.form.get('email')
-    password = request.form.get('password')
-    remember = bool(request.form.get('remember'))
+    email = request.form.get("email")
+    password = request.form.get("password")
+    remember = bool(request.form.get("remember"))
 
     user = User.objects(email=email).first()
 
     # Check if user actually exists and check the password
     if not user or not check_password_hash(user.password_hash, password):
-        flash('Please check your login details and try again.')
-        return redirect(url_for('auth.login'))
+        flash("Please check your login details and try again.")
+        return redirect(url_for("auth.login"))
 
     login_user(user, remember=remember)
-    return redirect(url_for('pastebin.profile'))
+    return redirect(url_for("pastebin.profile"))
 
 
 @auth.route("/signup")
