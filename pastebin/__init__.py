@@ -8,7 +8,7 @@ pastebin = Blueprint("pastebin", __name__)
 
 @pastebin.route("/")
 def index():
-    return render_template("authentication/index.html")
+    return render_template("pastebin/index.html")
 
 
 @pastebin.route("/profile")
