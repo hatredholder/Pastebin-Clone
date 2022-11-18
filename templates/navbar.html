@@ -1,32 +1,79 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Pybin</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <button class="me-3 btn btn-outline-success" type="submit">+Paste</button>
-    <form class="d-flex">
-      <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-    </form>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      {% if not current_user.is_authenticated %}
-      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Dropdown
-          </a>
-          <ul class="dropdown-menu p-9" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li>
-      </ul>
-      {% else %}
-        <a class="me-1 btn btn-outline-primary nav-link" href="#">LOGIN</a>
-        <a class="me-1 btn btn-outline-primary nav-link" href="#">SIGN UP</a>
-      {% endif %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="fs-4 font-monospace navbar-brand me-4" href="#">
+            <img src="https://cdn-icons-png.flaticon.com/512/3209/3209265.png"
+                 width="35">
+            PYBIN
+        </a>
+        <button class="ms-4 me-3 btn btn-success" type="submit">
+            <i class="fa fa-plus"></i> paste
+        </button>
+        <form class="d-flex">
+            <input class="form-control me-2"
+                   type="search"
+                   placeholder="Search..."
+                   aria-label="Search">
+        </form>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            {% if current_user.is_authenticated %}
+                <ul class="navbar-nav ms-auto dropstart mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle"
+                           href="#"
+                           id="navbarDropdown"
+                           role="button"
+                           data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            {{ current_user.name }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark"
+                            aria-labelledby="navbarDropdown">
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                  <i class="fa fa-list" aria-hidden="true"></i>
+                                  MY PASTEBIN
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                  <i class="fa fa-comments" aria-hidden="true"></i>
+                                  MY COMMENTS 
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                  <i class="fa fa-inbox" aria-hidden="true"></i>
+                                  MY MESSAGES 
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                  <i class="fa fa-user-circle" aria-hidden="true"></i>
+                                  EDIT PROFILE 
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                  <i class="fa fa-key" aria-hidden="true"></i>
+                                  CHANGE PASSWORD 
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                  <i class="fa fa-window-close-o" aria-hidden="true"></i>
+                                  LOGOUT 
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <img src="https://pastebin.com/themes/pastebin/img/guest.png" width="40">
+                </ul>
+            {% else %}
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <a class="me-1 btn btn-outline-primary nav-link" href="#">LOGIN</a>
+                    <a class="me-1 btn btn-outline-primary nav-link" href="#">SIGN UP</a>
+                </ul>
+            {% endif %}
+        </div>
     </div>
-  </div>
 </nav>
