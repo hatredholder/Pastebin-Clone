@@ -35,7 +35,7 @@ class Paste(db.Document):
     content = db.StringField(max_length=512000, required=True)
 
     category = db.StringField(choices=CATEGORIES, required=False, default='None')
-    tags = db.StringField(max_length=25, required=False)
+    tags = db.ListField(max_length=10, required=False)
     title = db.StringField(max_length=50, required=True, default='Untitled')
     paste_expiration = db.IntField(choices=PASTE_EXPIRATION, required=True, default=0)
     paste_exposure = db.StringField(choices=PASTE_EXPOSURE, required=True, default='Public')
