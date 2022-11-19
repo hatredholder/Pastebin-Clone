@@ -20,8 +20,8 @@ PASTE_EXPOSURE = (
 
 class Comment(db.EmbeddedDocument):
     content = db.StringField(max_length=300, required=True)
-    author = db.ReferenceField('User')
-    paste = db.ReferenceField('Paste')
+    author = db.ReferenceField('User', required=True)
+    paste = db.ReferenceField('Paste', required=True)
 
     created = db.DateTimeField(default=datetime.datetime.now)
 
@@ -36,9 +36,9 @@ class Paste(db.Document):
 
     category = db.StringField(choices=CATEGORIES, required=False, default='None')
     tags = db.StringField(max_length=25, required=False)
+    title = db.StringField(max_length=50, required=True, default='Untitled')
     paste_expiration = db.IntField(choices=PASTE_EXPIRATION, required=True, default=0)
     paste_exposure = db.StringField(choices=PASTE_EXPOSURE, required=True, default='Public')
-    paste_name = db.StringField(max_length=50, required=False)
 
     author = db.ReferenceField('User', required=True, reverse_delete_rule=db.CASCADE)
     comments = db.EmbeddedDocumentListField('Comment', required=False)
