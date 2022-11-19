@@ -2,8 +2,6 @@ import datetime
 
 from app import db
 
-from authentication.models import User
-
 
 CATEGORIES = (
     'None', 'Cryptocurrency', 'Cybersecurity', 'Fixit', 'Food', 'Gaming', 'Haiku', 'Help',
@@ -22,16 +20,10 @@ PASTE_EXPOSURE = (
 
 class Comment(db.EmbeddedDocument):
     content = db.StringField(max_length=300, required=True)
-    author = db.ReferenceField(User, reverse_delete_rule=db.CASCADE)
+    author = db.ReferenceField('User')
+    paste = db.ReferenceField('Paste')
 
-    created = db.DateTimeField()
-    updated = db.DateTimeField(default=datetime.datetime.now)
-
-    def save(self, *args, **kwargs):
-        if not self.creation_date:
-            self.creation_date = datetime.datetime.now()
-        self.modified_date = datetime.datetime.now()
-        return super(Comment, self).save(*args, **kwargs)
+    created = db.DateTimeField(default=datetime.datetime.now)
 
     def __repr__(self):
         if len(str(self.content)) > 50:
@@ -44,21 +36,14 @@ class Paste(db.Document):
 
     category = db.StringField(choices=CATEGORIES, required=False, default='None')
     tags = db.StringField(max_length=25, required=False)
-    paste_expiration = db.IntegerField(choices=PASTE_EXPIRATION, required=True, default=0)
+    paste_expiration = db.IntField(choices=PASTE_EXPIRATION, required=True, default=0)
     paste_exposure = db.StringField(choices=PASTE_EXPOSURE, required=True, default='Public')
     paste_name = db.StringField(max_length=50, required=False)
 
-    author = db.ReferenceField(User, reverse_delete_rule=db.CASCADE)
-    comments = db.ReferenceField(Comment, reverse_delete_rule=db.CASCADE)
+    author = db.ReferenceField('User', required=True, reverse_delete_rule=db.CASCADE)
+    comments = db.EmbeddedDocumentListField('Comment', required=False)
 
-    created = db.DateTimeField()
-    updated = db.DateTimeField(default=datetime.datetime.now)
-
-    def save(self, *args, **kwargs):
-        if not self.creation_date:
-            self.creation_date = datetime.datetime.now()
-        self.modified_date = datetime.datetime.now()
-        return super(Paste, self).save(*args, **kwargs)
+    created = db.DateTimeField(default=datetime.datetime.now)
 
     def __repr__(self):
         if len(str(self.content)) > 50:
