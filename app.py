@@ -38,10 +38,10 @@ def load_user(user_id):
 
 
 # Register blueprints to get the routes working
-from authentication import auth as auth_blueprint  # noqa: E402, I100
+from authentication.routes import auth as auth_blueprint  # noqa: E402, I100
 
 app.register_blueprint(auth_blueprint)
 
-from pastebin import pastebin as pb_blueprint  # noqa: E402
+from pastebin.routes import pastebin as pb_blueprint  # noqa: E402
 
 app.register_blueprint(pb_blueprint)
