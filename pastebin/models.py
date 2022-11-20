@@ -27,8 +27,8 @@ class Comment(db.EmbeddedDocument):
 
     def __repr__(self):
         if len(str(self.content)) > 50:
-            return f"Comment {self.author} - {str(self.content)[:50].strip()}.."
-        return f"Comment {self.author} - {str(self.content)}"
+            return f"<Comment {self.author} - {str(self.content)[:50].strip()}..>"
+        return f"<Comment {self.author} - {str(self.content)}>"
 
 
 class Paste(db.Document):
@@ -47,5 +47,5 @@ class Paste(db.Document):
 
     def __repr__(self):
         if len(str(self.content)) > 50:
-            return f"Paste {self.author} - {str(self.content)[:50].strip()}.."
-        return f"Paste {self.author} - {str(self.content)}"
+            return f"<Paste {self.author} - {str(self.content)[:50].strip()}..>"
+        return f"<Paste {self.author} - {str(self.content)}>"
