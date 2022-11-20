@@ -14,5 +14,4 @@ def index():
 @pastebin.route("/profile")
 @login_required
 def profile():
-    return render_template("authentication/profile.html", name=current_user.name)
-
+    return render_template("authentication/profile.html", name=current_user.username)
