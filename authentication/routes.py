@@ -51,11 +51,13 @@ def signup():
             return redirect(url_for("auth.signup"))
 
         # Add user
-        models.User(
+        new_user = models.User(
             email=email, username=username, password_hash=generate_password_hash(password),
         ).save()
 
         flash("Account created successfully!")
+        login_user(new_user)
+        return redirect(url_for("pastebin.profile"))
 
     return render_template("authentication/signup.html", form=form)
 
