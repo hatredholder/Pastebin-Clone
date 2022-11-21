@@ -8,7 +8,16 @@
                 {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
             {% endwith %}
             <form method="POST" action="/login">
-                <button class="button is-block is-info is-large is-fullwidth">Login</button>
+              {{form.csrf_token}}
+              {{form.username}}
+              <ul>
+                {% for error in form.username.errors %}
+                  <li style="color:red;">{{error}}</li> 
+                {% endfor %}
+              </ul>
+              {{form.password}}
+              {{form.remember}}
+              {{form.submit}}
             </form>
         </div>
     </div>
