@@ -24,8 +24,7 @@ class SignupForm(FlaskForm):
             valids.InputRequired(),
         ],
     )
-    recaptcha = RecaptchaField(
-    )
+    recaptcha = RecaptchaField()
     submit = wtforms.SubmitField("Create My Account")
 
 
@@ -38,7 +37,9 @@ class LoginForm(FlaskForm):
     )
     password = wtforms.PasswordField(
         "Your Password",
-        validators=[valids.InputRequired()],
+        validators=[
+            valids.InputRequired(),
+        ],
     )
     remember = wtforms.BooleanField("Remember", default=False)
     submit = wtforms.SubmitField("Submit")

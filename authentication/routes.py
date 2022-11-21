@@ -52,7 +52,9 @@ def signup():
 
         # Add user
         new_user = models.User(
-            email=email, username=username, password_hash=generate_password_hash(password),
+            email=email,
+            username=username,
+            password_hash=generate_password_hash(password),
         ).save()
 
         flash("Account created successfully!")
