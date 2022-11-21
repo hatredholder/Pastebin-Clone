@@ -1,4 +1,5 @@
 import datetime
+import uuid
 
 from app import db
 
@@ -39,6 +40,7 @@ class Paste(db.Document):
     title = db.StringField(max_length=50, required=True, default='Untitled')
     paste_expiration = db.IntField(choices=PASTE_EXPIRATION, required=True, default=0)
     paste_exposure = db.StringField(choices=PASTE_EXPOSURE, required=True, default='Public')
+    paste_hash = db.StringField(default=lambda: str(uuid.uuid4())[:8], primary_key=True)
 
     author = db.ReferenceField('User', required=True, reverse_delete_rule=db.CASCADE)
     comments = db.EmbeddedDocumentListField('Comment', required=False)
