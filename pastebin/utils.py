@@ -1,6 +1,11 @@
 from wtforms.fields import StringField
 
 
+def check_paste_title(title):
+    """Returns 'Untitled' if title wasn't provided"""
+    return title if title else "Untitled"
+
+
 class TagListField(StringField):
     """Stringfield for a list of separated tags"""
 
