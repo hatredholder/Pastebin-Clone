@@ -10,14 +10,9 @@ import pastebin.utils as utils
 pastebin = Blueprint("pastebin", __name__)
 
 
-@pastebin.route("/")
-def index():
-    return render_template("pastebin/index.html")
-
-
-@pastebin.route("/profile", methods=["GET", "POST"])
+@pastebin.route("/", methods=["GET", "POST"])
 @login_required
-def profile():
+def home():
     form = forms.PasteForm()
 
     if form.validate_on_submit():
@@ -31,7 +26,7 @@ def profile():
         # Redirect back to form if user submitted more than 10 tags
         if len(tags) > 10:
             flash('Max count of tags is 10')
-            return redirect(url_for("pastebin.profile"))
+            return redirect(url_for("pastebin.home"))
 
         # Add paste
         models.Paste(
@@ -45,6 +40,6 @@ def profile():
         ).save()
 
         flash("Paste created successfully")
-        return redirect(url_for("pastebin.profile"))
+        return redirect(url_for("pastebin.home"))
 
     return render_template("pastebin/profile.html", form=form, name=current_user.username)

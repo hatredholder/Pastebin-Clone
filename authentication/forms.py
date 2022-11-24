@@ -41,5 +41,4 @@ class LoginForm(FlaskForm):
             valids.InputRequired(),
         ],
     )
-    remember = wtforms.BooleanField("Remember", default=False)
     submit = wtforms.SubmitField("Submit")

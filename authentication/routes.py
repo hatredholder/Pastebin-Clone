@@ -19,7 +19,6 @@ def login():
 
         username = form.username.data
         password = form.password.data
-        remember = form.remember.data
 
         user = models.User.objects(username=username).first()
 
@@ -28,8 +27,8 @@ def login():
             flash("Please check your login details and try again.")
             return redirect(url_for("auth.login"))
 
-        login_user(user, remember=remember)
-        return redirect(url_for("pastebin.profile"))
+        login_user(user)
+        return redirect(url_for("pastebin.home"))
 
     return render_template("authentication/login.html", form=form)
 
@@ -59,7 +58,7 @@ def signup():
 
         flash("Account created successfully!")
         login_user(new_user)
-        return redirect(url_for("pastebin.profile"))
+        return redirect(url_for("pastebin.home"))
 
     return render_template("authentication/signup.html", form=form)
 
@@ -68,4 +67,4 @@ def signup():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for("pastebin.index"))
+    return redirect(url_for("pastebin.home"))
