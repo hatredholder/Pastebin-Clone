@@ -9,7 +9,7 @@ class SignupForm(FlaskForm):
         "Username: ",
         validators=[
             valids.InputRequired(),
-            valids.Length(min=4, max=20),
+            valids.Length(min=3, max=20),
         ],
     )
     email = wtforms.EmailField(
@@ -22,6 +22,7 @@ class SignupForm(FlaskForm):
         "Password: ",
         validators=[
             valids.InputRequired(),
+            valids.Length(min=12, max=30),
         ],
     )
     recaptcha = RecaptchaField()
