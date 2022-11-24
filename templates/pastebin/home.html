@@ -1,8 +1,11 @@
-<!-- templates/authentication/profile.html -->
+<!-- templates/authentication/home.html -->
 {% extends "base.html" %}
 {% block content %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
+{% endwith %}
   <h1 class="title">Welcome, {{ name }}!</h1>
-  <form method="POST" action="/profile">
+  <form method="POST" action="/">
     {{form.csrf_token}}
 
     {{form.content.label}} 

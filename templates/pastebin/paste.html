@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+
+<a href="/raw/{{paste.paste_hash}}" class="btn btn-info" type="submit">
+  raw
+</a>
+{% if current_user == paste.author %}
+<a href="/delete/{{paste.paste_hash}}" class="btn btn-danger" type="submit">
+  delete
+</a>
+{% endif %}
+<div>
+  author
+  {{paste.author.username}}
+</div>
+<div>
+  date created
+  {{paste.created}}
+</div>
+<div>
+  content
+  <textarea>
+{{paste.content}}
+  </textarea>
+</div>
+<div>
+  number of comments
+  {{paste.comments|length}}
+</div>
+{% endblock %}

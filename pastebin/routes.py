@@ -29,7 +29,7 @@ def home():
             return redirect(url_for("pastebin.home"))
 
         # Add paste
-        models.Paste(
+        paste = models.Paste(
             content=content,
             category=category,
             tags=tags,
@@ -39,7 +39,33 @@ def home():
             author=current_user,
         ).save()
 
-        flash("Paste created successfully")
-        return redirect(url_for("pastebin.home"))
+        return redirect(url_for("pastebin.paste_view", paste_hash=paste.paste_hash))
 
-    return render_template("pastebin/profile.html", form=form, name=current_user.username)
+    return render_template("pastebin/home.html", form=form, name=current_user.username)
+
+
+@pastebin.route("/<paste_hash>")
+def paste_view(paste_hash):
+    paste = models.Paste.objects(paste_hash=paste_hash).first()
+    return render_template("pastebin/paste.html", paste=paste)
+
+
+@pastebin.route("/raw/<paste_hash>")
+def paste_raw_view(paste_hash):
+    paste_content = models.Paste.objects(paste_hash=paste_hash).first().content
+    return f"<pre>{paste_content}</pre>"
+
+
+@pastebin.route("/delete/<paste_hash>")
+@login_required
+def paste_delete(paste_hash):
+    paste = models.Paste.objects(paste_hash=paste_hash).first()
+
+    if paste.author != current_user:
+        flash("You can't delete this paste")
+        return redirect(url_for("pastebin.paste_view", paste_hash=paste.paste_hash))
+
+    flash("Paste deleted successfully!")
+    paste.delete()
+
+    return redirect(url_for("pastebin.home"))
