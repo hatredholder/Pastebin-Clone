@@ -54,7 +54,7 @@ class Comment(db.EmbeddedDocument):
 
     created = db.DateTimeField(default=datetime.datetime.now)
 
-    def __repr__(self):
+    def __str__(self):
         if len(str(self.content)) > 50:
             return f"<Comment {self.author} - {str(self.content)[:50].strip()}..>"
         return f"<Comment {self.author} - {str(self.content)}>"
@@ -77,7 +77,7 @@ class Paste(db.Document):
 
     created = db.DateTimeField(default=datetime.datetime.now)
 
-    def __repr__(self):
+    def __str__(self):
         if len(str(self.content)) > 50:
             return f"<Paste {self.author} - {str(self.content)[:50].strip()}..>"
         return f"<Paste {self.author} - {str(self.content)}>"
