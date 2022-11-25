@@ -1,9 +1,32 @@
+import datetime
+
 from wtforms.fields import StringField
 
 
 def check_paste_title(title):
     """Returns 'Untitled' if title wasn't provided"""
     return title if title else "Untitled"
+
+
+def check_if_paste_exists(paste):
+    """Returns True if paste exists and vice versa"""
+    return bool(paste)
+
+
+def check_paste_expiration(paste):
+    """Deletes the paste if its expired and returns to not_found"""
+    if (
+        paste.paste_expiration > 0
+        and datetime.datetime.now()
+        > paste.created
+        + datetime.timedelta(
+            seconds=paste.paste_expiration,
+        )
+    ):
+        paste.delete()
+        return True
+    else:
+        return False
 
 
 class TagListField(StringField):

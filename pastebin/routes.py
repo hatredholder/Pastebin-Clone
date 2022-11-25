@@ -25,7 +25,7 @@ def home():
 
         # Redirect back to form if user submitted more than 10 tags
         if len(tags) > 10:
-            flash('Max count of tags is 10')
+            flash("Max count of tags is 10")
             return redirect(url_for("pastebin.home"))
 
         # Add paste
@@ -44,16 +44,35 @@ def home():
     return render_template("pastebin/home.html", form=form, name=current_user.username)
 
 
+@pastebin.route("/not_found")
+def not_found():
+    return "Not Found (#404)"
+
+
 @pastebin.route("/<paste_hash>")
 def paste_view(paste_hash):
     paste = models.Paste.objects(paste_hash=paste_hash).first()
+
+    if not utils.check_if_paste_exists(paste):
+        return redirect(url_for("pastebin.not_found"))
+
+    if utils.check_paste_expiration(paste):
+        return redirect(url_for("pastebin.not_found"))
+
     return render_template("pastebin/paste.html", paste=paste)
 
 
 @pastebin.route("/raw/<paste_hash>")
 def paste_raw_view(paste_hash):
-    paste_content = models.Paste.objects(paste_hash=paste_hash).first().content
-    return f"<pre>{paste_content}</pre>"
+    paste = models.Paste.objects(paste_hash=paste_hash).first()
+
+    if not utils.check_if_paste_exists(paste):
+        return redirect(url_for("pastebin.not_found"))
+
+    if utils.check_paste_expiration(paste):
+        return redirect(url_for("pastebin.not_found"))
+
+    return f"<pre>{paste.content}</pre>"
 
 
 @pastebin.route("/delete/<paste_hash>")
