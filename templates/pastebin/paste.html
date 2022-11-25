@@ -10,12 +10,22 @@
 </a>
 {% endif %}
 <div>
+  {{paste.title}}
+</div>
+<div>
   author
   {{paste.author.username}}
 </div>
 <div>
   date created
   {{paste.created}}
+</div>
+<div>
+  <ol>
+    {% for line in paste.content.splitlines() %}
+    <li>{{line}}</li>
+    {% endfor %}
+  </ol>
 </div>
 <div>
   content
