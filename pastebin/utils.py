@@ -1,6 +1,57 @@
 import datetime
 
+from flask import flash
+
+from flask_login import current_user
+
+import pastebin.models as models
+
 from wtforms.fields import StringField
+
+
+def create_paste_if_submitted(form):
+    """Returns paste hash if it gets created successfully"""
+    if form.validate_on_submit():
+        content = form.content.data
+        category = form.category.data
+        tags = form.tags.data
+        paste_expiration = form.paste_expiration.data
+        paste_exposure = form.paste_exposure.data
+        title = check_paste_title(form.title.data)
+
+        # Returns None if > 10 tags
+        if len(tags) > 10:
+            flash("Max count of tags is 10")
+            return
+
+        # Add paste
+        paste = models.Paste(
+            content=content,
+            category=category,
+            tags=tags,
+            paste_expiration=paste_expiration,
+            paste_exposure=paste_exposure,
+            title=title,
+            author=current_user,
+        ).save()
+
+        return paste.paste_hash
+
+
+def get_paste_from_hash(paste_hash):
+    """Returns paste from paste_hash"""
+    return models.Paste.objects(paste_hash=paste_hash).first()
+
+
+def delete_paste_if_user_is_author(paste):
+    """Returns False if author != current_user and vice versa"""
+    if paste.author != current_user:
+        flash("You can't delete this paste")
+        return False
+
+    flash("Paste deleted successfully!")
+    paste.delete()
+    return True
 
 
 def check_paste_title(title):
@@ -25,8 +76,7 @@ def check_paste_expiration(paste):
     ):
         paste.delete()
         return True
-    else:
-        return False
+    return False
 
 
 class TagListField(StringField):
