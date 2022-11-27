@@ -32,38 +32,30 @@ def home():
 
 
 @pastebin.route("/<paste_hash>")
+@utils.paste_exists
+@utils.paste_not_expired
+@utils.paste_exposed
 def paste_view(paste_hash):
     paste = utils.get_paste_from_hash(paste_hash)
-
-    if not utils.check_if_paste_exists(paste):
-        return redirect(url_for("pastebin.error", error_code=404))
-
-    if utils.check_paste_expiration(paste):
-        return redirect(url_for("pastebin.error", error_code=404))
 
     return render_template("pastebin/paste.html", paste=paste)
 
 
 @pastebin.route("/raw/<paste_hash>")
+@utils.paste_exists
+@utils.paste_not_expired
+@utils.paste_exposed
 def paste_raw_view(paste_hash):
     paste = utils.get_paste_from_hash(paste_hash)
-
-    if not utils.check_if_paste_exists(paste):
-        return redirect(url_for("pastebin.error", error_code=404))
-
-    if utils.check_paste_expiration(paste):
-        return redirect(url_for("pastebin.error", error_code=404))
 
     return f"<pre>{paste.content}</pre>"
 
 
 @pastebin.route("/delete/<paste_hash>")
 @login_required
+@utils.paste_exists
 def paste_delete(paste_hash):
     paste = utils.get_paste_from_hash(paste_hash)
-
-    if not utils.check_if_paste_exists(paste):
-        return redirect(url_for("pastebin.error", error_code=404))
 
     if not utils.delete_paste_if_user_is_author(paste):
         return redirect(url_for("pastebin.paste_view", paste_hash=paste.paste_hash))
