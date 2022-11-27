@@ -65,7 +65,7 @@ def check_if_paste_exists(paste):
 
 
 def check_paste_expiration(paste):
-    """Deletes the paste if its expired and returns to not_found"""
+    """Returns True and deletes the paste if its expired"""
     if (
         paste.paste_expiration > 0
         and datetime.datetime.now()

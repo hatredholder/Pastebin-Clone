@@ -9,6 +9,11 @@ import pastebin.utils as utils
 pastebin = Blueprint("pastebin", __name__)
 
 
+@pastebin.route("/error/<error_code>")
+def error(error_code):
+    return render_template("pastebin/error.html", error_code=error_code)
+
+
 @pastebin.route("/", methods=["GET", "POST"])
 @login_required
 def home():
@@ -26,20 +31,15 @@ def home():
     return render_template("pastebin/home.html", form=form, name=current_user.username)
 
 
-@pastebin.route("/not_found")
-def not_found():
-    return "Not Found (#404)"
-
-
 @pastebin.route("/<paste_hash>")
 def paste_view(paste_hash):
     paste = utils.get_paste_from_hash(paste_hash)
 
     if not utils.check_if_paste_exists(paste):
-        return redirect(url_for("pastebin.not_found"))
+        return redirect(url_for("pastebin.error", error_code=404))
 
     if utils.check_paste_expiration(paste):
-        return redirect(url_for("pastebin.not_found"))
+        return redirect(url_for("pastebin.error", error_code=404))
 
     return render_template("pastebin/paste.html", paste=paste)
 
@@ -49,10 +49,10 @@ def paste_raw_view(paste_hash):
     paste = utils.get_paste_from_hash(paste_hash)
 
     if not utils.check_if_paste_exists(paste):
-        return redirect(url_for("pastebin.not_found"))
+        return redirect(url_for("pastebin.error", error_code=404))
 
     if utils.check_paste_expiration(paste):
-        return redirect(url_for("pastebin.not_found"))
+        return redirect(url_for("pastebin.error", error_code=404))
 
     return f"<pre>{paste.content}</pre>"
 
@@ -63,7 +63,7 @@ def paste_delete(paste_hash):
     paste = utils.get_paste_from_hash(paste_hash)
 
     if not utils.check_if_paste_exists(paste):
-        return redirect(url_for("pastebin.not_found"))
+        return redirect(url_for("pastebin.error", error_code=404))
 
     if not utils.delete_paste_if_user_is_author(paste):
         return redirect(url_for("pastebin.paste_view", paste_hash=paste.paste_hash))
