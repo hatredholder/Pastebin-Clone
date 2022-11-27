@@ -11,7 +11,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 auth = Blueprint("auth", __name__)
 
 
-@auth.route("/login", methods=["GET", "POST"])
+@auth.route("/login/", methods=["GET", "POST"])
 def login():
     form = forms.LoginForm()
 
@@ -33,7 +33,7 @@ def login():
     return render_template("authentication/login.html", form=form)
 
 
-@auth.route("/signup", methods=["GET", "POST"])
+@auth.route("/signup/", methods=["GET", "POST"])
 def signup():
     form = forms.SignupForm()
 
@@ -63,7 +63,7 @@ def signup():
     return render_template("authentication/signup.html", form=form)
 
 
-@auth.route("/logout")
+@auth.route("/logout/")
 @login_required
 def logout():
     logout_user()

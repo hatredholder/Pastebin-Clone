@@ -9,7 +9,7 @@ import pastebin.utils as utils
 pastebin = Blueprint("pastebin", __name__)
 
 
-@pastebin.route("/error/<error_code>")
+@pastebin.route("/error/<error_code>/")
 def error(error_code):
     return render_template("pastebin/error.html", error_code=error_code)
 
@@ -31,7 +31,7 @@ def home():
     return render_template("pastebin/home.html", form=form, name=current_user.username)
 
 
-@pastebin.route("/<paste_hash>")
+@pastebin.route("/<paste_hash>/")
 @utils.paste_exists
 @utils.paste_not_expired
 @utils.paste_exposed
@@ -41,7 +41,7 @@ def paste_view(paste_hash):
     return render_template("pastebin/paste.html", paste=paste)
 
 
-@pastebin.route("/raw/<paste_hash>")
+@pastebin.route("/raw/<paste_hash>/")
 @utils.paste_exists
 @utils.paste_not_expired
 @utils.paste_exposed
@@ -51,7 +51,7 @@ def paste_raw_view(paste_hash):
     return f"<pre>{paste.content}</pre>"
 
 
-@pastebin.route("/delete/<paste_hash>")
+@pastebin.route("/delete/<paste_hash>/")
 @login_required
 @utils.paste_exists
 def paste_delete(paste_hash):
