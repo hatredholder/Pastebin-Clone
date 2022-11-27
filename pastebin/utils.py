@@ -10,6 +10,9 @@ import pastebin.models as models
 from wtforms.fields import StringField
 
 
+# Helper Functions
+
+
 def create_paste_if_submitted(form):
     """Returns paste hash if it gets created successfully"""
     if form.validate_on_submit():
@@ -58,6 +61,9 @@ def delete_paste_if_user_is_author(paste):
 def check_paste_title(title):
     """Returns 'Untitled' if title wasn't provided"""
     return title if title else "Untitled"
+
+
+# Decorators
 
 
 def paste_exists(f):
@@ -114,6 +120,9 @@ def paste_exposed(f):
 
         return result
     return wrapped
+
+
+# Fields
 
 
 class TagListField(StringField):
