@@ -3,6 +3,7 @@ from flask import Blueprint, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 import pybin.forms as forms
+import pybin.models as models
 import pybin.utils as utils
 
 
@@ -64,5 +65,12 @@ def paste_delete(paste_hash):
 
 
 @pybin.route("/u/<username>/")
-def my_pybin():
-    ...
+def profile(username):
+    user = utils.get_user_from_username(username)
+
+    if not user:
+        return redirect(url_for("pybin.error", error_code=404))
+
+    pastes = models.Paste.objects(author=user)
+
+    return render_template("pybin/profile.html", pastes=pastes)

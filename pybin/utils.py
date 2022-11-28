@@ -1,6 +1,8 @@
 import datetime
 import functools
 
+from authentication.models import User
+
 from flask import flash, redirect, url_for
 
 from flask_login import current_user
@@ -45,6 +47,11 @@ def create_paste_if_submitted(form):
 def get_paste_from_hash(paste_hash):
     """Returns paste from paste_hash"""
     return models.Paste.objects(paste_hash=paste_hash).first()
+
+
+def get_user_from_username(username):
+    """Returns user from username"""
+    return User.objects(username=username).first()
 
 
 def delete_paste_if_user_is_author(paste):
