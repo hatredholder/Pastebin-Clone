@@ -1,40 +1,35 @@
 {% extends "base.html" %}
 {% block content %}
-
-<a href="/raw/{{paste.paste_hash}}" class="btn btn-info" type="submit">
-  raw
-</a>
-{% if current_user == paste.author %}
-<a href="/delete/{{paste.paste_hash}}" class="btn btn-danger" type="submit">
-  delete
-</a>
-{% endif %}
-<div>
-  {{paste.title}}
-</div>
-<div>
-  author
-  {{paste.author.username}}
-</div>
-<div>
-  date created
-  {{paste.created.strftime("%b %d, %Y")}}
-</div>
-<div>
-  <ol>
-    {% for line in paste.content.splitlines() %}
-    <li>{{line}}</li>
-    {% endfor %}
-  </ol>
-</div>
-<div>
-  content
-  <textarea>
+    <a href="/raw/{{ paste.paste_hash }}" class="btn btn-info" type="submit">raw</a>
+    {% if current_user == paste.author %}
+        <a href="/delete/{{ paste.paste_hash }}"
+           class="btn btn-danger"
+           type="submit">delete</a>
+    {% endif %}
+    <div>{{ paste.title }}</div>
+    <div>
+        author
+        {{ paste.author.username }}
+    </div>
+    <div>
+        date created
+        {{ paste.created.strftime("%b %d, %Y")}}
+    </div>
+    <div>
+        <ol>
+            {% for line in paste.content.splitlines() %}
+                <li>{{ line }}</li>
+            {% endfor %}
+        </ol>
+    </div>
+    <div>
+        content
+        <textarea>
 {{paste.content}}
   </textarea>
-</div>
-<div>
-  number of comments
-  {{paste.comments|length}}
-</div>
+    </div>
+    <div>
+        number of comments
+        {{ paste.comments|length }}
+    </div>
 {% endblock %}

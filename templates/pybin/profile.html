@@ -1,48 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
-
-<table>
-  <thead>
-    <tr>
-      <th>
-        Name / title
-      </th>
-      <th>
-        Added
-      </th>
-      <th>
-        Expires
-      </th>
-      <th>
-        Comments
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-  {% for paste in pastes %}
-    <tr>
-      <td>
-        {{paste.title}}
-      </td>
-      <td>
-        {{paste.created.strftime("%b %d, %Y")}}
-      </td>
-      <td>
-        {{paste.paste_expiration}}
-      </td>
-      <td>
-        {{paste.comments|length}}
-      </td>
-      {% if current_user == paste.author %}
-        <td>
-        <a href="/delete/{{paste.paste_hash}}" class="btn btn-danger" type="submit">
-          delete
-        </a>
-        </td>
-      {% endif %}
-    </tr>
-  {% endfor %}
-</tbody>
-</table>
-
+    <table>
+        <thead>
+            <tr>
+                <th>Name / title</th>
+                <th>Added</th>
+                <th>Expires</th>
+                <th>Comments</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for paste in pastes %}
+                <tr>
+                    <td>{{ paste.title }}</td>
+                    <td>{{ paste.created.strftime("%b %d, %Y")}}</td>
+                    <td>{{ paste.paste_expiration }}</td>
+                    <td>{{ paste.comments|length }}</td>
+                    {% if current_user == paste.author %}
+                        <td>
+                            <a href="/delete/{{ paste.paste_hash }}"
+                               class="btn btn-danger"
+                               type="submit">delete</a>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

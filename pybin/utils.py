@@ -75,10 +75,11 @@ def check_paste_title(title):
 
 def paste_exists(f):
     """Redirects user to 404 error page if paste doesn't exist"""
+
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
-        
-        paste = get_paste_from_hash(kwargs['paste_hash'])
+
+        paste = get_paste_from_hash(kwargs["paste_hash"])
 
         if not paste:
             return redirect(url_for("pybin.error", error_code=404))
@@ -86,15 +87,17 @@ def paste_exists(f):
         result = f(*args, **kwargs)
 
         return result
+
     return wrapped
 
 
 def paste_not_expired(f):
     """Deletes paste and redirects to 404 error page if paste is expired"""
+
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
-        
-        paste = get_paste_from_hash(kwargs['paste_hash'])
+
+        paste = get_paste_from_hash(kwargs["paste_hash"])
 
         if (
             paste.paste_expiration > 0
@@ -110,22 +113,25 @@ def paste_not_expired(f):
         result = f(*args, **kwargs)
 
         return result
+
     return wrapped
 
 
 def paste_exposed(f):
     """Redirects to 403 error page if paste is private and current_user != author"""
+
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
-        
-        paste = get_paste_from_hash(kwargs['paste_hash'])
 
-        if paste.paste_exposure == 'Private' and paste.author != current_user:
+        paste = get_paste_from_hash(kwargs["paste_hash"])
+
+        if paste.paste_exposure == "Private" and paste.author != current_user:
             return redirect(url_for("pybin.error", error_code=403))
 
         result = f(*args, **kwargs)
 
         return result
+
     return wrapped
 
 
