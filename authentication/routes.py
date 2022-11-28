@@ -28,7 +28,7 @@ def login():
             return redirect(url_for("auth.login"))
 
         login_user(user)
-        return redirect(url_for("pastebin.home"))
+        return redirect(url_for("pybin.home"))
 
     return render_template("authentication/login.html", form=form)
 
@@ -58,7 +58,7 @@ def signup():
 
         flash("Account created successfully!")
         login_user(new_user)
-        return redirect(url_for("pastebin.home"))
+        return redirect(url_for("pybin.home"))
 
     return render_template("authentication/signup.html", form=form)
 
@@ -67,4 +67,4 @@ def signup():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for("pastebin.home"))
+    return redirect(url_for("pybin.home"))

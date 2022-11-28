@@ -5,7 +5,7 @@ from flask import flash, redirect, url_for
 
 from flask_login import current_user
 
-import pastebin.models as models
+import pybin.models as models
 
 from wtforms.fields import StringField
 
@@ -74,7 +74,7 @@ def paste_exists(f):
         paste = get_paste_from_hash(kwargs['paste_hash'])
 
         if not paste:
-            return redirect(url_for("pastebin.error", error_code=404))
+            return redirect(url_for("pybin.error", error_code=404))
 
         result = f(*args, **kwargs)
 
@@ -98,7 +98,7 @@ def paste_not_expired(f):
             )
         ):
             paste.delete()
-            return redirect(url_for("pastebin.error", error_code=404))
+            return redirect(url_for("pybin.error", error_code=404))
 
         result = f(*args, **kwargs)
 
@@ -114,7 +114,7 @@ def paste_exposed(f):
         paste = get_paste_from_hash(kwargs['paste_hash'])
 
         if paste.paste_exposure == 'Private' and paste.author != current_user:
-            return redirect(url_for("pastebin.error", error_code=403))
+            return redirect(url_for("pybin.error", error_code=403))
 
         result = f(*args, **kwargs)
 

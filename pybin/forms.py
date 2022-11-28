@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 
-from pastebin.utils import TagListField
+from pybin.utils import TagListField
 
 import wtforms
 import wtforms.validators as valids

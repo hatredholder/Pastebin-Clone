@@ -45,6 +45,6 @@ from authentication.routes import auth as auth_blueprint  # noqa: E402, I100
 
 app.register_blueprint(auth_blueprint)
 
-from pastebin.routes import pastebin as pb_blueprint  # noqa: E402
+from pybin.routes import pybin as pb_blueprint  # noqa: E402
 
 app.register_blueprint(pb_blueprint)
