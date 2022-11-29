@@ -22,6 +22,12 @@
                                class="btn btn-danger"
                                type="submit">delete</a>
                         </td>
+                        <td>
+                            <a href="/edit/{{ paste.paste_hash }}"
+                               class="btn btn-success"
+                               type="submit">edit</a>
+                        </td>
+
                     {% endif %}
                 </tr>
             {% endfor %}
