@@ -1,11 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
+  {% with messages = get_flashed_messages() %}
+      {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
+  {% endwith %}
     <a href="/raw/{{ paste.paste_hash }}" class="btn btn-info" type="submit">raw</a>
     {% if current_user == paste.author %}
         <a href="/delete/{{ paste.paste_hash }}"
            class="btn btn-danger"
            type="submit">delete</a>
     {% endif %}
+    {% if current_user == paste.author %}
+        <a href="/edit/{{ paste.paste_hash }}"
+           class="btn btn-success"
+           type="submit">edit</a>
+    {% endif %}
+
     <div>{{ paste.title }}</div>
     <div>
         author

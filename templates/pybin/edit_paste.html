@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
+  {% endwith %}
+  <form method="POST" action="/edit/{{paste.paste_hash}}/">
+    {{ form.csrf_token }}
+    {{ form.content.label }}
+    {{ form.content }}
+    <div>
+        {{ form.category.label }}
+        {{ form.category }}
+    </div>
+    <div>
+        {{ form.tags.label }}
+        {{ form.tags(placeholder="software, tutorial, data")}}
+    </div>
+    <div>
+        {{ form.paste_expiration.label }}
+        {{ form.paste_expiration }}
+    </div>
+    <div>
+        {{ form.paste_exposure.label }}
+        {{ form.paste_exposure }}
+    </div>
+    <div>
+        {{ form.title.label }}
+        {{ form.title }}
+    </div>
+    {{ form.submit(value="Save Changes") }}
+  </form>
+{% endblock %}

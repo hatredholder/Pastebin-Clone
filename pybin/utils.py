@@ -27,7 +27,7 @@ def create_paste_if_submitted(form):
 
         # Returns None if > 10 tags
         if len(tags) > 10:
-            flash("Max count of tags is 10")
+            flash("Max amount of tags is 10")
             return
 
         # Add paste
@@ -54,15 +54,39 @@ def get_user_from_username(username):
     return User.objects(username=username).first()
 
 
-def delete_paste_if_user_is_author(paste):
-    """Returns True if author == current_user and vice versa"""
-    if paste.author != current_user:
-        flash("You can't delete this paste")
-        return False
-
+def delete_paste(paste):
+    """Deletes paste and adds a flash message"""
     flash("Paste deleted successfully!")
     paste.delete()
-    return True
+
+
+def edit_paste(form, paste):
+    """Return True if paste is edited successfully"""
+    if form.validate_on_submit():
+        content = form.content.data
+        category = form.category.data
+        tags = form.tags.data
+        paste_expiration = form.paste_expiration.data
+        paste_exposure = form.paste_exposure.data
+        title = check_paste_title(form.title.data)
+
+        # Returns None if > 10 tags
+        if len(tags) > 10:
+            flash("Max amount of tags is 10")
+            return
+        
+        paste.update(
+            content=content,
+            category=category,
+            tags=tags,
+            paste_expiration=paste_expiration,
+            paste_exposure=paste_exposure,
+            title=title,
+            author=current_user,
+        )
+
+        flash("Paste edited successfully!")
+        return True
 
 
 def check_paste_title(title):
@@ -126,6 +150,24 @@ def paste_exposed(f):
         paste = get_paste_from_hash(kwargs["paste_hash"])
 
         if paste.paste_exposure == "Private" and paste.author != current_user:
+            return redirect(url_for("pybin.error", error_code=403))
+
+        result = f(*args, **kwargs)
+
+        return result
+
+    return wrapped
+
+
+def is_author(f):
+    """Redirects to 403 error page if current_user != author """
+
+    @functools.wraps(f)
+    def wrapped(*args, **kwargs):
+
+        paste = get_paste_from_hash(kwargs["paste_hash"])
+
+        if paste.author != current_user:
             return redirect(url_for("pybin.error", error_code=403))
 
         result = f(*args, **kwargs)

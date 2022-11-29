@@ -55,13 +55,32 @@ def paste_raw_view(paste_hash):
 @pybin.route("/delete/<paste_hash>/")
 @login_required
 @utils.paste_exists
+@utils.is_author
 def paste_delete(paste_hash):
     paste = utils.get_paste_from_hash(paste_hash)
 
-    if not utils.delete_paste_if_user_is_author(paste):
-        return redirect(url_for("pybin.paste_view", paste_hash=paste.paste_hash))
+    utils.delete_paste(paste)
 
     return redirect(url_for("pybin.home"))
+
+
+@pybin.route("/edit/<paste_hash>/", methods=["GET", "POST"])
+@login_required
+@utils.paste_exists
+@utils.is_author
+def paste_edit(paste_hash):
+    paste = utils.get_paste_from_hash(paste_hash)
+
+    form = forms.PasteForm(obj=paste)
+
+    if request.method == "POST":
+
+        if utils.edit_paste(form, paste):
+            return redirect(url_for("pybin.paste_view", paste_hash=paste_hash))
+
+        return redirect(url_for("pybin.paste_edit", paste_hash=paste_hash))
+
+    return render_template("pybin/edit_paste.html", form=form, paste=paste)
 
 
 @pybin.route("/u/<username>/")
