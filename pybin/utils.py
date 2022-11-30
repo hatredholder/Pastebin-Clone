@@ -74,7 +74,7 @@ def edit_paste(form, paste):
         if len(tags) > 10:
             flash("Max amount of tags is 10")
             return
-        
+
         paste.update(
             content=content,
             category=category,
@@ -85,7 +85,6 @@ def edit_paste(form, paste):
             author=current_user,
         )
 
-        flash("Paste edited successfully!")
         return True
 
 
