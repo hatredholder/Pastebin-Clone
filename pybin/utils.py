@@ -21,6 +21,7 @@ def create_paste_if_submitted(form):
         content = form.content.data
         category = form.category.data
         tags = form.tags.data
+        syntax = form.syntax.data
         paste_expiration = form.paste_expiration.data
         paste_exposure = form.paste_exposure.data
         title = check_paste_title(form.title.data)
@@ -35,6 +36,7 @@ def create_paste_if_submitted(form):
             content=content,
             category=category,
             tags=tags,
+            syntax=syntax,
             paste_expiration=paste_expiration,
             paste_exposure=paste_exposure,
             title=title,
@@ -66,6 +68,7 @@ def edit_paste(form, paste):
         content = form.content.data
         category = form.category.data
         tags = form.tags.data
+        syntax = form.syntax.data
         paste_expiration = form.paste_expiration.data
         paste_exposure = form.paste_exposure.data
         title = check_paste_title(form.title.data)
@@ -79,6 +82,7 @@ def edit_paste(form, paste):
             content=content,
             category=category,
             tags=tags,
+            syntax=syntax,
             paste_expiration=paste_expiration,
             paste_exposure=paste_exposure,
             title=title,
@@ -159,7 +163,7 @@ def paste_exposed(f):
 
 
 def is_author(f):
-    """Redirects to 403 error page if current_user != author """
+    """Redirects to 403 error page if current_user != author"""
 
     @functools.wraps(f)
     def wrapped(*args, **kwargs):

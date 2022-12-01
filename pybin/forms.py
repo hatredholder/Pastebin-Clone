@@ -26,6 +26,10 @@ class PasteForm(FlaskForm):
         "Tags (separated by comma): ",
         separator=",",
     )
+    syntax = wtforms.SelectField(
+        "Syntax Highlighting: ",
+        choices=list(models.SYNTAXES),
+    )
     paste_expiration = wtforms.SelectField(
         "Paste Expiration: ",
         choices=list(models.PASTE_EXPIRATION),
