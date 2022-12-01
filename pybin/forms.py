@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
 
+import pybin.models as models
 from pybin.utils import TagListField
 
 import wtforms
@@ -19,33 +20,7 @@ class PasteForm(FlaskForm):
     )
     category = wtforms.SelectField(
         "Category: ",
-        choices=[
-            "None",
-            "Cryptocurrency",
-            "Cybersecurity",
-            "Fixit",
-            "Food",
-            "Gaming",
-            "Haiku",
-            "Help",
-            "History",
-            "Housing",
-            "Jokes",
-            "Legal",
-            "Money",
-            "Movies",
-            "Music",
-            "Pets",
-            "Photo",
-            "Science",
-            "Software",
-            "Source Code",
-            "Spirit",
-            "Sports",
-            "Travel",
-            "TV",
-            "Writing",
-        ],
+        choices=list(models.CATEGORIES),
     )
     tags = TagListField(
         "Tags (separated by comma): ",
@@ -53,21 +28,11 @@ class PasteForm(FlaskForm):
     )
     paste_expiration = wtforms.SelectField(
         "Paste Expiration: ",
-        choices=[
-            (0, "Never"),
-            (3600, "1 Hour"),
-            (86400, "1 Day"),
-            (2592000, "1 Month"),
-            (31104000, "1 Year"),
-        ],
+        choices=list(models.PASTE_EXPIRATION),
     )
     paste_exposure = wtforms.SelectField(
         "Paste Exposure: ",
-        choices=[
-            "Public",
-            "Unlisted",
-            "Private",
-        ],
+        choices=list(models.PASTE_EXPOSURE),
     )
     title = wtforms.StringField(
         "Paste Name / Title: ",
