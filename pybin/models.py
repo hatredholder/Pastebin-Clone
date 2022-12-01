@@ -242,7 +242,7 @@ class Paste(db.Document):
     paste_hash = db.StringField(default=lambda: str(uuid.uuid4())[:8], primary_key=True)
     title = db.StringField(max_length=50, required=False, default="Untitled")
 
-    author = db.ReferenceField("User", required=True, reverse_delete_rule=db.CASCADE)
+    author = db.ReferenceField("User", required=True)
     comments = db.EmbeddedDocumentListField("Comment", required=False)
 
     created = db.DateTimeField(default=datetime.datetime.now)
