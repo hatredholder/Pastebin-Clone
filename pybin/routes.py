@@ -92,4 +92,4 @@ def profile(username):
 
     pastes = models.Paste.objects(author=user)
 
-    return render_template("pybin/profile.html", pastes=pastes)
+    return render_template("pybin/profile.html", pastes=reversed(pastes))
