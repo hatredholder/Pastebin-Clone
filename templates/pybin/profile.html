@@ -7,15 +7,26 @@
                 <th>Added</th>
                 <th>Expires</th>
                 <th>Comments</th>
+                <th>Syntax</th>
             </tr>
         </thead>
         <tbody>
             {% for paste in pastes %}
                 <tr>
-                    <td>{{ paste.title }}</td>
+                    <td>
+                        {% if paste.paste_exposure == "Public" %}
+                          <i class="fa fa-globe" aria-hidden="true"></i>
+                        {% elif paste.paste_exposure == 'Unlisted' %}
+                          <i class="fa fa-link" aria-hidden="true"></i>
+                        {% elif paste.paste_exposure == 'Private' %}
+                          <i class="fa fa-lock" aria-hidden="true"></i>
+                        {% endif %}
+                        <a href="/{{paste.paste_hash}}">{{ paste.title }}</a>
+                    </td>
                     <td>{{ paste.created.strftime("%b %d, %Y")}}</td>
                     <td>{{ paste.paste_expiration }}</td>
                     <td>{{ paste.comments|length }}</td>
+                    <td>{{ paste.syntax }}</td>
                     {% if current_user == paste.author %}
                         <td>
                             <a href="/delete/{{ paste.paste_hash }}"
