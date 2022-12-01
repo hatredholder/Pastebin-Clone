@@ -1,7 +1,6 @@
 import datetime
 import functools
 
-from authentication.models import User
 
 from flask import flash, redirect, url_for
 
@@ -53,7 +52,7 @@ def get_paste_from_hash(paste_hash):
 
 def get_user_from_username(username):
     """Returns user from username"""
-    return User.objects(username=username).first()
+    return models.User.objects(username=username).first()
 
 
 def delete_paste(paste):
