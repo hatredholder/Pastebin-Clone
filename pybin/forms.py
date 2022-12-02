@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 
-import pybin.models as models
-from pybin.utils import TagListField
+import pybin.choices as choices
+import pybin.utils as utils
 
 import wtforms
 import wtforms.validators as valids
@@ -20,23 +20,23 @@ class PasteForm(FlaskForm):
     )
     category = wtforms.SelectField(
         "Category: ",
-        choices=list(models.CATEGORIES),
+        choices=list(choices.CATEGORIES),
     )
-    tags = TagListField(
+    tags = utils.TagListField(
         "Tags (separated by comma): ",
         separator=",",
     )
     syntax = wtforms.SelectField(
         "Syntax Highlighting: ",
-        choices=list(models.SYNTAXES),
+        choices=list(choices.SYNTAXES),
     )
     paste_expiration = wtforms.SelectField(
         "Paste Expiration: ",
-        choices=list(models.PASTE_EXPIRATION),
+        choices=list(choices.PASTE_EXPIRATION),
     )
     paste_exposure = wtforms.SelectField(
         "Paste Exposure: ",
-        choices=list(models.PASTE_EXPOSURE),
+        choices=list(choices.PASTE_EXPOSURE),
     )
     title = wtforms.StringField(
         "Paste Name / Title: ",
