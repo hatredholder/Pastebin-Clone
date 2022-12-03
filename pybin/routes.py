@@ -84,7 +84,7 @@ def paste_edit(paste_hash):
 
 
 @pybin.route("/u/<username>/")
-def profile(username):
+def my_pybin(username):
     user = utils.get_user_from_username(username)
 
     if not user:
@@ -92,4 +92,4 @@ def profile(username):
 
     pastes = models.Paste.objects(author=user)
 
-    return render_template("pybin/profile.html", pastes=reversed(pastes))
+    return render_template("pybin/my_pybin.html", pastes=reversed(pastes))
