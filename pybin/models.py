@@ -36,6 +36,7 @@ class Paste(db.Document):
         default="Public",
     )
     paste_hash = db.StringField(default=lambda: str(uuid.uuid4())[:8], primary_key=True)
+    paste_size = db.FloatField(required=False)
     title = db.StringField(max_length=50, required=False, default="Untitled")
 
     author = db.ReferenceField("User", required=True)
@@ -47,3 +48,7 @@ class Paste(db.Document):
         if len(str(self.content)) > 50:
             return f"<Paste {self.author} - {str(self.content)[:50].strip()}..>"
         return f"<Paste {self.author} - {str(self.content)}>"
+
+    def clean(self):
+        # Set paste_size on document save
+        self.paste_size = float(str(len(self.content) / 1000)[:4])
