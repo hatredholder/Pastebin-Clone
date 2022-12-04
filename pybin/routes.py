@@ -1,3 +1,4 @@
+from flask import Blueprint, redirect, render_template, url_for
 
 from flask_login import current_user, login_required
 
@@ -84,3 +85,11 @@ def my_pybin(username):
     pastes = models.Paste.objects(author=user)
 
     return render_template("pybin/my_pybin.html", pastes=reversed(pastes))
+
+
+@pybin.route("/user/profile/", methods=["GET", "POST"])
+@login_required
+def profile():
+    form = forms.ProfileForm()
+
+    return render_template("pybin/profile.html", form=form)

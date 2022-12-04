@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileAllowed
 
 import pybin.choices as choices
 import pybin.utils as utils
@@ -49,4 +50,31 @@ class PasteForm(FlaskForm):
     )
     submit = wtforms.SubmitField(
         "Create New Paste",
+    )
+
+
+class ProfileForm(FlaskForm):
+    email = wtforms.EmailField(
+        "Email Address: ",
+    )
+    website_url = wtforms.StringField(
+        "Website URL: ",
+        validators=[
+            valids.Length(
+                max=100,
+                message="Website URL should contain at most 100 characters.",
+            ),
+        ],
+    )
+    location = wtforms.StringField(
+        "Location: ",
+        validators=[
+            valids.Length(
+                max=150,
+                message="Location should contain at most 150 characters.",
+            ),
+        ],
+    )
+    submit = wtforms.SubmitField(
+        "Update Profile",
     )

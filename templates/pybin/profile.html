@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
+  {% endwith %}
+  <form method="POST" action="/">
+    {{ form.csrf_token }}
+    <div>
+      Username:
+      {{current_user.username}}
+    </div>
+    <div>
+      {{ form.email.label }}
+      {{ form.email }}
+    </div>
+    <div>
+      Email Status:
+      {% if current_user.email_status %}verified!{% else %}not verified!{% endif %}
+    </div>
+    <div>
+        {{ form.website_url.label }}
+        {{ form.website_url }}
+    </div>
+    <div>
+        {{ form.location.label }}
+        {{ form.location }}
+    </div>
+    <div>
+      Avatar:
+      {% if current_user.avatar %} current_user.avatar {% else %} <img src="{{url_for('static', filename='img/guest.png')}}">{% endif %}
+
+      <!-- TODO: Make a change-avatar route -->
+      [ <a href="#">change avatar</a> ]
+    </div>
+
+    {{ form.submit }}
+  </form>
+{% endblock %}
