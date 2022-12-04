@@ -22,14 +22,22 @@ class Comment(db.EmbeddedDocument):
 class Paste(db.Document):
     content = db.StringField(max_length=512000, required=True)
 
-    category = db.StringField(choices=choices.CATEGORIES, required=False, default="None")
+    category = db.StringField(
+        choices=choices.CATEGORIES,
+        required=False,
+        default="None",
+    )
     tags = db.ListField(max_length=10, required=False)
     syntax = db.StringField(
         choices=choices.SYNTAXES,
         required=True,
         default="None",
     )
-    paste_expiration = db.IntField(choices=choices.PASTE_EXPIRATION, required=True, default=0)
+    paste_expiration = db.IntField(
+        choices=choices.PASTE_EXPIRATION,
+        required=True,
+        default=0,
+    )
     paste_exposure = db.StringField(
         choices=choices.PASTE_EXPOSURE,
         required=True,
