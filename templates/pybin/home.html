@@ -5,6 +5,11 @@
         {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
     {% endwith %}
     <h1 class="title">Welcome, {{ name }}!</h1>
+      {% if form.content.errors %}
+        {% for error in form.content.errors %}
+          {{ error }}
+        {% endfor %}
+      {% endif %}
     <form method="POST" action="/">
         {{ form.csrf_token }}
         {{ form.content.label }}

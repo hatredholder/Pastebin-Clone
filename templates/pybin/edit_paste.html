@@ -3,6 +3,11 @@
   {% with messages = get_flashed_messages() %}
     {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
   {% endwith %}
+    {% if form.content.errors %}
+      {% for error in form.content.errors %}
+        {{ error }}
+      {% endfor %}
+    {% endif %}
   <form method="POST" action="/edit/{{paste.paste_hash}}/">
     {{ form.csrf_token }}
     {{ form.content.label }}
