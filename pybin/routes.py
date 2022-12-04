@@ -1,4 +1,3 @@
-from flask import Blueprint, redirect, render_template, request, url_for
 
 from flask_login import current_user, login_required
 
@@ -22,12 +21,8 @@ def home():
 
     paste_hash = utils.create_paste_if_submitted(form)
 
-    if request.method == "POST":
-
-        if paste_hash:
-            return redirect(url_for("pybin.paste_view", paste_hash=paste_hash))
-
-        return redirect(url_for("pybin.home"))
+    if paste_hash:
+        return redirect(url_for("pybin.paste_view", paste_hash=paste_hash))
 
     return render_template("pybin/home.html", form=form, name=current_user.username)
 
@@ -73,12 +68,8 @@ def paste_edit(paste_hash):
 
     form = forms.PasteForm(obj=paste)
 
-    if request.method == "POST":
-
-        if utils.edit_paste(form, paste):
-            return redirect(url_for("pybin.paste_view", paste_hash=paste_hash))
-
-        return redirect(url_for("pybin.paste_edit", paste_hash=paste_hash))
+    if utils.edit_paste(form, paste):
+        return redirect(url_for("pybin.paste_view", paste_hash=paste_hash))
 
     return render_template("pybin/edit_paste.html", form=form, paste=paste)
 
