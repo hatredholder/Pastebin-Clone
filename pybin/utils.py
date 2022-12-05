@@ -108,27 +108,42 @@ def update_profile(form, user):
         website_url = form.website_url.data
         location = form.location.data
 
+        # Check if email entered by the user isn't used by someone already
+        if email != user.email:  # noqa: SIM102
+            if auth_models.User.objects(email=email).first():
+                flash("This email address has already been taken.")
+                return
+
         # Regex pattern that checks if url starts with http:// or https://
         url_pattern = re.compile(
-            r"""
-            (https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]
-            {2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}
-            |https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|
-            www\.[a-zA-Z0-9]+\.[^\s]{2,})
-            """,
+            r"(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]"
+            r"+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]"
+            r"+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))"
+            r"[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})",
         )
 
         # Returns None if url doesnt match pattern
+        print(website_url)
+        print(url_pattern.search(website_url))
         if website_url and not url_pattern.search(website_url):
             flash("Please make sure your website starts with http:// or https://")
             return
 
+        # If user updated email,
+        # then set email_status to False,
+        # so that the user has to verify it
+        if email != user.email:
+            user.update(
+                email=email,
+                email_status=False,
+            )
+
         user.update(
-            email=email,
             website_url=website_url,
             location=location,
         )
 
+        flash("Your settings have been saved!")
         return True
 
 
