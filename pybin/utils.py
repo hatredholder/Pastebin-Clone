@@ -123,8 +123,6 @@ def update_profile(form, user):
         )
 
         # Returns None if url doesnt match pattern
-        print(website_url)
-        print(url_pattern.search(website_url))
         if website_url and not url_pattern.search(website_url):
             flash("Please make sure your website starts with http:// or https://")
             return
