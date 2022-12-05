@@ -18,6 +18,7 @@ from wtforms.fields import StringField
 
 def create_paste_if_submitted(form):
     """Returns paste hash if it gets created successfully"""
+
     if form.validate_on_submit():
         content = form.content.data
         category = form.category.data
@@ -65,6 +66,7 @@ def delete_paste(paste):
 
 def edit_paste(form, paste):
     """Return True if paste is edited successfully"""
+
     if form.validate_on_submit():
         content = form.content.data
         category = form.category.data
@@ -100,6 +102,7 @@ def check_paste_title(title):
 
 def update_profile(form, user):
     """Return True if User model is updated successfully"""
+
     if form.validate_on_submit():
         email = form.email.data
         website_url = form.website_url.data
