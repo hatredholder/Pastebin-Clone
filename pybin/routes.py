@@ -90,6 +90,9 @@ def my_pybin(username):
 @pybin.route("/user/profile/", methods=["GET", "POST"])
 @login_required
 def profile():
-    form = forms.ProfileForm()
+    form = forms.ProfileForm(obj=current_user)
+
+    if utils.update_profile(form, current_user):
+        return redirect(url_for("pybin.profile"))
 
     return render_template("pybin/profile.html", form=form)

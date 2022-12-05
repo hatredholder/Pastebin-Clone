@@ -11,7 +11,7 @@ class User(UserMixin, db.Document):
     # TODO: Implement Email Verification
     email_status = db.BooleanField(required=False, default=True)
 
-    website_url = db.URLField(max_length=100, required=False)
+    website_url = db.StringField(max_length=100, required=False)
     location = db.StringField(max_length=150, required=False)
     avatar = db.ImageField(
         size=(150, 150, False),

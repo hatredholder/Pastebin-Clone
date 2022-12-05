@@ -1,5 +1,6 @@
 import datetime
 import functools
+import re
 
 import authentication.models as auth_models
 
@@ -95,6 +96,37 @@ def edit_paste(form, paste):
 def check_paste_title(title):
     """Returns 'Untitled' if title wasn't provided"""
     return title if title else "Untitled"
+
+
+def update_profile(form, user):
+    """Return True if User model is updated successfully"""
+    if form.validate_on_submit():
+        email = form.email.data
+        website_url = form.website_url.data
+        location = form.location.data
+
+        # Regex pattern that checks if url starts with http:// or https://
+        url_pattern = re.compile(
+            r"""
+            (https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]
+            {2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}
+            |https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|
+            www\.[a-zA-Z0-9]+\.[^\s]{2,})
+            """,
+        )
+
+        # Returns None if url doesnt match pattern
+        if website_url and not url_pattern.search(website_url):
+            flash("Please make sure your website starts with http:// or https://")
+            return
+
+        user.update(
+            email=email,
+            website_url=website_url,
+            location=location,
+        )
+
+        return True
 
 
 # Decorators
