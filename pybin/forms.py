@@ -1,5 +1,4 @@
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileAllowed
 
 import pybin.choices as choices
 import pybin.utils as utils
@@ -77,4 +76,13 @@ class ProfileForm(FlaskForm):
     )
     submit = wtforms.SubmitField(
         "Update Profile",
+    )
+
+
+class AvatarForm(FlaskForm):
+    avatar = wtforms.FileField(
+        "Avatar (jpg/png/gif): ",
+    )
+    submit = wtforms.SubmitField(
+        "Upload Avatar",
     )
