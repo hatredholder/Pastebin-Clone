@@ -10,6 +10,14 @@ import pybin.utils as utils
 pybin = Blueprint("pybin", __name__)
 
 
+@pybin.context_processor
+def utility_processor():
+    def profile_image():
+        avatar = utils.create_base64_img_data()
+        return avatar
+    return dict(profile_image=profile_image)
+
+
 @pybin.route("/error/<error_code>/")
 def error(error_code):
     return render_template("pybin/error.html", error_code=error_code)
@@ -96,3 +104,14 @@ def profile():
         return redirect(url_for("pybin.profile"))
 
     return render_template("pybin/profile.html", form=form)
+
+
+@pybin.route("/user/change-avatar/", methods=["GET", "POST"])
+@login_required
+def avatar():
+    form = forms.AvatarForm(obj=current_user)
+
+    if utils.update_avatar(form, current_user):
+        return redirect(url_for("pybin.my_pybin", username=current_user.username))
+
+    return render_template("pybin/avatar.html", form=form)

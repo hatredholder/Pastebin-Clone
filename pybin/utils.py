@@ -1,5 +1,7 @@
+import base64
 import datetime
 import functools
+import io
 import re
 
 import authentication.models as auth_models
@@ -101,7 +103,7 @@ def check_paste_title(title):
 
 
 def update_profile(form, user):
-    """Return True if User model is updated successfully"""
+    """Returns True if User model is updated successfully"""
 
     if form.validate_on_submit():
         email = form.email.data
@@ -143,6 +145,28 @@ def update_profile(form, user):
 
         flash("Your settings have been saved!")
         return True
+
+
+def update_avatar(form, user):
+    """Returns True if Avatar was updated successfully"""
+
+    if form.validate_on_submit():
+        avatar = form.avatar.data
+
+        user.avatar.replace(io.BytesIO(avatar.read()))
+        user.save()
+
+        return True
+
+
+def create_base64_img_data():
+    """Returns image data in base64 to display in html"""
+    data = f"""
+        data:image/png;base64, {
+            base64.b64encode(current_user.avatar.read()).decode('utf-8')
+        }
+    """
+    return data
 
 
 # Decorators
