@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
+  {% endwith %}
+  <form method="POST" action="/user/change-avatar/" enctype="multipart/form-data">
+    {{ form.csrf_token }}
+    <div>
+      {{form.avatar.label}}
+      {{form.avatar}}
+    </div>
+    {{form.submit}}
+  <img src="{{profile_image()}}">
+  </form>
+{% endblock %}
