@@ -22,3 +22,7 @@ class User(UserMixin, db.Document):
 
     def __str__(self):
         return f"<User {self.username}>"
+
+    def clean(self):
+        if not self.avatar:
+            self.avatar.put(open('static/img/guest.png', 'rb'))  # noqa: SIM115
