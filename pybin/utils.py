@@ -166,6 +166,8 @@ def create_base64_img_data():
             base64.b64encode(current_user.avatar.read()).decode('utf-8')
         }
     """
+    current_user.avatar.seek(0)  # return the read cursor to the start of the file
+
     return data
 
 
