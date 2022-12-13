@@ -205,4 +205,3 @@ SYNTAXES = (
     ("yml", "YAML"),
     ("zephir", "Zephir"),
 )
-

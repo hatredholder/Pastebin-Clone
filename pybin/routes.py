@@ -15,6 +15,7 @@ def utility_processor():
     def profile_image():
         avatar = utils.create_base64_img_data()
         return avatar
+
     return dict(profile_image=profile_image)
 
 

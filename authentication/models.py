@@ -25,4 +25,4 @@ class User(UserMixin, db.Document):
 
     def clean(self):
         if not self.avatar:
-            self.avatar.put(open('static/img/guest.png', 'rb'))  # noqa: SIM115
+            self.avatar.put(open("static/img/guest.png", "rb"))  # noqa: SIM115
