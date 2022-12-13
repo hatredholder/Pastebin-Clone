@@ -33,11 +33,7 @@
     </div>
     <div>
       Avatar:
-    {% if current_user.avatar %} 
-      <img src="data:image/jpg;base64, {{current_user.avatar}}"> 
-    {% else %} 
-      <img src="{{url_for('static', filename='img/guest.png')}}">
-    {% endif %}
+      <img src="{{profile_image()}}">
 
       <!-- TODO: Make a change-avatar route -->
       [ <a href="/user/change-avatar/">change avatar</a> ]

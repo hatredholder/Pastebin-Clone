@@ -69,11 +69,7 @@
                             </li>
                         </ul>
                     </li>
-                    {% if current_user.avatar %}
                       <img src="{{profile_image()}}" width="40" height="40">
-                    {% else %}
-                      <img src="https://pastebin.com/themes/pastebin/img/guest.png" width="40" height="40">
-                    {% endif %}
                 </ul>
             {% else %}
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
