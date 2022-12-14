@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
-    {% endwith %}
+  {% with messages = get_flashed_messages() %}
+      {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
+  {% endwith %}
     <a href="/raw/{{ paste.paste_hash }}" class="btn btn-info" type="submit">raw</a>
     {% if current_user == paste.author %}
         <a href="/delete/{{ paste.paste_hash }}"
@@ -24,13 +24,11 @@
         {{ paste.created.strftime("%b %d, %Y")}}
     </div>
     <div>
-        <pre><code>{{paste.content}}</code></pre>
+      <pre><code>{{paste.content}}</code></pre>
     </div>
     <div>
         content
-        <textarea>
-{{paste.content}}
-  </textarea>
+        <textarea>{{paste.content}}</textarea>
     </div>
     <div>
         number of comments
@@ -38,6 +36,6 @@
     </div>
 {% endblock %}
 {% block scripts %}
-    <script>hljs.highlightAll();</script>
-    <script>hljs.initLineNumbersOnLoad();</script>
+  <script>hljs.highlightAll();</script>
+  <script>hljs.initLineNumbersOnLoad();</script>
 {% endblock %}
