@@ -107,7 +107,7 @@ SYNTAXES = (
     ("gradle", "Gradle"),
     ("graphql", "GraphQL"),
     ("groovy", "Groovy"),
-    ("html", "XML"),
+    ("html", "HTML"),
     ("http", "HTTP"),
     ("haml", "Haml"),
     ("handlebars", "Handlebars"),
