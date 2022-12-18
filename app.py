@@ -15,8 +15,8 @@ app.config["MONGODB_SETTINGS"] = {
     "password": "rootpass",
 }
 app.config["SECRET_KEY"] = "supersecretkey"
-app.config['RECAPTCHA_PUBLIC_KEY'] = "6Lc2biIjAAAAAK_wx4fiQ-mAdd0TQZzHKOPBurBD"
-app.config['RECAPTCHA_PRIVATE_KEY'] = "6Lc2biIjAAAAAA_JouXEC1IhL0hp1pxGZxRlEAay"
+app.config["RECAPTCHA_PUBLIC_KEY"] = "6Lc2biIjAAAAAK_wx4fiQ-mAdd0TQZzHKOPBurBD"
+app.config["RECAPTCHA_PRIVATE_KEY"] = "6Lc2biIjAAAAAA_JouXEC1IhL0hp1pxGZxRlEAay"
 
 
 # Setup MongoEngine
