@@ -11,7 +11,7 @@
     <form method="POST" action="/">
         {{ form.csrf_token }}
         {{ form.content.label }}
-        {{ form.content }}
+        <textarea class="codemirror-textarea" name="content"></textarea>
         <div>
             {{ form.category.label }}
             {{ form.category }}
@@ -38,4 +38,8 @@
         </div>
         {{ form.submit }}
     </form>
+{% endblock %}
+{% block scripts %}
+    <script src="{{url_for('static', filename='js/default.js')}}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/javascript/javascript.min.js"></script>
 {% endblock %}
