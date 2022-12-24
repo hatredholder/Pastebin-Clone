@@ -24,7 +24,7 @@
                    class="form-check-label"
                    for="flexSwitchCheckDefault">Syntax Highlighting</label>
         </div>
-        <textarea class="codemirror-textarea" name="content"></textarea>
+        <textarea name="content" class="codemirror-textarea" style="height: 300px; width: 70%;"></textarea>
         <div>
             {{ form.category.label }}
             {{ form.category }}
@@ -58,5 +58,5 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css">
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/theme/material-darker.min.css">
-    <script src="{{url_for('static', filename='js/default.js')}}"></script>
+    <script src="{{url_for('static', filename='js/highlighting.js')}}"></script>
 {% endblock %}
