@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
-  {% with messages = get_flashed_messages() %}
-      {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
-  {% endwith %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
+    {% endwith %}
     <a href="/raw/{{ paste.paste_hash }}" class="btn btn-info" type="submit">raw</a>
     {% if current_user == paste.author %}
         <a href="/delete/{{ paste.paste_hash }}"
@@ -24,7 +24,7 @@
         {{ paste.created.strftime("%b %d, %Y")}}
     </div>
     <div>
-      <pre><code>{{paste.content}}</code></pre>
+        <pre><code>{{paste.content}}</code></pre>
     </div>
     <div>
         content
@@ -36,12 +36,12 @@
     </div>
 {% endblock %}
 {% block scripts %}
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/base16/material-darker.min.css">
-  <link rel="stylesheet"
-        href="{{url_for('static', filename='css/highlightjs.css')}}">
-  <script>hljs.highlightAll();</script>
-  <script>hljs.initLineNumbersOnLoad();</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/base16/material-darker.min.css">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/highlightjs.css')}}">
+    <script>hljs.highlightAll();</script>
+    <script>hljs.initLineNumbersOnLoad();</script>
 {% endblock %}
