@@ -9,7 +9,20 @@
     <form method="POST" action="/edit/{{ paste.paste_hash }}/">
         {{ form.csrf_token }}
         {{ form.content.label }}
-        {{ form.content }}
+        <div class="form-check form-switch ">
+            <input style="float:right;
+                          margin-right: 10px"
+                   class="ms-auto form-check-input"
+                   type="checkbox"
+                   role="switch"
+                   value="off"
+                   autocomplete="off"
+                   id="onoff"/>
+            <label style="float:right"
+                   class="form-check-label"
+                   for="flexSwitchCheckDefault">Syntax Highlighting</label>
+        </div>
+        <textarea name="content" class="codemirror-textarea" style="height: 300px; width: 70%;">{{paste.content}}</textarea>
         <div>
             {{ form.category.label }}
             {{ form.category }}
@@ -36,4 +49,12 @@
         </div>
         {{ form.submit(value="Save Changes") }}
     </form>
+{% endblock %}
+{% block scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/theme/material-darker.min.css">
+    <script src="{{url_for('static', filename='js/highlighting.js')}}"></script>
 {% endblock %}
