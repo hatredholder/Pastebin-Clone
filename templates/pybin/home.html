@@ -11,6 +11,19 @@
     <form method="POST" action="/">
         {{ form.csrf_token }}
         {{ form.content.label }}
+        <div class="form-check form-switch ">
+            <input style="float:right;
+                          margin-right: 10px"
+                   class="ms-auto form-check-input"
+                   type="checkbox"
+                   role="switch"
+                   value="off"
+                   autocomplete="off"
+                   id="onoff"/>
+            <label style="float:right"
+                   class="form-check-label"
+                   for="flexSwitchCheckDefault">Syntax Highlighting</label>
+        </div>
         <textarea class="codemirror-textarea" name="content"></textarea>
         <div>
             {{ form.category.label }}
