@@ -13,12 +13,12 @@ pybin = Blueprint("pybin", __name__)
 
 
 @pybin.context_processor
-def utility_processor():
-    def profile_image():
+def profile_image():
+    def __profile_image():
         avatar = utils.create_base64_img_data()
         return avatar
 
-    return dict(profile_image=profile_image)
+    return dict(profile_image=__profile_image)
 
 
 @pybin.context_processor

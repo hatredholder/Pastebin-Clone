@@ -171,6 +171,21 @@ def create_base64_img_data():
     return data
 
 
+def get_my_pastes(current_user):
+    my_pastes = models.Paste.objects.filter(author=current_user)[:7].order_by(
+        "-created",
+    )
+    return my_pastes
+
+
+def get_my_pastes_and_public_pastes(current_user):
+    my_pastes = models.Paste.objects.filter(author=current_user)[:7].order_by(
+        "-created",
+    )
+    public_pastes = models.Paste.objects.all()[:7].order_by("-created")
+    return my_pastes, public_pastes
+
+
 # Decorators
 
 
