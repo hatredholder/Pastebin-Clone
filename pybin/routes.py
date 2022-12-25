@@ -6,6 +6,7 @@ import pybin.forms as forms
 import pybin.models as models
 import pybin.utils as utils
 
+
 pybin = Blueprint("pybin", __name__)
 
 
