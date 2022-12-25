@@ -6,8 +6,10 @@ import pybin.forms as forms
 import pybin.models as models
 import pybin.utils as utils
 
-
 pybin = Blueprint("pybin", __name__)
+
+
+# Context Processors
 
 
 @pybin.context_processor
@@ -17,6 +19,27 @@ def utility_processor():
         return avatar
 
     return dict(profile_image=profile_image)
+
+
+@pybin.context_processor
+def my_pastes():
+    def __my_pastes():
+        pastes = utils.get_my_pastes(current_user)
+        return pastes
+
+    return dict(my_pastes=__my_pastes)
+
+
+@pybin.context_processor
+def public_pastes():
+    def __public_pastes():
+        pastes = utils.get_my_pastes(current_user)
+        return pastes
+
+    return dict(my_pastes=__public_pastes)
+
+
+# Routes
 
 
 @pybin.route("/error/<error_code>/")
