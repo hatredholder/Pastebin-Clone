@@ -178,12 +178,9 @@ def get_my_pastes(current_user):
     return my_pastes
 
 
-def get_my_pastes_and_public_pastes(current_user):
-    my_pastes = models.Paste.objects.filter(author=current_user)[:7].order_by(
-        "-created",
-    )
-    public_pastes = models.Paste.objects.all()[:7].order_by("-created")
-    return my_pastes, public_pastes
+def get_public_pastes(current_user):
+    public_pastes = models.Paste.objects.filter(paste_exposure="Public")[:7].order_by("-created")
+    return public_pastes
 
 
 # Decorators

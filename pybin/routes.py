@@ -34,10 +34,10 @@ def my_pastes():
 @pybin.context_processor
 def public_pastes():
     def __public_pastes():
-        pastes = utils.get_my_pastes(current_user)
+        pastes = utils.get_public_pastes(current_user)
         return pastes
 
-    return dict(my_pastes=__public_pastes)
+    return dict(public_pastes=__public_pastes)
 
 
 # Routes
