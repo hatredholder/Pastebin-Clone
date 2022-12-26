@@ -4,53 +4,110 @@
     {% with messages = get_flashed_messages() %}
         {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
     {% endwith %}
-    <h1 class="title">Welcome, {{ name }}!</h1>
-    {% if form.content.errors %}
-        {% for error in form.content.errors %}{{ error }}{% endfor %}
-    {% endif %}
-    <form method="POST" action="/">
-        {{ form.csrf_token }}
-        {{ form.content.label }}
-        <div class="form-check form-switch ">
-            <input style="float:right;
-                          margin-right: 10px"
-                   class="ms-auto form-check-input"
-                   type="checkbox"
-                   role="switch"
-                   value="off"
-                   autocomplete="off"
-                   id="onoff"/>
-            <label style="float:right"
-                   class="form-check-label"
-                   for="flexSwitchCheckDefault">Syntax Highlighting</label>
+    <div class="container">
+        <div class="row">
+            <div class="errors">
+                {% if form.content.errors %}
+                    {% for error in form.content.errors %}{{ error }}{% endfor %}
+                {% endif %}
+            </div>
+            <div class="content col">
+                <form class="col" method="POST" action="/">
+                    {{ form.csrf_token }}
+                    {{ form.content.label }}
+                    <div class="form-check form-switch ">
+                        <input style="float:right;
+                                      margin-right: 10px"
+                               class="ms-auto form-check-input"
+                               type="checkbox"
+                               role="switch"
+                               value="off"
+                               autocomplete="off"
+                               id="onoff"/>
+                        <label style="float:right"
+                               class="form-check-label"
+                               for="flexSwitchCheckDefault">Syntax Highlighting</label>
+                    </div>
+                    <textarea name="content"
+                              class="codemirror-textarea"
+                              style="height: 300px;
+                                     width: 100%"></textarea>
+                    <div>
+                        {{ form.category.label }}
+                        {{ form.category }}
+                    </div>
+                    <div>
+                        {{ form.tags.label }}
+                        {{ form.tags(placeholder="software, tutorial, data")}}
+                    </div>
+                    <div>
+                        {{ form.syntax.label }}
+                        {{ form.syntax }}
+                    </div>
+                    <div>
+                        {{ form.paste_expiration.label }}
+                        {{ form.paste_expiration }}
+                    </div>
+                    <div>
+                        {{ form.paste_exposure.label }}
+                        {{ form.paste_exposure }}
+                    </div>
+                    <div>
+                        {{ form.title.label }}
+                        {{ form.title }}
+                    </div>
+                    {{ form.submit }}
+                </form>
+            </div>
+            <div class="sidebar col-sm-3">
+                <div class="sidebar_title">
+                    <a href="#">My Pastes</a>
+                </div>
+                <ul class="sidebar_menu">
+                    {% for paste in my_pastes() %}
+                        <li>
+                            {% if paste.paste_exposure == "Public" %}
+                                <i class="fa fa-globe" aria-hidden="true"></i>
+                            {% elif paste.paste_exposure == 'Unlisted' %}
+                                <i class="fa fa-link" aria-hidden="true"></i>
+                            {% elif paste.paste_exposure == 'Private' %}
+                                <i class="fa fa-lock" aria-hidden="true"></i>
+                            {% endif %}
+                            <a href="/{{ paste.id }}">{{ paste.title }}</a>
+                            <div class="details">
+                                {% if paste.syntax != "None" %}{{ paste.syntax|capitalize }} |{% endif %}
+                                {{ paste.created }}| {{ paste.paste_size }} KB
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div class="sidebar_sticky">
+                    <div style="padding-bottom:10px; padding-top:20px;"></div>
+                </div>
+                <div class="sidebar_title">
+                    <a href="#">Public Pastes</a>
+                </div>
+                <ul class="sidebar_menu">
+                    {% for paste in public_pastes() %}
+                        <li>
+                            {% if paste.paste_exposure == "Public" %}
+                                <i class="fa fa-globe" aria-hidden="true"></i>
+                            {% elif paste.paste_exposure == 'Unlisted' %}
+                                <i class="fa fa-link" aria-hidden="true"></i>
+                            {% elif paste.paste_exposure == 'Private' %}
+                                <i class="fa fa-lock" aria-hidden="true"></i>
+                            {% endif %}
+                            <a href="/{{ paste.id }}">{{ paste.title }}</a>
+                            <div class="details">
+                                {% if paste.syntax != "None" %}{{ paste.syntax|capitalize }} |{% endif %}
+                                {{ paste.created }}| {{ paste.paste_size }} KB
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
-        <textarea name="content" class="codemirror-textarea" style="height: 300px; width: 70%;"></textarea>
-        <div>
-            {{ form.category.label }}
-            {{ form.category }}
-        </div>
-        <div>
-            {{ form.tags.label }}
-            {{ form.tags(placeholder="software, tutorial, data")}}
-        </div>
-        <div>
-            {{ form.syntax.label }}
-            {{ form.syntax }}
-        </div>
-        <div>
-            {{ form.paste_expiration.label }}
-            {{ form.paste_expiration }}
-        </div>
-        <div>
-            {{ form.paste_exposure.label }}
-            {{ form.paste_exposure }}
-        </div>
-        <div>
-            {{ form.title.label }}
-            {{ form.title }}
-        </div>
-        {{ form.submit }}
-    </form>
+    </div>
 {% endblock %}
 {% block scripts %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"></script>
