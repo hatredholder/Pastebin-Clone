@@ -4,6 +4,9 @@ import functools
 import io
 import re
 
+
+from app import app
+
 import authentication.models as auth_models
 
 from flask import flash, redirect, url_for
@@ -11,6 +14,8 @@ from flask import flash, redirect, url_for
 from flask_login import current_user
 
 import pybin.models as models
+
+import timeago
 
 from wtforms.fields import StringField
 
@@ -264,6 +269,13 @@ def is_author(f):
         return result
 
     return wrapped
+
+
+# Template Filters
+
+@app.template_filter()
+def timesince(date):
+    return timeago.format(date, datetime.datetime.now())
 
 
 # Fields
