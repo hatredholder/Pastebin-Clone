@@ -1,17 +1,72 @@
 {% extends "base.html" %}
 {% block content %}
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
-    {% endwith %}
-    <form method="POST"
-          action="/user/change-avatar/"
-          enctype="multipart/form-data">
-        {{ form.csrf_token }}
-        <div>
-            {{ form.avatar.label }}
-            {{ form.avatar }}
+    <div class="container">
+        <div class="row">
+            <div class="errors">
+                {% if form.avatar.errors %}
+                    {% for error in form.content.errors %}{{ error }}{% endfor %}
+                {% endif %}
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
+                {% endwith %}
+            </div>
+            <div class="content col">
+                <form method="POST"
+                      action="/user/change-avatar/"
+                      enctype="multipart/form-data">
+                    {{ form.csrf_token }}
+                    <div>
+                        {{ form.avatar.label }}
+                        {{ form.avatar }}
+                    </div>
+                    {{ form.submit }}
+                </form>
+            </div>
+            <div class="sidebar col-sm-3">
+                <div class="sidebar_title">
+                    <a href="#">My Pastes</a>
+                </div>
+                <ul class="sidebar_menu">
+                    {% for paste in my_pastes() %}
+                        <li>
+                            {% if paste.paste_exposure == "Public" %}
+                                <i class="fa fa-globe" aria-hidden="true"></i>
+                            {% elif paste.paste_exposure == 'Unlisted' %}
+                                <i class="fa fa-link" aria-hidden="true"></i>
+                            {% elif paste.paste_exposure == 'Private' %}
+                                <i class="fa fa-lock" aria-hidden="true"></i>
+                            {% endif %}
+                            <a href="/{{ paste.id }}">{{ paste.title }}</a>
+                            <div class="details">
+                                {% if paste.syntax != "None" %}{{ paste.syntax|capitalize }} |{% endif %}
+                                {{ paste.created|timesince }}| {{ paste.paste_size }} KB
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div class="sidebar_sticky"></div>
+                <div class="sidebar_title">
+                    <a href="#">Public Pastes</a>
+                </div>
+                <ul class="sidebar_menu">
+                    {% for paste in public_pastes() %}
+                        <li>
+                            {% if paste.paste_exposure == "Public" %}
+                                <i class="fa fa-globe" aria-hidden="true"></i>
+                            {% elif paste.paste_exposure == 'Unlisted' %}
+                                <i class="fa fa-link" aria-hidden="true"></i>
+                            {% elif paste.paste_exposure == 'Private' %}
+                                <i class="fa fa-lock" aria-hidden="true"></i>
+                            {% endif %}
+                            <a href="/{{ paste.id }}">{{ paste.title }}</a>
+                            <div class="details">
+                                {% if paste.syntax != "None" %}{{ paste.syntax|capitalize }} |{% endif %}
+                                {{ paste.created|timesince }}| {{ paste.paste_size }} KB
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
-        {{ form.submit }}
-        <img src="{{ profile_image()}}">
-    </form>
+    </div>
 {% endblock %}

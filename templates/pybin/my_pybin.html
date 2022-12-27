@@ -1,46 +1,102 @@
 {% extends "base.html" %}
 {% block content %}
-    <table>
-        <thead>
-            <tr>
-                <th>Name / title</th>
-                <th>Added</th>
-                <th>Expires</th>
-                <th>Comments</th>
-                <th>Syntax</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for paste in pastes %}
-                <tr>
-                    <td>
-                        {% if paste.paste_exposure == "Public" %}
-                            <i class="fa fa-globe" aria-hidden="true"></i>
-                        {% elif paste.paste_exposure == 'Unlisted' %}
-                            <i class="fa fa-link" aria-hidden="true"></i>
-                        {% elif paste.paste_exposure == 'Private' %}
-                            <i class="fa fa-lock" aria-hidden="true"></i>
-                        {% endif %}
-                        <a href="/{{ paste.paste_hash }}">{{ paste.title }}</a>
-                    </td>
-                    <td>{{ paste.created.strftime("%b %d, %Y")}}</td>
-                    <td>{{ paste.paste_expiration }}</td>
-                    <td>{{ paste.comments|length }}</td>
-                    <td>{{ paste.syntax }}</td>
-                    {% if current_user == paste.author %}
-                        <td>
-                            <a href="/delete/{{ paste.paste_hash }}"
-                               class="btn btn-danger"
-                               type="submit">delete</a>
-                        </td>
-                        <td>
-                            <a href="/edit/{{ paste.paste_hash }}"
-                               class="btn btn-success"
-                               type="submit">edit</a>
-                        </td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="container">
+        <div class="row">
+            <div class="errors">
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
+                {% endwith %}
+            </div>
+            <div class="content col">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name / title</th>
+                            <th>Added</th>
+                            <th>Expires</th>
+                            <th>Comments</th>
+                            <th>Syntax</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for paste in pastes %}
+                            <tr>
+                                <td>
+                                    {% if paste.paste_exposure == "Public" %}
+                                        <i class="fa fa-globe" aria-hidden="true"></i>
+                                    {% elif paste.paste_exposure == 'Unlisted' %}
+                                        <i class="fa fa-link" aria-hidden="true"></i>
+                                    {% elif paste.paste_exposure == 'Private' %}
+                                        <i class="fa fa-lock" aria-hidden="true"></i>
+                                    {% endif %}
+                                    <a href="/{{ paste.paste_hash }}">{{ paste.title }}</a>
+                                </td>
+                                <td>{{ paste.created.strftime("%b %d, %Y")}}</td>
+                                <td>{{ paste.paste_expiration }}</td>
+                                <td>{{ paste.comments|length }}</td>
+                                <td>{{ paste.syntax }}</td>
+                                {% if current_user == paste.author %}
+                                    <td>
+                                        <a href="/delete/{{ paste.paste_hash }}"
+                                           class="btn btn-danger"
+                                           type="submit">delete</a>
+                                    </td>
+                                    <td>
+                                        <a href="/edit/{{ paste.paste_hash }}"
+                                           class="btn btn-success"
+                                           type="submit">edit</a>
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="sidebar col-sm-3">
+                <div class="sidebar_title">
+                    <a href="#">My Pastes</a>
+                </div>
+                <ul class="sidebar_menu">
+                    {% for paste in my_pastes() %}
+                        <li>
+                            {% if paste.paste_exposure == "Public" %}
+                                <i class="fa fa-globe" aria-hidden="true"></i>
+                            {% elif paste.paste_exposure == 'Unlisted' %}
+                                <i class="fa fa-link" aria-hidden="true"></i>
+                            {% elif paste.paste_exposure == 'Private' %}
+                                <i class="fa fa-lock" aria-hidden="true"></i>
+                            {% endif %}
+                            <a href="/{{ paste.id }}">{{ paste.title }}</a>
+                            <div class="details">
+                                {% if paste.syntax != "None" %}{{ paste.syntax|capitalize }} |{% endif %}
+                                {{ paste.created|timesince }}| {{ paste.paste_size }} KB
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div class="sidebar_sticky"></div>
+                <div class="sidebar_title">
+                    <a href="#">Public Pastes</a>
+                </div>
+                <ul class="sidebar_menu">
+                    {% for paste in public_pastes() %}
+                        <li>
+                            {% if paste.paste_exposure == "Public" %}
+                                <i class="fa fa-globe" aria-hidden="true"></i>
+                            {% elif paste.paste_exposure == 'Unlisted' %}
+                                <i class="fa fa-link" aria-hidden="true"></i>
+                            {% elif paste.paste_exposure == 'Private' %}
+                                <i class="fa fa-lock" aria-hidden="true"></i>
+                            {% endif %}
+                            <a href="/{{ paste.id }}">{{ paste.title }}</a>
+                            <div class="details">
+                                {% if paste.syntax != "None" %}{{ paste.syntax|capitalize }} |{% endif %}
+                                {{ paste.created|timesince }}| {{ paste.paste_size }} KB
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
 {% endblock %}

@@ -1,15 +1,15 @@
 <!-- templates/authentication/home.html -->
 {% extends "base.html" %}
 {% block content %}
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
-    {% endwith %}
     <div class="container">
         <div class="row">
             <div class="errors">
                 {% if form.content.errors %}
                     {% for error in form.content.errors %}{{ error }}{% endfor %}
                 {% endif %}
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
+                {% endwith %}
             </div>
             <div class="content col">
                 <form class="col" method="POST" action="/">
@@ -76,7 +76,7 @@
                             <a href="/{{ paste.id }}">{{ paste.title }}</a>
                             <div class="details">
                                 {% if paste.syntax != "None" %}{{ paste.syntax|capitalize }} |{% endif %}
-                                {{ paste.created }}| {{ paste.paste_size }} KB
+                                {{ paste.created|timesince }}| {{ paste.paste_size }} KB
                             </div>
                         </li>
                     {% endfor %}
@@ -100,7 +100,7 @@
                             <a href="/{{ paste.id }}">{{ paste.title }}</a>
                             <div class="details">
                                 {% if paste.syntax != "None" %}{{ paste.syntax|capitalize }} |{% endif %}
-                                {{ paste.created }}| {{ paste.paste_size }} KB
+                                {{ paste.created|timesince }}| {{ paste.paste_size }} KB
                             </div>
                         </li>
                     {% endfor %}
