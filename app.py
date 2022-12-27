@@ -48,3 +48,6 @@ app.register_blueprint(auth_blueprint)
 from pybin.routes import pybin as pb_blueprint  # noqa: E402
 
 app.register_blueprint(pb_blueprint)
+
+# Import context processors to make them available
+import pybin.context_processors  # noqa: E402, F401, I202, I100 <- damn that's a lot of errors

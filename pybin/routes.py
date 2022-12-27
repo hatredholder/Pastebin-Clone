@@ -6,41 +6,7 @@ import pybin.forms as forms
 import pybin.models as models
 import pybin.utils as utils
 
-
 pybin = Blueprint("pybin", __name__)
-
-
-# Context Processors
-
-
-@pybin.context_processor
-def profile_image():
-    def __profile_image():
-        avatar = utils.create_base64_img_data()
-        return avatar
-
-    return dict(profile_image=__profile_image)
-
-
-@pybin.context_processor
-def my_pastes():
-    def __my_pastes():
-        pastes = utils.get_my_pastes(current_user)
-        return pastes
-
-    return dict(my_pastes=__my_pastes)
-
-
-@pybin.context_processor
-def public_pastes():
-    def __public_pastes():
-        pastes = utils.get_public_pastes(current_user)
-        return pastes
-
-    return dict(public_pastes=__public_pastes)
-
-
-# Routes
 
 
 @pybin.route("/error/<error_code>/")
