@@ -106,3 +106,16 @@ def avatar():
         return redirect(url_for("pybin.my_pybin", username=current_user.username))
 
     return render_template("pybin/avatar.html", form=form)
+
+
+@pybin.route("/user/password/", methods=["GET", "POST"])
+@login_required
+# @email_verified
+# TODO: Create email_verified decorator
+def password():
+    form = forms.PasswordForm()
+
+    if utils.update_password(form, current_user):
+        return redirect(url_for("pybin.password"))
+
+    return render_template("pybin/password.html", form=form)

@@ -17,6 +17,8 @@ import pybin.models as models
 
 import timeago
 
+from werkzeug.security import check_password_hash, generate_password_hash
+
 from wtforms.fields import StringField
 
 
@@ -164,6 +166,30 @@ def update_avatar(form, user):
         return True
 
 
+def update_password(form, user):
+    """Returns True if Password was updated successfully"""
+
+    if form.validate_on_submit():
+        password = form.password.data
+
+        if current_user.password_hash:
+            current_password = form.current_password.data
+
+            if not check_password_hash(user.password_hash, current_password):
+                flash(
+                    "Your current password is not correct.\
+                    Please enter your current password correctly!",
+                )
+                return
+
+        user.update(
+            password_hash=generate_password_hash(password),
+        )
+
+        flash("Your password has been updated!")
+        return True
+
+
 def create_base64_img_data():
     """Returns image data in base64 to display in html"""
     data = f"""
@@ -184,7 +210,9 @@ def get_my_pastes(current_user):
 
 
 def get_public_pastes(current_user):
-    public_pastes = models.Paste.objects.filter(paste_exposure="Public")[:7].order_by("-created")
+    public_pastes = models.Paste.objects.filter(paste_exposure="Public")[:7].order_by(
+        "-created",
+    )
     return public_pastes
 
 
@@ -272,6 +300,7 @@ def is_author(f):
 
 
 # Template Filters
+
 
 @app.template_filter()
 def timesince(date):
