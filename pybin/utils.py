@@ -299,6 +299,23 @@ def is_author(f):
     return wrapped
 
 
+def email_verified(f):
+    """Redirects to email verification page if current_user's email is not verified"""
+    # NOTE: Redirects to error 403 page until email verification is implemented
+
+    @functools.wraps(f)
+    def wrapped(*args, **kwargs):
+
+        if not current_user.email_status:
+            return redirect(url_for("pybin.error", error_code=403))
+
+        result = f(*args, **kwargs)
+
+        return result
+
+    return wrapped
+
+
 # Template Filters
 
 

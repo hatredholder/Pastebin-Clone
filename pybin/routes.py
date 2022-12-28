@@ -110,8 +110,7 @@ def avatar():
 
 @pybin.route("/user/password/", methods=["GET", "POST"])
 @login_required
-# @email_verified
-# TODO: Create email_verified decorator
+@utils.email_verified
 def password():
     form = forms.PasswordForm()
 
