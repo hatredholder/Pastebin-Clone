@@ -18,6 +18,7 @@ class User(UserMixin, db.Document):
         required=False,
     )
 
+    # TODO: Implement Social Authentication (Set required to False)
     password_hash = db.StringField(max_length=1000, required=True)
 
     def __str__(self):
