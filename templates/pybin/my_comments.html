@@ -21,19 +21,19 @@
                         {% for comment in comments %}
                             <tr>
                                 <td>
-                                    <a href="/{{ comment.comment_hash }}">{{ comment.content }}</a>
+                                    <a href="/{{ comment.uuid_hash }}">{{ comment.content }}</a>
                                 </td>
                                 <td>{{ comment.created.strftime("%b %d, %Y")}}</td>
                                 <td>{{ comment.comments|length }}</td>
                                 <td>{{ comment.syntax }}</td>
                                 {% if current_user == comment.author %}
                                     <td>
-                                        <a href="/delete/{{ comment.comment_hash }}"
+                                        <a href="/delete/{{ comment.uuid_hash }}"
                                            class="btn btn-danger"
                                            type="submit">delete</a>
                                     </td>
                                     <td>
-                                        <a href="/edit/{{ comment.comment_hash }}"
+                                        <a href="/edit/{{ comment.uuid_hash }}"
                                            class="btn btn-success"
                                            type="submit">edit</a>
                                     </td>
@@ -55,17 +55,17 @@
                     {% endif %}
                     {% for paste in my_pastes() %}
                         <li>
-                            {% if paste.paste_exposure == "Public" %}
+                            {% if paste.exposure == "Public" %}
                                 <i class="fa fa-globe" aria-hidden="true"></i>
-                            {% elif paste.paste_exposure == 'Unlisted' %}
+                            {% elif paste.exposure == 'Unlisted' %}
                                 <i class="fa fa-link" aria-hidden="true"></i>
-                            {% elif paste.paste_exposure == 'Private' %}
+                            {% elif paste.exposure == 'Private' %}
                                 <i class="fa fa-lock" aria-hidden="true"></i>
                             {% endif %}
                             <a href="/{{ paste.id }}">{{ paste.title }}</a>
                             <div class="details">
                                 {% if paste.syntax != "None" %}{{ paste.syntax|capitalize }} |{% endif %}
-                                {{ paste.created|timesince }}| {{ paste.paste_size }} KB
+                                {{ paste.created|timesince }}| {{ paste.size }} KB
                             </div>
                         </li>
                     {% endfor %}
@@ -77,17 +77,17 @@
                 <ul class="sidebar_menu">
                     {% for paste in public_pastes() %}
                         <li>
-                            {% if paste.paste_exposure == "Public" %}
+                            {% if paste.exposure == "Public" %}
                                 <i class="fa fa-globe" aria-hidden="true"></i>
-                            {% elif paste.paste_exposure == 'Unlisted' %}
+                            {% elif paste.exposure == 'Unlisted' %}
                                 <i class="fa fa-link" aria-hidden="true"></i>
-                            {% elif paste.paste_exposure == 'Private' %}
+                            {% elif paste.exposure == 'Private' %}
                                 <i class="fa fa-lock" aria-hidden="true"></i>
                             {% endif %}
                             <a href="/{{ paste.id }}">{{ paste.title }}</a>
                             <div class="details">
                                 {% if paste.syntax != "None" %}{{ paste.syntax|capitalize }} |{% endif %}
-                                {{ paste.created|timesince }}| {{ paste.paste_size }} KB
+                                {{ paste.created|timesince }}| {{ paste.size }} KB
                             </div>
                         </li>
                     {% endfor %}

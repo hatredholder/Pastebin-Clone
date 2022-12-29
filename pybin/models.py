@@ -11,7 +11,7 @@ class Comment(db.Document):
     author = db.ReferenceField("User", required=True)
     paste = db.ReferenceField("Paste", required=True)
 
-    comment_hash = db.StringField(default=lambda: str(uuid.uuid4())[:8], primary_key=True)
+    uuid_hash = db.StringField(default=lambda: str(uuid.uuid4())[:8], primary_key=True)
     syntax = db.StringField(
         choices=choices.SYNTAXES,
         required=True,
@@ -42,18 +42,18 @@ class Paste(db.Document):
         required=True,
         default="None",
     )
-    paste_expiration = db.IntField(
-        choices=choices.PASTE_EXPIRATION,
+    expiration = db.IntField(
+        choices=choices.EXPIRATION,
         required=True,
         default=0,
     )
-    paste_exposure = db.StringField(
-        choices=choices.PASTE_EXPOSURE,
+    exposure = db.StringField(
+        choices=choices.EXPOSURE,
         required=True,
         default="Public",
     )
-    paste_hash = db.StringField(default=lambda: str(uuid.uuid4())[:8], primary_key=True)
-    paste_size = db.FloatField(required=False)
+    uuid_hash = db.StringField(default=lambda: str(uuid.uuid4())[:8], primary_key=True)
+    size = db.FloatField(required=False)
     title = db.StringField(max_length=50, required=False, default="Untitled")
 
     author = db.ReferenceField("User", required=True)
@@ -67,5 +67,5 @@ class Paste(db.Document):
         return f"<Paste {self.author} - {str(self.content)}>"
 
     def clean(self):
-        # Set paste_size on document save
-        self.paste_size = float(str(len(self.content) / 1000)[:4])
+        # Set size on document save
+        self.size = float(str(len(self.content) / 1000)[:4])

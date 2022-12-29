@@ -30,13 +30,13 @@ class PasteForm(FlaskForm):
         "Syntax Highlighting: ",
         choices=list(choices.SYNTAXES),
     )
-    paste_expiration = wtforms.SelectField(
+    expiration = wtforms.SelectField(
         "Paste Expiration: ",
-        choices=list(choices.PASTE_EXPIRATION),
+        choices=list(choices.EXPIRATION),
     )
-    paste_exposure = wtforms.SelectField(
+    exposure = wtforms.SelectField(
         "Paste Exposure: ",
-        choices=list(choices.PASTE_EXPOSURE),
+        choices=list(choices.EXPOSURE),
     )
     title = wtforms.StringField(
         "Paste Name / Title: ",

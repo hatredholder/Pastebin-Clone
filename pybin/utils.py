@@ -26,15 +26,15 @@ from wtforms.fields import StringField
 
 
 def create_paste_if_submitted(form):
-    """Returns paste hash if it gets created successfully"""
+    """Returns paste.uuid_hash if it gets created successfully"""
 
     if form.validate_on_submit():
         content = form.content.data
         category = form.category.data
         tags = form.tags.data
         syntax = form.syntax.data
-        paste_expiration = form.paste_expiration.data
-        paste_exposure = form.paste_exposure.data
+        expiration = form.expiration.data
+        exposure = form.exposure.data
         title = check_paste_title(form.title.data)
 
         # Returns None if > 10 tags
@@ -48,18 +48,18 @@ def create_paste_if_submitted(form):
             category=category,
             tags=tags,
             syntax=syntax,
-            paste_expiration=paste_expiration,
-            paste_exposure=paste_exposure,
+            expiration=expiration,
+            exposure=exposure,
             title=title,
             author=current_user,
         ).save()
 
-        return paste.paste_hash
+        return paste.uuid_hash
 
 
-def get_paste_from_hash(paste_hash):
-    """Returns paste from paste_hash"""
-    return models.Paste.objects(paste_hash=paste_hash).first()
+def get_paste_from_hash(uuid_hash):
+    """Returns paste from uuid_hash"""
+    return models.Paste.objects(uuid_hash=uuid_hash).first()
 
 
 def get_user_from_username(username):
@@ -81,8 +81,8 @@ def edit_paste(form, paste):
         category = form.category.data
         tags = form.tags.data
         syntax = form.syntax.data
-        paste_expiration = form.paste_expiration.data
-        paste_exposure = form.paste_exposure.data
+        expiration = form.expiration.data
+        exposure = form.exposure.data
         title = check_paste_title(form.title.data)
 
         # Returns None if > 10 tags
@@ -95,8 +95,8 @@ def edit_paste(form, paste):
             category=category,
             tags=tags,
             syntax=syntax,
-            paste_expiration=paste_expiration,
-            paste_exposure=paste_exposure,
+            expiration=expiration,
+            exposure=exposure,
             title=title,
             author=current_user,
         )
@@ -203,14 +203,14 @@ def create_base64_img_data():
 
 
 def get_my_pastes(current_user):
-    my_pastes = models.Paste.objects.filter(author=current_user)[:7].order_by(
+    my_pastes = models.Paste.objects.filter(author=current_user)[:8].order_by(
         "-created",
     )
     return my_pastes
 
 
 def get_public_pastes(current_user):
-    public_pastes = models.Paste.objects.filter(paste_exposure="Public")[:7].order_by(
+    public_pastes = models.Paste.objects.filter(exposure="Public")[:8].order_by(
         "-created",
     )
     return public_pastes
@@ -225,7 +225,7 @@ def paste_exists(f):
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
 
-        paste = get_paste_from_hash(kwargs["paste_hash"])
+        paste = get_paste_from_hash(kwargs["uuid_hash"])
 
         if not paste:
             return redirect(url_for("pybin.error", error_code=404))
@@ -243,14 +243,16 @@ def paste_not_expired(f):
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
 
-        paste = get_paste_from_hash(kwargs["paste_hash"])
+        paste = get_paste_from_hash(kwargs["uuid_hash"])
 
+        # If expiration > 0 (set to expire)
+        # and datetime.now() > paste creation date + expiration time
         if (
-            paste.paste_expiration > 0
+            paste.expiration > 0
             and datetime.datetime.now()
             > paste.created
             + datetime.timedelta(
-                seconds=paste.paste_expiration,
+                seconds=paste.expiration,
             )
         ):
             paste.delete()
@@ -269,9 +271,9 @@ def paste_exposed(f):
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
 
-        paste = get_paste_from_hash(kwargs["paste_hash"])
+        paste = get_paste_from_hash(kwargs["uuid_hash"])
 
-        if paste.paste_exposure == "Private" and paste.author != current_user:
+        if paste.exposure == "Private" and paste.author != current_user:
             return redirect(url_for("pybin.error", error_code=403))
 
         result = f(*args, **kwargs)
@@ -287,7 +289,7 @@ def is_author(f):
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
 
-        paste = get_paste_from_hash(kwargs["paste_hash"])
+        paste = get_paste_from_hash(kwargs["uuid_hash"])
 
         if paste.author != current_user:
             return redirect(url_for("pybin.error", error_code=403))
@@ -301,6 +303,7 @@ def is_author(f):
 
 def email_verified(f):
     """Redirects to email verification page if current_user's email is not verified"""
+
     # NOTE: Redirects to error 403 page until email verification is implemented
 
     @functools.wraps(f)

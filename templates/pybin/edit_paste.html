@@ -11,13 +11,13 @@
                 {% endwith %}
             </div>
             <div class="content col">
-                <form method="POST" action="/edit/{{ paste.paste_hash }}/">
+                <form method="POST" action="/edit/{{ paste.uuid_hash }}/">
                     {{ form.csrf_token }}
                     Edit Paste:
                     {% if paste.title != "Untitled" %}
                         {{ paste.title }}
                     {% else %}
-                        {{ paste.paste_hash }}
+                        {{ paste.uuid_hash }}
                     {% endif %}
                     <div class="form-check form-switch ">
                         <input style="float:right;
@@ -49,12 +49,12 @@
                         {{ form.syntax }}
                     </div>
                     <div>
-                        {{ form.paste_expiration.label }}
-                        {{ form.paste_expiration }}
+                        {{ form.expiration.label }}
+                        {{ form.expiration }}
                     </div>
                     <div>
-                        {{ form.paste_exposure.label }}
-                        {{ form.paste_exposure }}
+                        {{ form.exposure.label }}
+                        {{ form.exposure }}
                     </div>
                     <div>
                         {{ form.title.label }}
@@ -75,17 +75,17 @@
                     {% endif %}
                     {% for paste in my_pastes() %}
                         <li>
-                            {% if paste.paste_exposure == "Public" %}
+                            {% if paste.exposure == "Public" %}
                                 <i class="fa fa-globe" aria-hidden="true"></i>
-                            {% elif paste.paste_exposure == 'Unlisted' %}
+                            {% elif paste.exposure == 'Unlisted' %}
                                 <i class="fa fa-link" aria-hidden="true"></i>
-                            {% elif paste.paste_exposure == 'Private' %}
+                            {% elif paste.exposure == 'Private' %}
                                 <i class="fa fa-lock" aria-hidden="true"></i>
                             {% endif %}
                             <a href="/{{ paste.id }}">{{ paste.title }}</a>
                             <div class="details">
                                 {% if paste.syntax != "None" %}{{ paste.syntax|capitalize }} |{% endif %}
-                                {{ paste.created|timesince }}| {{ paste.paste_size }} KB
+                                {{ paste.created|timesince }}| {{ paste.size }} KB
                             </div>
                         </li>
                     {% endfor %}
@@ -97,17 +97,17 @@
                 <ul class="sidebar_menu">
                     {% for paste in public_pastes() %}
                         <li>
-                            {% if paste.paste_exposure == "Public" %}
+                            {% if paste.exposure == "Public" %}
                                 <i class="fa fa-globe" aria-hidden="true"></i>
-                            {% elif paste.paste_exposure == 'Unlisted' %}
+                            {% elif paste.exposure == 'Unlisted' %}
                                 <i class="fa fa-link" aria-hidden="true"></i>
-                            {% elif paste.paste_exposure == 'Private' %}
+                            {% elif paste.exposure == 'Private' %}
                                 <i class="fa fa-lock" aria-hidden="true"></i>
                             {% endif %}
                             <a href="/{{ paste.id }}">{{ paste.title }}</a>
                             <div class="details">
                                 {% if paste.syntax != "None" %}{{ paste.syntax|capitalize }} |{% endif %}
-                                {{ paste.created|timesince }}| {{ paste.paste_size }} KB
+                                {{ paste.created|timesince }}| {{ paste.size }} KB
                             </div>
                         </li>
                     {% endfor %}

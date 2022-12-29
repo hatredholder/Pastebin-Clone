@@ -14,10 +14,10 @@ pybin = Blueprint("pybin", __name__)
 def home():
     form = forms.PasteForm()
 
-    paste_hash = utils.create_paste_if_submitted(form)
+    uuid_hash = utils.create_paste_if_submitted(form)
 
-    if paste_hash:
-        return redirect(url_for("pybin.paste_view", paste_hash=paste_hash))
+    if uuid_hash:
+        return redirect(url_for("pybin.paste_view", uuid_hash=uuid_hash))
 
     return render_template("pybin/home.html", form=form, name=current_user.username)
 
@@ -27,49 +27,49 @@ def error(error_code):
     return render_template("pybin/error.html", error_code=error_code)
 
 
-@pybin.route("/<paste_hash>/")
+@pybin.route("/<uuid_hash>/")
 @utils.paste_exists
 @utils.paste_not_expired
 @utils.paste_exposed
-def paste_view(paste_hash):
-    paste = utils.get_paste_from_hash(paste_hash)
+def paste_view(uuid_hash):
+    paste = utils.get_paste_from_hash(uuid_hash)
 
     return render_template("pybin/paste.html", paste=paste)
 
 
-@pybin.route("/raw/<paste_hash>/")
+@pybin.route("/raw/<uuid_hash>/")
 @utils.paste_exists
 @utils.paste_not_expired
 @utils.paste_exposed
-def paste_raw_view(paste_hash):
-    paste = utils.get_paste_from_hash(paste_hash)
+def paste_raw_view(uuid_hash):
+    paste = utils.get_paste_from_hash(uuid_hash)
 
     return f"<pre>{paste.content}</pre>"
 
 
-@pybin.route("/delete/<paste_hash>/")
+@pybin.route("/delete/<uuid_hash>/")
 @login_required
 @utils.paste_exists
 @utils.is_author
-def paste_delete(paste_hash):
-    paste = utils.get_paste_from_hash(paste_hash)
+def paste_delete(uuid_hash):
+    paste = utils.get_paste_from_hash(uuid_hash)
 
     utils.delete_paste(paste)
 
     return redirect(url_for("pybin.home"))
 
 
-@pybin.route("/edit/<paste_hash>/", methods=["GET", "POST"])
+@pybin.route("/edit/<uuid_hash>/", methods=["GET", "POST"])
 @login_required
 @utils.paste_exists
 @utils.is_author
-def paste_edit(paste_hash):
-    paste = utils.get_paste_from_hash(paste_hash)
+def paste_edit(uuid_hash):
+    paste = utils.get_paste_from_hash(uuid_hash)
 
     form = forms.PasteForm(obj=paste)
 
     if utils.edit_paste(form, paste):
-        return redirect(url_for("pybin.paste_view", paste_hash=paste_hash))
+        return redirect(url_for("pybin.paste_view", uuid_hash=uuid_hash))
 
     return render_template("pybin/edit_paste.html", form=form, paste=paste)
 
@@ -120,7 +120,7 @@ def password():
     return render_template("pybin/password.html", form=form)
 
 
-@pybin.route("/u/<username>/comments")
+@pybin.route("/u/<username>/comments/")
 @login_required
 def my_comments(username):
     user = utils.get_user_from_username(username)

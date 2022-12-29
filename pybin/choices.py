@@ -29,7 +29,7 @@ CATEGORIES = (
     "Writing",
 )
 
-PASTE_EXPIRATION = (
+EXPIRATION = (
     (0, "Never"),
     (3600, "1 Hour"),
     (86400, "1 Day"),
@@ -37,7 +37,7 @@ PASTE_EXPIRATION = (
     (31104000, "1 Year"),
 )
 
-PASTE_EXPOSURE = (
+EXPOSURE = (
     "Public",
     "Unlisted",
     "Private",
