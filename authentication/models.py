@@ -14,7 +14,7 @@ class User(UserMixin, db.Document):
     website_url = db.URLField(max_length=100, required=False)
     location = db.StringField(max_length=150, required=False)
     avatar = db.ImageField(
-        size=(150, 150, False),
+        size=(150, 150, True),
         required=False,
     )
 
