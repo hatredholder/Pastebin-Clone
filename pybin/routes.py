@@ -9,11 +9,6 @@ import pybin.utils as utils
 pybin = Blueprint("pybin", __name__)
 
 
-@pybin.route("/error/<error_code>/")
-def error(error_code):
-    return render_template("pybin/error.html", error_code=error_code)
-
-
 @pybin.route("/", methods=["GET", "POST"])
 @login_required
 def home():
@@ -25,6 +20,11 @@ def home():
         return redirect(url_for("pybin.paste_view", paste_hash=paste_hash))
 
     return render_template("pybin/home.html", form=form, name=current_user.username)
+
+
+@pybin.route("/error/<error_code>/")
+def error(error_code):
+    return render_template("pybin/error.html", error_code=error_code)
 
 
 @pybin.route("/<paste_hash>/")
