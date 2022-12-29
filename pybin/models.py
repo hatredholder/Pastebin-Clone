@@ -6,10 +6,19 @@ from app import db
 import pybin.choices as choices
 
 
-class Comment(db.EmbeddedDocument):
+class Comment(db.Document):
     content = db.StringField(max_length=300, required=True)
     author = db.ReferenceField("User", required=True)
     paste = db.ReferenceField("Paste", required=True)
+
+    comment_hash = db.StringField(default=lambda: str(uuid.uuid4())[:8], primary_key=True)
+    syntax = db.StringField(
+        choices=choices.SYNTAXES,
+        required=True,
+        default="None",
+    )
+
+    comments = db.ListField(db.ReferenceField('self'))  # referencing 'self' to create replies
 
     created = db.DateTimeField(default=datetime.datetime.now)
 
@@ -48,7 +57,7 @@ class Paste(db.Document):
     title = db.StringField(max_length=50, required=False, default="Untitled")
 
     author = db.ReferenceField("User", required=True)
-    comments = db.EmbeddedDocumentListField("Comment", required=False)
+    comments = db.ListField(db.ReferenceField(Comment))
 
     created = db.DateTimeField(default=datetime.datetime.now)
 
