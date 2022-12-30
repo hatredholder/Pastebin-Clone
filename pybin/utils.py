@@ -26,7 +26,7 @@ from wtforms.fields import StringField
 
 
 def create_paste_if_submitted(form):
-    """Returns paste.uuid_hash if it gets created successfully"""
+    """Returns paste.uuid_hash if Paste gets created successfully"""
 
     if form.validate_on_submit():
         content = form.content.data
@@ -57,9 +57,57 @@ def create_paste_if_submitted(form):
         return paste.uuid_hash
 
 
+def create_comment_if_submitted(form, document):
+    """Returns True if Comment gets created successfully"""
+
+    paste = None
+
+    # If document is a Paste
+    if type(document) == models.Paste:
+        paste = document
+
+    if form.validate_on_submit():
+        content = form.content.data
+        syntax = form.syntax.data
+
+        comment = models.Comment(
+            content=content,
+            syntax=syntax,
+            author=current_user,
+            paste=paste,
+        ).save()
+
+        # If document is a Paste
+        if paste:
+            paste.comments.append(comment)
+            paste.save()
+
+        # If document is a Comment
+        if not paste:
+            document.comments.append(comment)
+            document.save()
+
+        return True
+
+
 def get_paste_from_hash(uuid_hash):
     """Returns paste from uuid_hash"""
     return models.Paste.objects(uuid_hash=uuid_hash).first()
+
+
+def get_comment_from_hash(uuid_hash):
+    """Returns comment from uuid_hash"""
+    return models.Comment.objects(uuid_hash=uuid_hash).first()
+
+
+def get_document_from_hash(uuid_hash):
+    """Returns document (paste or comment) from uuid_hash"""
+    document = get_paste_from_hash(uuid_hash)
+
+    if not document:
+        document = get_comment_from_hash(uuid_hash)
+
+    return document
 
 
 def get_user_from_username(username):
@@ -67,10 +115,15 @@ def get_user_from_username(username):
     return auth_models.User.objects(username=username).first()
 
 
-def delete_paste(paste):
-    """Deletes paste and adds a flash message"""
-    flash("Paste deleted successfully!")
-    paste.delete()
+def delete_document(document):
+    """Deletes document and adds a flash message"""
+
+    if type(document) == models.Paste:
+        flash("Paste deleted successfully!")
+    else:
+        flash("Comment deleted successfully!")
+
+    document.delete()
 
 
 def edit_paste(form, paste):
@@ -219,7 +272,7 @@ def get_public_pastes(current_user):
 # Decorators
 
 
-def paste_exists(f):
+def document_exists(f):
     """Redirects user to 404 error page if paste doesn't exist"""
 
     @functools.wraps(f)
@@ -228,7 +281,12 @@ def paste_exists(f):
         paste = get_paste_from_hash(kwargs["uuid_hash"])
 
         if not paste:
-            return redirect(url_for("pybin.error", error_code=404))
+
+            comment = get_comment_from_hash(kwargs["uuid_hash"])
+
+            if not comment:
+
+                return redirect(url_for("pybin.error", error_code=404))
 
         result = f(*args, **kwargs)
 
@@ -245,18 +303,21 @@ def paste_not_expired(f):
 
         paste = get_paste_from_hash(kwargs["uuid_hash"])
 
-        # If expiration > 0 (set to expire)
-        # and datetime.now() > paste creation date + expiration time
-        if (
-            paste.expiration > 0
-            and datetime.datetime.now()
-            > paste.created
-            + datetime.timedelta(
-                seconds=paste.expiration,
-            )
-        ):
-            paste.delete()
-            return redirect(url_for("pybin.error", error_code=404))
+        # If current document is a paste
+        if paste:  # noqa: SIM102
+
+            # If expiration > 0 (set to expire)
+            # and datetime.now() > paste creation date + expiration time
+            if (
+                paste.expiration > 0
+                and datetime.datetime.now()
+                > paste.created
+                + datetime.timedelta(
+                    seconds=paste.expiration,
+                )
+            ):
+                paste.delete()
+                return redirect(url_for("pybin.error", error_code=404))
 
         result = f(*args, **kwargs)
 
@@ -273,8 +334,11 @@ def paste_exposed(f):
 
         paste = get_paste_from_hash(kwargs["uuid_hash"])
 
-        if paste.exposure == "Private" and paste.author != current_user:
-            return redirect(url_for("pybin.error", error_code=403))
+        # If current document is a paste
+        if paste:  # noqa: SIM102
+
+            if paste.exposure == "Private" and paste.author != current_user:
+                return redirect(url_for("pybin.error", error_code=403))
 
         result = f(*args, **kwargs)
 
@@ -289,9 +353,9 @@ def is_author(f):
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
 
-        paste = get_paste_from_hash(kwargs["uuid_hash"])
+        document = get_document_from_hash(kwargs["uuid_hash"])
 
-        if paste.author != current_user:
+        if document.author != current_user:
             return redirect(url_for("pybin.error", error_code=403))
 
         result = f(*args, **kwargs)

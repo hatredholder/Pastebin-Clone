@@ -114,3 +114,23 @@ class PasswordForm(FlaskForm):
     submit = wtforms.SubmitField(
         "Change Password",
     )
+
+
+class CommentForm(FlaskForm):
+    content = wtforms.TextAreaField(
+        "Your Comment",
+        validators=[
+            valids.InputRequired(),
+            valids.Length(
+                max=512000,
+                message="You have exceeded the maximum size of 512 kilobytes per Paste",
+            ),
+        ],
+    )
+    syntax = wtforms.SelectField(
+        "Syntax Highlighting: ",
+        choices=list(choices.SYNTAXES),
+    )
+    submit = wtforms.SubmitField(
+        "Add Comment",
+    )

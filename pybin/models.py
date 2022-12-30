@@ -9,7 +9,7 @@ import pybin.choices as choices
 class Comment(db.Document):
     content = db.StringField(max_length=300, required=True)
     author = db.ReferenceField("User", required=True)
-    paste = db.ReferenceField("Paste", required=True)
+    paste = db.ReferenceField("Paste", required=False)
 
     uuid_hash = db.StringField(default=lambda: str(uuid.uuid4())[:8], primary_key=True)
     syntax = db.StringField(

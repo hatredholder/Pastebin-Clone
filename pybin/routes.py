@@ -17,7 +17,7 @@ def home():
     uuid_hash = utils.create_paste_if_submitted(form)
 
     if uuid_hash:
-        return redirect(url_for("pybin.paste_view", uuid_hash=uuid_hash))
+        return redirect(url_for("pybin.document_view", uuid_hash=uuid_hash))
 
     return render_template("pybin/home.html", form=form, name=current_user.username)
 
@@ -27,41 +27,46 @@ def error(error_code):
     return render_template("pybin/error.html", error_code=error_code)
 
 
-@pybin.route("/<uuid_hash>/")
-@utils.paste_exists
+@pybin.route("/<uuid_hash>/", methods=["GET", "POST"])
+@utils.document_exists
 @utils.paste_not_expired
 @utils.paste_exposed
-def paste_view(uuid_hash):
-    paste = utils.get_paste_from_hash(uuid_hash)
+def document_view(uuid_hash):
+    document = utils.get_document_from_hash(uuid_hash)
 
-    return render_template("pybin/paste.html", paste=paste)
+    form = forms.CommentForm()
+
+    if utils.create_comment_if_submitted(form, document):
+        return redirect(url_for("pybin.document_view", uuid_hash=uuid_hash))
+
+    return render_template("pybin/document.html", document=document, form=form)
 
 
 @pybin.route("/raw/<uuid_hash>/")
-@utils.paste_exists
+@utils.document_exists
 @utils.paste_not_expired
 @utils.paste_exposed
-def paste_raw_view(uuid_hash):
-    paste = utils.get_paste_from_hash(uuid_hash)
+def document_raw_view(uuid_hash):
+    document = utils.get_document_from_hash(uuid_hash)
 
-    return f"<pre>{paste.content}</pre>"
+    return f"<pre>{document.content}</pre>"
 
 
 @pybin.route("/delete/<uuid_hash>/")
 @login_required
-@utils.paste_exists
+@utils.document_exists
 @utils.is_author
-def paste_delete(uuid_hash):
-    paste = utils.get_paste_from_hash(uuid_hash)
+def document_delete(uuid_hash):
+    document = utils.get_document_from_hash(uuid_hash)
 
-    utils.delete_paste(paste)
+    utils.delete_document(document)
 
     return redirect(url_for("pybin.home"))
 
 
 @pybin.route("/edit/<uuid_hash>/", methods=["GET", "POST"])
 @login_required
-@utils.paste_exists
+@utils.document_exists
 @utils.is_author
 def paste_edit(uuid_hash):
     paste = utils.get_paste_from_hash(uuid_hash)
@@ -69,7 +74,7 @@ def paste_edit(uuid_hash):
     form = forms.PasteForm(obj=paste)
 
     if utils.edit_paste(form, paste):
-        return redirect(url_for("pybin.paste_view", uuid_hash=uuid_hash))
+        return redirect(url_for("pybin.document_view", uuid_hash=uuid_hash))
 
     return render_template("pybin/edit_paste.html", form=form, paste=paste)
 
