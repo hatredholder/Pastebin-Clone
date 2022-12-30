@@ -7,37 +7,86 @@
                     {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
                 {% endwith %}
             </div>
+            {% if document.paste %}
+                <div>
+                    <i class="fa fa-info-circle" aria-hidden="true"></i>
+                    This is comment for paste <a href="/{{ document.paste.id }}/">{{ document.paste.title }}</a>
+                </div>
+            {% endif %}
             <div class="content col">
-                <a href="/raw/{{ paste.uuid_hash }}" class="btn btn-info" type="submit">raw</a>
-                {% if current_user == paste.author %}
-                    <a href="/delete/{{ paste.uuid_hash }}"
+                <a href="/raw/{{ document.uuid_hash }}"
+                   class="btn btn-info"
+                   type="submit">raw</a>
+                {% if current_user == document.author %}
+                    <a href="/delete/{{ document.uuid_hash }}"
                        class="btn btn-danger"
                        type="submit">delete</a>
                 {% endif %}
-                {% if current_user == paste.author %}
-                    <a href="/edit/{{ paste.uuid_hash }}"
+                {% if current_user == document.author %}
+                    <a href="/edit/{{ document.uuid_hash }}"
                        class="btn btn-success"
                        type="submit">edit</a>
                 {% endif %}
-                <div>{{ paste.title }}</div>
+                <div>{{ document.title }}</div>
                 <div>
                     author
-                    {{ paste.author.username }}
+                    {{ document.author.username }}
                 </div>
                 <div>
                     date created
-                    {{ paste.created.strftime("%b %d, %Y")}}
-                </div>
-                <div>
-                    <pre><code>{{paste.content}}</code></pre>
-                </div>
-                <div>
-                    content
-                    <textarea>{{paste.content}}</textarea>
+                    {{ document.created.strftime("%b %d, %Y")}}
                 </div>
                 <div>
                     number of comments
-                    {{ paste.comments|length }}
+                    {{ document.comments|length }}
+                </div>
+                <div>
+                    <pre><code>{{document.content}}</code></pre>
+                </div>
+                <div>
+                    RAW Paste Data
+                    <textarea style="height: 100px; width: 100%">{{document.content}}</textarea>
+                </div>
+                <div class="comments">
+                      {% if document.comments %}
+                        <div id="comments" class="content_title">Comments</div>
+                        <ul>
+                            {% for comment in document.comments %}
+                                <li>
+                                    <div class="comment">
+                                        <div class="details d-flex">
+                                              <img src="{{ profile_image() }}" height="16" width="16">
+                                            <div class="info-bar d-inline-flex">
+                                                <div class="username">
+                                                    <a href="/u/{{ comment.author.username }}/">{{ comment.author.username }}</a>
+                                                </div>
+                                                <div class="date d-inline-flex">
+                                                    <i class="fa fa-calendar" aria-hidden="true"></i>{{ comment.created|timesince }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="highlighted-code">
+                                            <pre><code>{{comment.content}}</code></pre>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <div class="add_comment">
+                        <form class="col" method="POST" action="/{{ document.id }}/">
+                            {{ form.csrf_token }}
+                            <div>
+                                {{ form.content.label }}
+                                {{ form.content }}
+                            </div>
+                            <div>
+                                {{ form.syntax.label }}
+                                {{ form.syntax }}
+                            </div>
+                            {{ form.submit }}
+                        </form>
+                    </div>
                 </div>
             </div>
             <div class="sidebar col-sm-3">
