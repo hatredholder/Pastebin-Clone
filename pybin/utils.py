@@ -126,6 +126,17 @@ def delete_document(document):
     document.delete()
 
 
+def redirect_by_document_type(document):
+    """
+    Redirects user to my_pybin route if document is a paste,
+    redirects to my_comments route if document is a comment
+    """
+    if type(document) == models.Paste:
+        return redirect(url_for("pybin.my_pybin", username=document.author.username))
+    else:
+        return redirect(url_for("pybin.my_comments", username=document.author.username))
+
+
 def edit_paste(form, paste):
     """Return True if paste is edited successfully"""
 

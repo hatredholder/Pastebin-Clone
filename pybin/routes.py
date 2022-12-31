@@ -61,7 +61,7 @@ def document_delete(uuid_hash):
 
     utils.delete_document(document)
 
-    return redirect(url_for("pybin.home"))
+    return utils.redirect_by_document_type(document)
 
 
 @pybin.route("/edit/<uuid_hash>/", methods=["GET", "POST"])
