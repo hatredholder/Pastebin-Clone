@@ -17,6 +17,7 @@ class Comment(db.Document):
         required=True,
         default="None",
     )
+    size = db.FloatField(required=False)
 
     comments = db.ListField(db.ReferenceField('self'))  # referencing 'self' to create replies
 
@@ -26,6 +27,10 @@ class Comment(db.Document):
         if len(str(self.content)) > 50:
             return f"<Comment {self.author} - {str(self.content)[:50].strip()}..>"
         return f"<Comment {self.author} - {str(self.content)}>"
+
+    def clean(self):
+        # Set size on document save
+        self.size = float(str(len(self.content) / 1000)[:4])
 
 
 class Paste(db.Document):
