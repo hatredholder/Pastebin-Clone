@@ -48,14 +48,14 @@
                     <textarea style="height: 100px; width: 100%">{{document.content}}</textarea>
                 </div>
                 <div class="comments">
-                      {% if document.comments %}
+                    {% if document.comments %}
                         <div id="comments" class="content_title">Comments</div>
                         <ul>
                             {% for comment in document.comments %}
                                 <li>
                                     <div class="comment">
                                         <div class="details d-flex">
-                                              <img src="{{ profile_image() }}" height="16" width="16">
+                                            <img src="{{ profile_image() }}" height="16" width="16">
                                             <div class="info-bar d-inline-flex">
                                                 <div class="username">
                                                     <a href="/u/{{ comment.author.username }}/">{{ comment.author.username }}</a>
@@ -65,32 +65,40 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div id="{{comment.id}}"class="highlighted-code">
-                                            <div class="top-buttons d-flex">
-                                                <div class="left d-inline-flex">
-                                                    <a class="btn btn-outline-secondary" href="/{{document.id}}/#{{comment.id}}/">#</a>
-
-                                                    <!-- TODO: Implement Search by Document Syntax -->
-                                                    <a class="btn btn-outline-secondary" href="#">{% if comment.syntax != "None" %}{{comment.syntax}}{% else %}text{% endif %}</a>
-                                                    {{comment.size}} | 
-                                                    <!-- TODO: Implement Document Rating -->
-                                                    <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-up" aria-hidden="true"></i> 0</a>
-                                                    <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-down" aria-hidden="true"></i> 0</a>
+                                        <div id="{{ comment.id }}" class="highlighted-code">
+                                            {% if comment.active %}
+                                                <div class="top-buttons d-flex">
+                                                    <div class="left d-inline-flex">
+                                                        <a class="btn btn-outline-secondary"
+                                                           href="/{{ document.id }}/#{{ comment.id }}/">#</a>
+                                                        <!-- TODO: Implement Search by Document Syntax -->
+                                                        <a class="btn btn-outline-secondary" href="#">
+                                                            {% if comment.syntax != "None" %}
+                                                                {{ comment.syntax }}
+                                                            {% else %}
+                                                                text
+                                                            {% endif %}
+                                                        </a>
+                                                        {{ comment.size }} |
+                                                        <!-- TODO: Implement Document Rating -->
+                                                        <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-up" aria-hidden="true"></i> 0</a>
+                                                        <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-down" aria-hidden="true"></i> 0</a>
+                                                    </div>
+                                                    <div class="right ms-auto d-inline-flex">
+                                                        <a class="btn btn-outline-secondary" href="/{{ comment.id }}/">view</a>
+                                                        {% if current_user == comment.author %}
+                                                            <a class="btn btn-outline-secondary" href="/edit/{{ comment.id }}/">edit</a>
+                                                        {% endif %}
+                                                        {% if current_user == comment.author %}
+                                                            <a class="btn btn-outline-secondary" href="/delete/{{ comment.id }}/">delete</a>
+                                                        {% else %}
+                                                            <!-- TODO: Implement Document Reports -->
+                                                            <a class="btn btn-outline-secondary" href="#">report</a>
+                                                        {% endif %}
+                                                        <a class="btn btn-outline-secondary" href="#">reply</a>
+                                                    </div>
                                                 </div>
-                                                <div class="right ms-auto d-inline-flex">
-                                                    <a class="btn btn-outline-secondary" href="/{{comment.id}}/">view</a>
-                                                    {% if current_user == comment.author %}
-                                                        <a class="btn btn-outline-secondary" href="/edit/{{comment.id}}/">edit</a>
-                                                    {% endif %}
-                                                    {% if current_user == comment.author %}
-                                                        <a class="btn btn-outline-secondary" href="/delete/{{comment.id}}/">delete</a>
-                                                    {% else %}
-                                                        <!-- TODO: Implement Document Reports -->
-                                                        <a class="btn btn-outline-secondary" href="#">report</a>
-                                                    {% endif %}
-                                                    <a class="btn btn-outline-secondary" href="#">reply</a>
-                                                </div>
-                                            </div>
+                                            {% endif %}
                                             <div class="source">
                                                 <pre><code>{{comment.content}}</code></pre>
                                             </div>

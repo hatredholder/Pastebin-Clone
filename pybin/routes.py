@@ -133,6 +133,6 @@ def my_comments(username):
     if not user:
         return redirect(url_for("pybin.error", error_code=404))
 
-    comments = models.Comment.objects(author=user)
+    comments = models.Comment.objects(author=user, active=True)
 
     return render_template("pybin/my_comments.html", comments=reversed(comments))

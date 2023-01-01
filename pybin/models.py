@@ -18,6 +18,7 @@ class Comment(db.Document):
         default="None",
     )
     size = db.FloatField(required=False)
+    active = db.BooleanField(required=False, default=True)
 
     comments = db.ListField(db.ReferenceField('self'))  # referencing 'self' to create replies
 

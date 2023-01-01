@@ -119,11 +119,14 @@ def delete_document(document):
     """Deletes document and adds a flash message"""
 
     if type(document) == models.Paste:
+        document.delete()
         flash("Paste deleted successfully!")
     else:
+        document.update(
+            content="Comment was deleted",
+            active=False,
+        )
         flash("Comment deleted successfully!")
-
-    document.delete()
 
 
 def redirect_by_document_type(document):
@@ -295,7 +298,7 @@ def document_exists(f):
 
             comment = get_comment_from_hash(kwargs["uuid_hash"])
 
-            if not comment:
+            if not comment or not comment.active:
 
                 return redirect(url_for("pybin.error", error_code=404))
 
