@@ -91,6 +91,19 @@ def my_pybin(username):
     return render_template("pybin/my_pybin.html", pastes=reversed(pastes))
 
 
+@pybin.route("/u/<username>/comments/")
+@login_required
+def my_comments(username):
+    user = utils.get_user_from_username(username)
+
+    if not user:
+        return redirect(url_for("pybin.error", error_code=404))
+
+    comments = models.Comment.objects(author=user, active=True)
+
+    return render_template("pybin/my_comments.html", comments=reversed(comments))
+
+
 @pybin.route("/user/profile/", methods=["GET", "POST"])
 @login_required
 def profile():
@@ -123,16 +136,3 @@ def password():
         return redirect(url_for("pybin.password"))
 
     return render_template("pybin/password.html", form=form)
-
-
-@pybin.route("/u/<username>/comments/")
-@login_required
-def my_comments(username):
-    user = utils.get_user_from_username(username)
-
-    if not user:
-        return redirect(url_for("pybin.error", error_code=404))
-
-    comments = models.Comment.objects(author=user, active=True)
-
-    return render_template("pybin/my_comments.html", comments=reversed(comments))
