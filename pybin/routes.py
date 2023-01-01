@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, url_for
+from flask import Blueprint, redirect, render_template, request, url_for
 
 from flask_login import current_user, login_required
 
@@ -37,7 +37,7 @@ def document_view(uuid_hash):
     form = forms.CommentForm()
 
     if utils.create_comment_if_submitted(form, document):
-        return redirect(url_for("pybin.document_view", uuid_hash=uuid_hash))
+        return redirect(request.headers.get("Referer"))
 
     return render_template("pybin/document.html", document=document, form=form)
 
