@@ -60,11 +60,16 @@ def create_paste_if_submitted(form):
 def create_comment_if_submitted(form, document):
     """Returns True if Comment gets created successfully"""
 
-    paste = None
-
     # If document is a Paste
     if type(document) == models.Paste:
+
+        # Set paste to document
         paste = document
+
+    else:
+
+        # Set paste to document's paste
+        paste = document.paste
 
     if form.validate_on_submit():
         content = form.content.data
@@ -77,15 +82,8 @@ def create_comment_if_submitted(form, document):
             paste=paste,
         ).save()
 
-        # If document is a Paste
-        if paste:
-            paste.comments.append(comment)
-            paste.save()
-
-        # If document is a Comment
-        if not paste:
-            document.comments.append(comment)
-            document.save()
+        document.comments.append(comment)
+        document.save()
 
         return True
 
