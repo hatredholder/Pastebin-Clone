@@ -13,12 +13,7 @@
             <div class="content col">
                 <form method="POST" action="/edit/{{ document.uuid_hash }}/">
                     {{ form.csrf_token }}
-                    Edit Paste:
-                    {% if document.title != "Untitled" %}
-                        {{ document.title }}
-                    {% else %}
-                        {{ document.uuid_hash }}
-                    {% endif %}
+                    Edit Comment: {{ document.uuid_hash }}
                     <div class="form-check form-switch ">
                         <input style="float:right;
                                       margin-right: 10px"
@@ -37,28 +32,8 @@
                               style="height: 300px;
                                      width: 100%">{{document.content}}</textarea>
                     <div>
-                        {{ form.category.label }}
-                        {{ form.category }}
-                    </div>
-                    <div>
-                        {{ form.tags.label }}
-                        {{ form.tags(placeholder="software, tutorial, data")}}
-                    </div>
-                    <div>
                         {{ form.syntax.label }}
                         {{ form.syntax }}
-                    </div>
-                    <div>
-                        {{ form.expiration.label }}
-                        {{ form.expiration }}
-                    </div>
-                    <div>
-                        {{ form.exposure.label }}
-                        {{ form.exposure }}
-                    </div>
-                    <div>
-                        {{ form.title.label }}
-                        {{ form.title }}
                     </div>
                     {{ form.submit(value="Save Changes") }}
                 </form>

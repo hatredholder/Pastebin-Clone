@@ -13,6 +13,7 @@ from flask import flash, redirect, url_for
 
 from flask_login import current_user
 
+import pybin.forms as forms
 import pybin.models as models
 
 import timeago
@@ -150,34 +151,72 @@ def redirect_by_document_type(document):
         return redirect(url_for("pybin.my_comments", username=document.author.username))
 
 
-def edit_paste(form, paste):
-    """Return True if paste is edited successfully"""
+def get_form_by_document_type(document):
+    """Returns PasteForm if document is Paste and vice versa"""
+    if type(document) == models.Paste:
+        form = forms.PasteForm(obj=document)
+    else:
+        form = forms.CommentForm(obj=document)
+    return form
 
-    if form.validate_on_submit():
-        content = form.content.data
-        category = form.category.data
-        tags = form.tags.data
-        syntax = form.syntax.data
-        expiration = form.expiration.data
-        exposure = form.exposure.data
-        title = check_paste_title(form.title.data)
 
-        # Returns None if > 10 tags
-        if len(tags) > 10:
-            flash("Max amount of tags is 10")
-            return
+def edit_document(form, document):
+    """Return True if document is edited successfully"""
 
-        paste.update(
-            content=content,
-            category=category,
-            tags=tags,
-            syntax=syntax,
-            expiration=expiration,
-            exposure=exposure,
-            title=title,
-            author=current_user,
+    # If document is a Paste
+    if type(document) == models.Paste:
+        if form.validate_on_submit():
+            content = form.content.data
+            category = form.category.data
+            tags = form.tags.data
+            syntax = form.syntax.data
+            expiration = form.expiration.data
+            exposure = form.exposure.data
+            title = check_paste_title(form.title.data)
+
+            # Returns None if > 10 tags
+            if len(tags) > 10:
+                flash("Max amount of tags is 10")
+                return
+
+            document.update(
+                content=content,
+                category=category,
+                tags=tags,
+                syntax=syntax,
+                expiration=expiration,
+                exposure=exposure,
+                title=title,
+                author=current_user,
+            )
+
+            return True
+
+    # Else document is a Comment
+    else:
+        if form.validate_on_submit():
+            content = form.content.data
+            syntax = form.syntax.data
+
+            document.update(
+                content=content,
+                syntax=syntax,
+            )
+
+            return True
+
+
+def check_if_comment_older_than_5_minutes(document):
+    """Returns True if document is a Comment and its older than 5 minutes"""
+
+    if (
+        type(document) == models.Comment
+        and document.created
+        + datetime.timedelta(
+            minutes=5,
         )
-
+        < datetime.datetime.now()
+    ):
         return True
 
 

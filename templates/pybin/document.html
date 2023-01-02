@@ -21,8 +21,6 @@
                     <a href="/delete/{{ document.uuid_hash }}"
                        class="btn btn-danger"
                        type="submit">delete</a>
-                {% endif %}
-                {% if current_user == document.author %}
                     <a href="/edit/{{ document.uuid_hash }}"
                        class="btn btn-success"
                        type="submit">edit</a>
@@ -87,7 +85,9 @@
                                                     <div class="right ms-auto d-inline-flex">
                                                         <a class="btn btn-outline-secondary" href="/{{ comment.id }}/">view</a>
                                                         {% if current_user == comment.author %}
-                                                            <a class="btn btn-outline-secondary" href="/edit/{{ comment.id }}/">edit</a>
+                                                            {% if not comment_older_than_5_minutes(comment) %}
+                                                                <a class="btn btn-outline-secondary" href="/edit/{{ comment.id }}/">edit</a>
+                                                            {% endif %}
                                                         {% endif %}
                                                         {% if current_user == comment.author %}
                                                             <a class="btn btn-outline-secondary" href="/delete/{{ comment.id }}/">delete</a>
@@ -141,7 +141,9 @@
                                                                             <div class="right ms-auto d-inline-flex">
                                                                                 <a class="btn btn-outline-secondary" href="/{{ reply.id }}/">view</a>
                                                                                 {% if current_user == reply.author %}
-                                                                                    <a class="btn btn-outline-secondary" href="/edit/{{ reply.id }}/">edit</a>
+                                                                                    {% if not comment_older_than_5_minutes(reply) %}
+                                                                                        <a class="btn btn-outline-secondary" href="/edit/{{ reply.id }}/">edit</a>
+                                                                                    {% endif %}
                                                                                 {% endif %}
                                                                                 {% if current_user == reply.author %}
                                                                                     <a class="btn btn-outline-secondary" href="/delete/{{ reply.id }}/">delete</a>
@@ -197,7 +199,9 @@
                                                                                             <div class="right ms-auto d-inline-flex">
                                                                                                 <a class="btn btn-outline-secondary" href="/{{ reply2.id }}/">view</a>
                                                                                                 {% if current_user == reply2.author %}
-                                                                                                    <a class="btn btn-outline-secondary" href="/edit/{{ reply2.id }}/">edit</a>
+                                                                                                    {% if not comment_older_than_5_minutes(reply2) %}
+                                                                                                        <a class="btn btn-outline-secondary" href="/edit/{{ reply2.id }}/">edit</a>
+                                                                                                    {% endif %}
                                                                                                 {% endif %}
                                                                                                 {% if current_user == reply2.author %}
                                                                                                     <a class="btn btn-outline-secondary" href="/delete/{{ reply2.id }}/">delete</a>

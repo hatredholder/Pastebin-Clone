@@ -68,15 +68,21 @@ def document_delete(uuid_hash):
 @login_required
 @utils.document_exists
 @utils.is_author
-def paste_edit(uuid_hash):
-    paste = utils.get_paste_from_hash(uuid_hash)
+def document_edit(uuid_hash):
+    document = utils.get_document_from_hash(uuid_hash)
 
-    form = forms.PasteForm(obj=paste)
+    form = utils.get_form_by_document_type(document)
+    
+    if utils.check_if_comment_older_than_5_minutes(document):
+        return redirect(url_for("pybin.error", error_code=403))
 
-    if utils.edit_paste(form, paste):
+    if utils.edit_document(form, document):
         return redirect(url_for("pybin.document_view", uuid_hash=uuid_hash))
 
-    return render_template("pybin/edit_paste.html", form=form, paste=paste)
+    if type(document) == models.Paste:
+        return render_template("pybin/edit_paste.html", form=form, document=document)
+    else:
+        return render_template("pybin/edit_comment.html", form=form, document=document)
 
 
 @pybin.route("/u/<username>/")

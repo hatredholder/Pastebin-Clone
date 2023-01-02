@@ -1,3 +1,5 @@
+import datetime
+
 from app import app
 
 from flask_login import current_user
@@ -30,3 +32,12 @@ def public_pastes():
         return pastes
 
     return dict(public_pastes=__public_pastes)
+
+
+@app.context_processor
+def comment_older_than_5_minutes():
+    def __comment_older_than_5_minutes(document):
+        if document.created + datetime.timedelta(minutes=5) < datetime.datetime.now():
+            return True
+
+    return dict(comment_older_than_5_minutes=__comment_older_than_5_minutes)
