@@ -102,7 +102,7 @@
                                             <div class="source">
                                                 <pre><code>{{comment.content}}</code></pre>
                                             </div>
-                                            <div class="reply-container-{{ comment.id }}"></div>
+                                            <div class="reply-form-container-{{ comment.id }}"></div>
                                             <div class="replies">
                                                 {% if comment.comments %}
                                                     <ul>
@@ -158,7 +158,68 @@
                                                             <div class="source">
                                                                 <pre><code>{{reply.content}}</code></pre>
                                                             </div>
-                                                            <div class="reply-container-{{ reply.id }}"></div>
+                                                            <div class="reply-form-container-{{ reply.id }}"></div>
+                                                            <div class="replies">
+                                                                {% if reply.comments %}
+                                                                    <ul>
+                                                                        {% for reply2 in reply.comments %}
+                                                                            <li>
+                                                                                <div class="details d-flex">
+                                                                                    <img src="{{ profile_image() }}" height="16" width="16">
+                                                                                    <div class="info-bar d-inline-flex">
+                                                                                        <div class="username">
+                                                                                            <a href="/u/{{ reply2.author.username }}/">{{ reply2.author.username }}</a>
+                                                                                        </div>
+                                                                                        <div class="date d-inline-flex">
+                                                                                            <i class="fa fa-calendar" aria-hidden="true"></i>{{ reply2.created|timesince }}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div id="{{ reply2.id }}" class="highlighted-code">
+                                                                                    {% if reply2.active %}
+                                                                                        <div class="top-buttons d-flex">
+                                                                                            <div class="left d-inline-flex">
+                                                                                                <a class="btn btn-outline-secondary"
+                                                                                                   href="/{{ document.id }}#{{ reply2.id }}">#</a>
+                                                                                                <!-- TODO: Implement Search by Document Syntax -->
+                                                                                                <a class="btn btn-outline-secondary" href="#">
+                                                                                                    {% if reply2.syntax != "None" %}
+                                                                                                        {{ reply2.syntax }}
+                                                                                                    {% else %}
+                                                                                                        text
+                                                                                                    {% endif %}
+                                                                                                </a>
+                                                                                                {{ reply2.size }} |
+                                                                                                <!-- TODO: Implement Document Rating -->
+                                                                                                <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-up" aria-hidden="true"></i> 0</a>
+                                                                                                <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-down" aria-hidden="true"></i> 0</a>
+                                                                                            </div>
+                                                                                            <div class="right ms-auto d-inline-flex">
+                                                                                                <a class="btn btn-outline-secondary" href="/{{ reply2.id }}/">view</a>
+                                                                                                {% if current_user == reply2.author %}
+                                                                                                    <a class="btn btn-outline-secondary" href="/edit/{{ reply2.id }}/">edit</a>
+                                                                                                {% endif %}
+                                                                                                {% if current_user == reply2.author %}
+                                                                                                    <a class="btn btn-outline-secondary" href="/delete/{{ reply2.id }}/">delete</a>
+                                                                                                {% else %}
+                                                                                                    <!-- TODO: Implement Document Reports -->
+                                                                                                    <a class="btn btn-outline-secondary" href="#">report</a>
+                                                                                                {% endif %}
+                                                                                                <a id="{{ reply2.id }}" class="reply-btn btn btn-outline-secondary">reply</a>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                {% endif %}
+                                                                            </li>
+                                                                            <div class="source">
+                                                                                <pre><code>{{reply2.content}}</code></pre>
+                                                                            </div>
+                                                                            <div class="reply-form-container-{{ reply2.id }}">
+                                                                            </div>
+                                                                        {% endfor %}
+                                                                    </ul>
+                                                                {% endif %}
+                                                            </div>
                                                         {% endfor %}
                                                     </ul>
                                                 {% endif %}
@@ -169,7 +230,7 @@
                             {% endfor %}
                         </ul>
                     {% endif %}
-                    <div class="reply-container-{{ document.id }}">
+                    <div class="reply-form-container-{{ document.id }}">
                         <div class="add_comment_form">
                             <form class="col" method="POST" action="/{{ document.id }}/">
                                 {{ form.csrf_token }}
