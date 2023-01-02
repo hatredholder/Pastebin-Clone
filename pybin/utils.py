@@ -117,6 +117,14 @@ def delete_document(document):
     """Deletes document and adds a flash message"""
 
     if type(document) == models.Paste:
+        # Find document's comments
+        comments = models.Comment.objects(paste=document)
+
+        # Set their paste to None
+        comments.update(
+            paste=None,
+        )
+
         document.delete()
         flash("Paste deleted successfully!")
     else:
