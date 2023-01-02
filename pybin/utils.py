@@ -116,8 +116,10 @@ def get_user_from_username(username):
 def delete_document(document):
     """Deletes document and adds a flash message"""
 
+    # If document is a Paste
     if type(document) == models.Paste:
-        # Find document's comments
+
+        # Find paste's comments
         comments = models.Comment.objects(paste=document)
 
         # Set their paste to None
@@ -127,6 +129,8 @@ def delete_document(document):
 
         document.delete()
         flash("Paste deleted successfully!")
+
+    # If document is a Comment
     else:
         document.update(
             content="Comment was deleted",
