@@ -32,6 +32,17 @@
                                     <a href="/{{ paste.uuid_hash }}">{{ paste.title }}</a>
                                 </td>
                                 <td>{{ paste.created.strftime("%b %d, %Y")}}</td>
+                                {% if paste.expiration == 0 %}
+                                    <td>Never</td>
+                                {% elif paste.expiration == 3600 %}
+                                    <td>1 Hour</td>
+                                {% elif paste.expiration == 86400 %}
+                                    <td>1 Day</td>
+                                {% elif paste.expiration == 2592000 %}
+                                    <td>1 Month</td>
+                                {% elif paste.expiration == 31104000 %}
+                                    <td>1 Year</td>
+                                {% endif %}
                                 <td>{{ paste.expiration }}</td>
                                 <td>{{ paste.comments|length }}</td>
                                 <td>{{ paste.syntax }}</td>
