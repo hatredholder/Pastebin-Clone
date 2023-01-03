@@ -32,11 +32,13 @@
                                            class="btn btn-danger"
                                            type="submit">delete</a>
                                     </td>
-                                    <td>
-                                        <a href="/edit/{{ comment.uuid_hash }}"
-                                           class="btn btn-success"
-                                           type="submit">edit</a>
-                                    </td>
+                                    {% if not comment_older_than_5_minutes(comment) %}
+                                        <td>
+                                            <a href="/edit/{{ comment.uuid_hash }}"
+                                               class="btn btn-success"
+                                               type="submit">edit</a>
+                                        </td>
+                                    {% endif %}
                                 {% endif %}
                             </tr>
                         {% endfor %}
