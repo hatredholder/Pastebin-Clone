@@ -72,7 +72,7 @@ def document_edit(uuid_hash):
     document = utils.get_document_from_hash(uuid_hash)
 
     form = utils.get_form_by_document_type(document)
-    
+
     if utils.check_if_comment_older_than_5_minutes(document):
         return redirect(url_for("pybin.error", error_code=403))
 

@@ -100,14 +100,14 @@ class PasswordForm(FlaskForm):
         validators=[
             valids.InputRequired(),
             valids.Length(min=12, max=30),
-            valids.EqualTo('password_confirm', message='Passwords must match'),
+            valids.EqualTo("password_confirm", message="Passwords must match"),
         ],
     )
     password_confirm = wtforms.PasswordField(
         "New Password Again: ",
         validators=[
             valids.InputRequired(),
-            valids.EqualTo('password_confirm', message='Passwords must match'),
+            valids.EqualTo("password_confirm", message="Passwords must match"),
         ],
     )
     recaptcha = RecaptchaField()
