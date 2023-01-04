@@ -21,9 +21,9 @@ class User(UserMixin, db.Document):
     # TODO: Implement Social Authentication (Set required to False)
     password_hash = db.StringField(max_length=1000, required=True)
 
-    def __str__(self):
-        return f"<User {self.username}>"
-
     def clean(self):
         if not self.avatar:
             self.avatar.put(open("static/img/guest.png", "rb"))  # noqa: SIM115
+
+    def __str__(self):
+        return f"<User {self.username}>"
