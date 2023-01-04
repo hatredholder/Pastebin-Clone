@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="errors">
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
+                {% endwith %}
+            </div>
+            <div class="content col">
+                <div class="content_title">My Private Messages</div>
+                <div class="content_text">
+                    <i class="fa fa-info-circle" aria-hidden="true"></i>
+                    Your private messages are listed below. 
+                    <a href="/message/compose/">Send a new message</a>
+                    ? 
+                </div>
+                <table>
+                    <thead>
+                        <tr class="top">
+                            <th scope="col">Subject/Title</th>
+                            <th class="text-right">Last Message</th>
+                            <th class="text-right">User</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for message in messages %}
+                            <tr>
+                                <td>
+                                    <a href="/message/{{ message.uuid_hash }}">{{ message.title }}</a>
+                                </td>
+                                <td>{{ message.get_last_reply_creation_date()|timesince  }}</td>
+                                <td>{{ message.author.username }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="sidebar col-sm-3">
+                <div class="sidebar_title">
+                    <a href="#">My Pastes</a>
+                </div>
+                <ul class="sidebar_menu">
+                    {% if not my_pastes() %}
+                        <li>
+                            <i class="fa fa-globe" aria-hidden="true"></i>Nothing here yet...
+                        </li>
+                    {% endif %}
+                    {% for paste in my_pastes() %}
+                        <li>
+                            {% if paste.exposure == "Public" %}
+                                <i class="fa fa-globe" aria-hidden="true"></i>
+                            {% elif paste.exposure == 'Unlisted' %}
+                                <i class="fa fa-link" aria-hidden="true"></i>
+                            {% elif paste.exposure == 'Private' %}
+                                <i class="fa fa-lock" aria-hidden="true"></i>
+                            {% endif %}
+                            <a href="/{{ paste.id }}">{{ paste.title }}</a>
+                            <div class="details">
+                                {% if paste.syntax != "None" %}{{ paste.syntax|capitalize }} |{% endif %}
+                                {{ paste.created|timesince }}| {{ paste.size }} KB
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div class="sidebar_sticky"></div>
+                <div class="sidebar_title">
+                    <a href="#">Public Pastes</a>
+                </div>
+                <ul class="sidebar_menu">
+                    {% for paste in public_pastes() %}
+                        <li>
+                            {% if paste.exposure == "Public" %}
+                                <i class="fa fa-globe" aria-hidden="true"></i>
+                            {% elif paste.exposure == 'Unlisted' %}
+                                <i class="fa fa-link" aria-hidden="true"></i>
+                            {% elif paste.exposure == 'Private' %}
+                                <i class="fa fa-lock" aria-hidden="true"></i>
+                            {% endif %}
+                            <a href="/{{ paste.id }}">{{ paste.title }}</a>
+                            <div class="details">
+                                {% if paste.syntax != "None" %}{{ paste.syntax|capitalize }} |{% endif %}
+                                {{ paste.created|timesince }}| {{ paste.size }} KB
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

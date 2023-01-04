@@ -85,6 +85,20 @@ def document_edit(uuid_hash):
         return render_template("pybin/edit_comment.html", form=form, document=document)
 
 
+@pybin.route("/message/<uuid_hash>/", methods=["GET", "POST"])
+@login_required
+@utils.message_exists
+def message_view(uuid_hash):
+    message = utils.get_message_from_hash(uuid_hash)
+
+    form = forms.MessageForm()
+
+    if utils.create_reply_if_submitted(form, message):
+        return redirect(request.headers.get("Referer"))
+
+    return render_template("pybin/message.html", form=form, message=message)
+
+
 @pybin.route("/u/<username>/")
 def my_pybin(username):
     user = utils.get_user_from_username(username)
@@ -108,6 +122,14 @@ def my_comments(username):
     comments = models.Comment.objects(author=user, active=True)
 
     return render_template("pybin/my_comments.html", comments=reversed(comments))
+
+
+@pybin.route("/messages/")
+@login_required
+def my_messages():
+    messages = utils.get_messages(current_user)
+
+    return render_template("pybin/my_messages.html", messages=reversed(messages))
 
 
 @pybin.route("/user/profile/", methods=["GET", "POST"])

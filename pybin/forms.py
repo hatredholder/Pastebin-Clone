@@ -123,7 +123,7 @@ class CommentForm(FlaskForm):
             valids.InputRequired(),
             valids.Length(
                 max=512000,
-                message="You have exceeded the maximum size of 512 kilobytes per Paste",
+                message="You have exceeded the maximum size of 512 kilobytes per Comment",
             ),
         ],
     )
@@ -133,4 +133,19 @@ class CommentForm(FlaskForm):
     )
     submit = wtforms.SubmitField(
         "Add Comment",
+    )
+
+
+class MessageForm(FlaskForm):
+    content = wtforms.TextAreaField(
+        validators=[
+            valids.InputRequired(),
+            valids.Length(
+                max=10000,
+                message="Message should contain at most 10,000 characters.",
+            ),
+        ],
+    )
+    submit = wtforms.SubmitField(
+        "Add Reply",
     )

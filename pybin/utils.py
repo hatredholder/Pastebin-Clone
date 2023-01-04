@@ -13,6 +13,8 @@ from flask import flash, redirect, url_for
 
 from flask_login import current_user
 
+from mongoengine.queryset.visitor import Q
+
 import pybin.forms as forms
 import pybin.models as models
 
@@ -89,24 +91,46 @@ def create_comment_if_submitted(form, document):
         return True
 
 
+def create_reply_if_submitted(form, message):
+    """Returns True if Reply gets created successfully"""
+
+    if form.validate_on_submit():
+        content = form.content.data
+        
+        reply = models.Reply(
+            content=content,
+            author=current_user,
+        )
+
+        message.replies.append(reply)
+        message.save()
+
+        return True
+
+
 def get_paste_from_hash(uuid_hash):
-    """Returns paste from uuid_hash"""
+    """Returns Paste from uuid_hash"""
     return models.Paste.objects(uuid_hash=uuid_hash).first()
 
 
 def get_comment_from_hash(uuid_hash):
-    """Returns comment from uuid_hash"""
+    """Returns Comment from uuid_hash"""
     return models.Comment.objects(uuid_hash=uuid_hash).first()
 
 
 def get_document_from_hash(uuid_hash):
-    """Returns document (paste or comment) from uuid_hash"""
+    """Returns document (Paste or Comment) from uuid_hash"""
     document = get_paste_from_hash(uuid_hash)
 
     if not document:
         document = get_comment_from_hash(uuid_hash)
 
     return document
+
+
+def get_message_from_hash(uuid_hash):
+    """Returns Message from uuid_hash"""
+    return models.Message.objects(uuid_hash=uuid_hash).first()
 
 
 def get_user_from_username(username):
@@ -332,11 +356,16 @@ def get_public_pastes(current_user):
     return public_pastes
 
 
+def get_messages(current_user):
+    messages = models.Message.objects(Q(author=current_user) | Q(receiver=current_user))
+    return messages
+
+
 # Decorators
 
 
 def document_exists(f):
-    """Redirects user to 404 error page if paste doesn't exist"""
+    """Redirects user to 404 error page if Paste doesn't exist"""
 
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
@@ -359,7 +388,7 @@ def document_exists(f):
 
 
 def paste_not_expired(f):
-    """Deletes paste and redirects to 404 error page if paste is expired"""
+    """Deletes paste and redirects to 404 error page if Paste is expired"""
 
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
@@ -390,7 +419,7 @@ def paste_not_expired(f):
 
 
 def paste_exposed(f):
-    """Redirects to 403 error page if paste is private and current_user != author"""
+    """Redirects to 403 error page if Paste is private and current_user != author"""
 
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
@@ -438,6 +467,25 @@ def email_verified(f):
 
         if not current_user.email_status:
             return redirect(url_for("pybin.error", error_code=403))
+
+        result = f(*args, **kwargs)
+
+        return result
+
+    return wrapped
+
+
+def message_exists(f):
+    """Redirects user to 404 error page if Message doesn't exist"""
+
+    @functools.wraps(f)
+    def wrapped(*args, **kwargs):
+
+        message = get_message_from_hash(kwargs["uuid_hash"])
+
+        if not message:
+
+            return redirect(url_for("pybin.error", error_code=404))
 
         result = f(*args, **kwargs)
 
