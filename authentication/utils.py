@@ -4,7 +4,49 @@ from flask import flash
 
 from flask_login import login_user
 
+import pybin.models as pybin_models
+
 from werkzeug.security import check_password_hash, generate_password_hash
+
+
+def get_admin_user():
+    """Returns Admin User object"""
+
+    # If Admin User already exists - return it
+    admin = models.User.objects(username="Admin").first()
+    if admin:
+        return admin
+
+    # If it doesnt exist - create it and then return it
+    admin = models.User(username="Admin", email="admin@email.com", password_hash="123")
+    admin.save()
+    return admin
+
+
+def create_welcoming_message(new_user):
+    """Creates a Message object with new_user as receiver and Admin as author"""
+
+    username = new_user.username
+
+    welcome = f"""Hello {username},
+
+    Good to see that you have decided to join our community!
+
+    We like to remind you that our website is mobile friendly, so you can create, \
+    edit and delete pastes on your phone or tablet too.
+
+    You can follow us on Facebook and Twitter.
+
+    Kind regards,
+
+    The Pybin Team"""
+
+    pybin_models.Message(
+        content=welcome,
+        title="Welcome to Pybin!",
+        author=get_admin_user(),
+        receiver=new_user,
+    ).save()
 
 
 def signup_user_if_submitted(form):
@@ -29,8 +71,11 @@ def signup_user_if_submitted(form):
             password_hash=generate_password_hash(password),
         ).save()
 
-        flash("Account created successfully!")
+        create_welcoming_message(new_user)
+
         login_user(new_user)
+        flash("Account created successfully!")
+
         return True
 
 

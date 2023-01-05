@@ -8,47 +8,44 @@
                 {% endwith %}
             </div>
             <div class="content col">
-                <div class="content_title">
-                    {{message.title}}
-                </div>
+                <div class="content_title">{{ message.title }}</div>
                 <div class="0">
                     <div class="message_top">
                         By:
-                        <a href="/u/{{message.author}}/">{{message.author.username}}</a>
-                        {{message.created|timesince}} | 
+                        <a href="/u/{{ message.author.username }}/">{{ message.author.username }}</a>
+                        {{ message.created|timesince }} |
                         <a href="#replyarea">reply</a>
-                        {% if current_user == message.author %}
-                            | <a href="/message/delete/{{message.id}}">delete</a>
-                        {% endif %}
+                        {% if current_user == message.author %}| <a href="/message/delete/{{ message.id }}">delete</a>{% endif %}
                     </div>
                     <div class="message_window">
-                        {{message.content}}
+                        {% set list1 = message.content.split('\n') %}
+                        {% for item in list1 %}
+                            {{ item }}
+                            {% if not loop.last %}<br/>{% endif %}
+                        {% endfor %}
                     </div>
                 </div>
                 {% if message.replies %}
                     {% for reply in message.replies %}
-                    <div class="{{loop.index}}">
-                        <div class="message_top">
-                            By:
-                            <a href="/u/{{reply.author}}/">{{reply.author.username}}</a>
-                            {{reply.created|timesince}} | 
-                            <a href="#replyarea">reply</a>
-                            {% if current_user == reply.author %}
-                                | <a href="/message/delete/{{reply.id}}">delete</a>
-                            {% endif %}
+                        <div class="{{ loop.index }}">
+                            <div class="message_top">
+                                By:
+                                <a href="/u/{{ reply.author }}/">{{ reply.author.username }}</a>
+                                {{ reply.created|timesince }} |
+                                <a href="#replyarea">reply</a>
+                                {% if current_user == reply.author %}| <a href="/message/delete/{{ reply.id }}">delete</a>{% endif %}
+                            </div>
+                            <div class="message_window">
+                                {{reply.content}}
+                            </div>
                         </div>
-                        <div class="message_window">
-                            {{reply.content}}
-                        </div>
-                    </div>
                     {% endfor %}
                 {% endif %}
                 <div class="replyarea">
                     <form class="col" method="POST" action="/message/{{ message.id }}/">
                         {{ form.csrf_token }}
-
-                        {{form.content}}
-                        {{form.submit}}
+                        {{ form.content }}
+                        {{ form.submit }}
                     </form>
                 </div>
             </div>
@@ -79,8 +76,7 @@
                         </li>
                     {% endfor %}
                 </ul>
-                <div class="sidebar_sticky">
-                </div>
+                <div class="sidebar_sticky"></div>
                 <div class="sidebar_title">
                     <a href="#">Public Pastes</a>
                 </div>
