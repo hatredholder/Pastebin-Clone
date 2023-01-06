@@ -361,6 +361,10 @@ def get_messages(current_user):
     return messages
 
 
+def delete_reply_by_uuid_hash(message, reply_hash):
+    message.update(pull__replies__uuid_hash=reply_hash)
+
+
 # Decorators
 
 

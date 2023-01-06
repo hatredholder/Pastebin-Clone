@@ -15,7 +15,6 @@
                         <a href="/u/{{ message.author.username }}/">{{ message.author.username }}</a>
                         {{ message.created|timesince }} |
                         <a href="#replyarea">reply</a>
-                        {% if current_user == message.author %}| <a href="/message/delete/{{ message.id }}">delete</a>{% endif %}
                     </div>
                     <div class="message_window">
                         {% set list1 = message.content.split('\n') %}
@@ -30,10 +29,10 @@
                         <div class="{{ loop.index }}">
                             <div class="message_top">
                                 By:
-                                <a href="/u/{{ reply.author }}/">{{ reply.author.username }}</a>
+                                <a href="/u/{{ reply.author.username }}/">{{ reply.author.username }}</a>
                                 {{ reply.created|timesince }} |
                                 <a href="#replyarea">reply</a>
-                                {% if current_user == reply.author %}| <a href="/message/delete/{{ reply.id }}">delete</a>{% endif %}
+                                {% if current_user == reply.author %}| <a href="/reply/delete/{{ message.id }}/{{ reply.uuid_hash }}/">delete</a>{% endif %}
                             </div>
                             <div class="message_window">
                                 {{reply.content}}

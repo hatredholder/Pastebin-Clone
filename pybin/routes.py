@@ -99,6 +99,16 @@ def message_view(uuid_hash):
     return render_template("pybin/message.html", form=form, message=message)
 
 
+@pybin.route("/reply/delete/<message_hash>/<reply_hash>/")
+@login_required
+def reply_delete(message_hash, reply_hash):
+    message = utils.get_message_from_hash(message_hash)
+
+    utils.delete_reply_by_uuid_hash(message, reply_hash)
+
+    return redirect(request.headers.get("Referer"))
+
+
 @pybin.route("/u/<username>/")
 def my_pybin(username):
     user = utils.get_user_from_username(username)
