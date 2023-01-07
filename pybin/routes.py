@@ -99,6 +99,14 @@ def message_view(uuid_hash):
     return render_template("pybin/message.html", form=form, message=message)
 
 
+@pybin.route("/message/compose/")
+@login_required
+def send_message():
+    # NOTE: This route doesn't actually serve any purpose
+    # and is made just to make pybin look more like pastebin
+    return render_template("pybin/send_message.html")
+
+
 @pybin.route("/reply/delete/<message_hash>/<reply_hash>/")
 @login_required
 def reply_delete(message_hash, reply_hash):
