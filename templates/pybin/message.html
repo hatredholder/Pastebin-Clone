@@ -32,11 +32,11 @@
                                 <a href="/u/{{ reply.author.username }}/">{{ reply.author.username }}</a>
                                 {{ reply.created|timesince }} |
                                 <a href="#replyarea">reply</a>
-                                {% if current_user == reply.author %}| <a href="/reply/delete/{{ message.id }}/{{ reply.uuid_hash }}/">delete</a>{% endif %}
+                                {% if current_user == reply.author %}
+                                    | <a href="/reply/delete/{{ message.id }}/{{ reply.uuid_hash }}/">delete</a>
+                                {% endif %}
                             </div>
-                            <div class="message_window">
-                                {{reply.content}}
-                            </div>
+                            <div class="message_window">{{ reply.content }}</div>
                         </div>
                     {% endfor %}
                 {% endif %}
