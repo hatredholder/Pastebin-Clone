@@ -8,7 +8,7 @@ import pybin.choices as choices
 
 class Paste(db.Document):
     content = db.StringField(max_length=512000, required=True)
-    author = db.ReferenceField("User", required=True)
+    author = db.ReferenceField("User", required=False)
 
     uuid_hash = db.StringField(default=lambda: str(uuid.uuid4())[:8], primary_key=True)
     size = db.FloatField(required=False)

@@ -46,16 +46,27 @@ def create_paste_if_submitted(form):
             return
 
         # Add paste
-        paste = models.Paste(
-            content=content,
-            category=category,
-            tags=tags,
-            syntax=syntax,
-            expiration=expiration,
-            exposure=exposure,
-            title=title,
-            author=current_user,
-        ).save()
+        if current_user.is_authenticated:
+            paste = models.Paste(
+                content=content,
+                category=category,
+                tags=tags,
+                syntax=syntax,
+                expiration=expiration,
+                exposure=exposure,
+                title=title,
+                author=current_user,
+            ).save()
+        else:
+            paste = models.Paste(
+                content=content,
+                category=category,
+                tags=tags,
+                syntax=syntax,
+                expiration=expiration,
+                exposure=exposure,
+                title=title,
+            ).save()
 
         return paste.uuid_hash
 

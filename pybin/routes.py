@@ -10,7 +10,6 @@ pybin = Blueprint("pybin", __name__)
 
 
 @pybin.route("/", methods=["GET", "POST"])
-@login_required
 def home():
     form = forms.PasteForm()
 
