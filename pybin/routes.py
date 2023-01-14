@@ -19,7 +19,7 @@ def home():
     if uuid_hash:
         return redirect(url_for("pybin.document_view", uuid_hash=uuid_hash))
 
-    return render_template("pybin/home.html", form=form, name=current_user.username)
+    return render_template("pybin/home.html", form=form)
 
 
 @pybin.route("/error/<error_code>/")
