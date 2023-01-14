@@ -10,6 +10,7 @@ auth = Blueprint("auth", __name__)
 
 
 @auth.route("/signup/", methods=["GET", "POST"])
+@utils.not_authenticated
 def signup():
     form = forms.SignupForm()
 
@@ -20,6 +21,7 @@ def signup():
 
 
 @auth.route("/login/", methods=["GET", "POST"])
+@utils.not_authenticated
 def login():
     form = forms.LoginForm()
 

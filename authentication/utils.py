@@ -1,12 +1,17 @@
+import functools
+
 import authentication.models as models
 
-from flask import flash
+from flask import flash, redirect, url_for
 
-from flask_login import login_user
+from flask_login import current_user, login_user
 
 import pybin.models as pybin_models
 
 from werkzeug.security import check_password_hash, generate_password_hash
+
+
+# Helper Functions
 
 
 def get_admin_user():
@@ -96,3 +101,22 @@ def login_user_if_submitted(form):
 
         login_user(user)
         return True
+
+
+# Decorators
+
+
+def not_authenticated(f):
+    """Redirects to pybin.home if current_user is logged in"""
+
+    @functools.wraps(f)
+    def wrapped(*args, **kwargs):
+
+        if current_user.is_authenticated:
+            return redirect(url_for("pybin.home"))
+
+        result = f(*args, **kwargs)
+
+        return result
+
+    return wrapped
