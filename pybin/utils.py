@@ -330,14 +330,14 @@ def update_password(form, user):
         return True
 
 
-def create_base64_img_data():
+def create_base64_img_data(user):
     """Returns image data in base64 to display in html"""
     data = f"""
         data:image/png;base64, {
-            base64.b64encode(current_user.avatar.read()).decode('utf-8')
+            base64.b64encode(user.avatar.read()).decode('utf-8')
         }
     """
-    current_user.avatar.seek(0)  # return the read cursor to the start of the file
+    user.avatar.seek(0)  # return the read cursor to the start of the file
 
     return data
 

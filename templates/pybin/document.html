@@ -53,7 +53,7 @@
                                 <li>
                                     <div class="comment">
                                         <div class="details d-flex">
-                                            <img src="{{ profile_image() }}" height="16" width="16">
+                                            <img src="{{ profile_image(comment.author) }}" height="16" width="16">
                                             <div class="info-bar d-inline-flex">
                                                 <div class="username">
                                                     <a href="/u/{{ comment.author.username }}/">{{ comment.author.username }}</a>
@@ -109,7 +109,7 @@
                                                         {% for reply in comment.comments %}
                                                             <li>
                                                                 <div class="details d-flex">
-                                                                    <img src="{{ profile_image() }}" height="16" width="16">
+                                                                    <img src="{{ profile_image(reply.author) }}" height="16" width="16">
                                                                     <div class="info-bar d-inline-flex">
                                                                         <div class="username">
                                                                             <a href="/u/{{ reply.author.username }}/">{{ reply.author.username }}</a>
@@ -167,7 +167,7 @@
                                                                         {% for reply2 in reply.comments %}
                                                                             <li>
                                                                                 <div class="details d-flex">
-                                                                                    <img src="{{ profile_image() }}" height="16" width="16">
+                                                                                    <img src="{{ profile_image(reply2.author) }}" height="16" width="16">
                                                                                     <div class="info-bar d-inline-flex">
                                                                                         <div class="username">
                                                                                             <a href="/u/{{ reply2.author.username }}/">{{ reply2.author.username }}</a>
@@ -234,6 +234,7 @@
                             {% endfor %}
                         </ul>
                     {% endif %}
+                    {% if current_user.is_authenticated %}
                     <div class="reply-form-container-{{ document.id }}">
                         <div class="add_comment_form">
                             <form class="col" method="POST" action="/{{ document.id }}/">
@@ -250,6 +251,12 @@
                             </form>
                         </div>
                     </div>
+                    {% else %}
+                        <div class="content_text">
+                            <i class="fa fa-info-circle" aria-hidden="true"></i>
+                            Please, <a href="/login/">Sign In</a> to add comment
+                        </div>
+                    {% endif %}
                 </div>
                 <a id="{{ document.id }}"
                    class="reply-btn add-a-comment btn-outline-secondary">Add a Comment</a>

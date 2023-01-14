@@ -65,7 +65,7 @@
                                 {% if current_user.is_authenticated %}
                                     <div class="form_avatar">
                                         <a href="/u/{{ current_user.username }}/">
-                                            <img src="{{ profile_image()}}" width="50" height="50">
+                                            <img src="{{ profile_image(current_user)}}" width="50" height="50">
                                         </a>
                                     </div>
                                     <div class="form_text">

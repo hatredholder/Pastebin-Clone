@@ -9,8 +9,8 @@ import pybin.utils as utils
 
 @app.context_processor
 def profile_image():
-    def __profile_image():
-        avatar = utils.create_base64_img_data()
+    def __profile_image(user):
+        avatar = utils.create_base64_img_data(user)
         return avatar
 
     return dict(profile_image=__profile_image)
