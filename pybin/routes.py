@@ -84,6 +84,17 @@ def document_edit(uuid_hash):
         return render_template("pybin/edit_comment.html", form=form, document=document)
 
 
+@pybin.route("/clone/<uuid_hash>/", methods=["GET", "POST"])
+@login_required
+@utils.document_exists
+def document_clone(uuid_hash):
+    document = utils.get_document_from_hash(uuid_hash)
+
+    form = forms.PasteForm(obj=document)
+
+    return render_template("pybin/clone_document.html", form=form)
+
+
 @pybin.route("/message/<uuid_hash>/", methods=["GET", "POST"])
 @login_required
 @utils.message_exists

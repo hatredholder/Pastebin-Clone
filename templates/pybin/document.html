@@ -24,6 +24,9 @@
                 <a href="/raw/{{ document.uuid_hash }}"
                    class="btn btn-info"
                    type="submit">raw</a>
+                <a href="/clone/{{ document.uuid_hash }}"
+                   class="btn btn-warning"
+                   type="submit">clone</a>
                 {% if current_user == document.author %}
                     <a href="/delete/{{ document.uuid_hash }}"
                        class="btn btn-danger"
@@ -242,22 +245,22 @@
                         </ul>
                     {% endif %}
                     {% if current_user.is_authenticated %}
-                    <div class="reply-form-container-{{ document.id }}">
-                        <div class="add_comment_form">
-                            <form class="col" method="POST" action="/{{ document.id }}/">
-                                {{ form.csrf_token }}
-                                <div>
-                                    {{ form.content.label }}
-                                    {{ form.content }}
-                                </div>
-                                <div>
-                                    {{ form.syntax.label }}
-                                    {{ form.syntax }}
-                                </div>
-                                {{ form.submit }}
-                            </form>
+                        <div class="reply-form-container-{{ document.id }}">
+                            <div class="add_comment_form">
+                                <form class="col" method="POST" action="/{{ document.id }}/">
+                                    {{ form.csrf_token }}
+                                    <div>
+                                        {{ form.content.label }}
+                                        {{ form.content }}
+                                    </div>
+                                    <div>
+                                        {{ form.syntax.label }}
+                                        {{ form.syntax }}
+                                    </div>
+                                    {{ form.submit }}
+                                </form>
+                            </div>
                         </div>
-                    </div>
                     {% else %}
                         <div class="content_text">
                             <i class="fa fa-info-circle" aria-hidden="true"></i>

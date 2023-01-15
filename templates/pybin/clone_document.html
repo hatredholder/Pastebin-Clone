@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %}Create a new version of paste: - Pybin.com{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="errors">
+                {% if form.content.errors %}
+                    {% for error in form.content.errors %}{{ error }}{% endfor %}
+                {% endif %}
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
+                {% endwith %}
+            </div>
+            <div class="content col">
+                <form class="col" method="POST" action="/">
+                    {{ form.csrf_token }}
+                    {{ form.content.label }}
+                    <div class="form-check form-switch ">
+                        <input style="float:right;
+                                      margin-right: 10px"
+                               class="ms-auto form-check-input"
+                               type="checkbox"
+                               role="switch"
+                               value="off"
+                               autocomplete="off"
+                               id="onoff"/>
+                        <label style="float:right"
+                               class="form-check-label"
+                               for="flexSwitchCheckDefault">Syntax Highlighting</label>
+                    </div>
+                    <textarea name="content"
+                              class="codemirror-textarea"
+                              style="height: 300px;
+                              width: 100%">{{form.content.data}}</textarea>
+                    <div class="form_bottom d-flex">
+                        <div class="form_left d-flex-inline">
+                            <div>
+                                {{ form.category.label }}
+                                {{ form.category }}
+                            </div>
+                            <div>
+                                {{ form.tags.label }}
+                                {{ form.tags(placeholder="software, tutorial, data")}}
+                            </div>
+                            <div>
+                                {{ form.syntax.label }}
+                                {{ form.syntax }}
+                            </div>
+                            <div>
+                                {{ form.expiration.label }}
+                                {{ form.expiration }}
+                            </div>
+                            <div>
+                                {{ form.exposure.label }}
+                                {{ form.exposure }}
+                            </div>
+                            <div>
+                                {{ form.title.label }}
+                                {{ form.title }}
+                            </div>
+                            {{ form.submit }}
+                        </div>    
+                    </div>
+                </form>
+            </div>
+            <div class="sidebar col-sm-3">
+                {% if current_user.is_authenticated %}
+                    <div class="sidebar_title">
+                        <a href="#">My Pastes</a>
+                    </div>
+                    <ul class="sidebar_menu">
+                        {% if not my_pastes() %}
+                            <li>
+                                <i class="fa fa-globe" aria-hidden="true"></i>Nothing here yet...
+                            </li>
+                        {% endif %}
+                        {% for paste in my_pastes() %}
+                            <li>
+                                {% if paste.exposure == "Public" %}
+                                    <i class="fa fa-globe" aria-hidden="true"></i>
+                                {% elif paste.exposure == 'Unlisted' %}
+                                    <i class="fa fa-link" aria-hidden="true"></i>
+                                {% elif paste.exposure == 'Private' %}
+                                    <i class="fa fa-lock" aria-hidden="true"></i>
+                                {% endif %}
+                                <a href="/{{ paste.id }}">{{ paste.title }}</a>
+                                <div class="details">
+                                    {% if paste.syntax != "None" %}{{ paste.syntax|capitalize }} |{% endif %}
+                                    {{ paste.created|timesince }}| {{ paste.size }} KB
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <div class="sidebar_sticky"></div>
+                <div class="sidebar_title">
+                    <a href="#">Public Pastes</a>
+                </div>
+                <ul class="sidebar_menu">
+                    {% for paste in public_pastes() %}
+                        <li>
+                            {% if paste.exposure == "Public" %}
+                                <i class="fa fa-globe" aria-hidden="true"></i>
+                            {% elif paste.exposure == 'Unlisted' %}
+                                <i class="fa fa-link" aria-hidden="true"></i>
+                            {% elif paste.exposure == 'Private' %}
+                                <i class="fa fa-lock" aria-hidden="true"></i>
+                            {% endif %}
+                            <a href="/{{ paste.id }}">{{ paste.title }}</a>
+                            <div class="details">
+                                {% if paste.syntax != "None" %}{{ paste.syntax|capitalize }} |{% endif %}
+                                {{ paste.created|timesince }}| {{ paste.size }} KB
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/theme/material-darker.min.css">
+    <script src="{{url_for('static', filename='js/highlighting.js')}}"></script>
+{% endblock %}
