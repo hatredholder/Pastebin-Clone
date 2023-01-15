@@ -1,4 +1,11 @@
 {% extends "base.html" %}
+{% block title %}
+    {% if document.title %}
+        {{ document.title }} - Pybin.com
+    {% else %}
+        {{ document.content[:50] }} - Pybin.com
+    {% endif %}
+{% endblock %}
 {% block content %}
     <div class="container">
         <div class="row">

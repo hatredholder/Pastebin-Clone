@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% block title %}
+    {{ user.username|capitalize }}'s Comments - Pybin.com
+{% endblock %}
 {% block content %}
     <div class="container">
         <div class="row">
@@ -8,7 +11,7 @@
                 {% endwith %}
             </div>
             <div class="content col">
-                {{ user.username }}'s Pastebin
+                {{ user.username|capitalize }}'s Pybin
                 <table>
                     <thead>
                         <tr>

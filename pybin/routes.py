@@ -125,7 +125,7 @@ def my_pybin(username):
 
     pastes = models.Paste.objects(author=user)
 
-    return render_template("pybin/my_pybin.html", pastes=reversed(pastes), user=user)
+    return render_template("pybin/my_pybin.html", user=user, pastes=reversed(pastes))
 
 
 @pybin.route("/u/<username>/comments/")
@@ -138,7 +138,7 @@ def my_comments(username):
 
     comments = models.Comment.objects(author=user, active=True)
 
-    return render_template("pybin/my_comments.html", comments=reversed(comments))
+    return render_template("pybin/my_comments.html", user=user, comments=reversed(comments))
 
 
 @pybin.route("/messages/")
