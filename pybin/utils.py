@@ -186,7 +186,7 @@ def redirect_by_document_type(document):
         return redirect(url_for("pybin.my_comments", username=document.author.username))
 
 
-def get_form_by_document_type(document):
+def get_edit_form_by_document_type(document):
     """Returns PasteForm if document is Paste and vice versa"""
     if type(document) == models.Paste:
         form = forms.PasteForm(obj=document)
