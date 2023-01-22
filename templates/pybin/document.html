@@ -71,7 +71,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="highlighted_code">
+                    <div class="highlighted_code border rounded border-dark">
                         <div class="top_buttons d-flex">
                             <div class="left d-inline-flex">
                                 <!-- TODO: Implement Search by Document Syntax -->
@@ -111,229 +111,229 @@
                         <div class="source_text">
                             <pre><code>{{document.content}}</code></pre>
                         </div>
-                        <div class="raw_paste_data">
-                            <div>
-                                RAW Paste Data
-                                <textarea style="height: 100px; width: 100%">{{document.content}}</textarea>
-                            </div>
+                    </div>
+                    <div class="raw_paste_data">
+                        <div>
+                            RAW Paste Data
+                            <textarea style="height: 100px; width: 100%">{{document.content}}</textarea>
                         </div>
-                        <div class="comments">
-                            {% if document.comments %}
-                                <div id="comments" class="content_title">Comments</div>
-                                <ul class="comment-tree">
-                                    {% for comment in document.comments %}
-                                        <li>
-                                            <div class="comment">
-                                                <div class="details d-flex">
-                                                    <img src="{{ profile_image(comment.author) }}" height="16" width="16">
-                                                    <div class="info-bar d-inline-flex">
-                                                        <div class="username">
-                                                            <a href="/u/{{ comment.author.username }}/">{{ comment.author.username }}</a>
-                                                        </div>
-                                                        <div class="date d-inline-flex">
-                                                            <i class="fa fa-calendar" aria-hidden="true"></i>{{ comment.created|timesince }}
-                                                        </div>
+                    </div>
+                    <div class="comments">
+                        {% if document.comments %}
+                            <div id="comments" class="content_title">Comments</div>
+                            <ul class="comment-tree">
+                                {% for comment in document.comments %}
+                                    <li>
+                                        <div class="comment">
+                                            <div class="details d-flex">
+                                                <img src="{{ profile_image(comment.author) }}" height="16" width="16">
+                                                <div class="info-bar d-inline-flex">
+                                                    <div class="username">
+                                                        <a href="/u/{{ comment.author.username }}/">{{ comment.author.username }}</a>
+                                                    </div>
+                                                    <div class="date d-inline-flex">
+                                                        <i class="fa fa-calendar" aria-hidden="true"></i>{{ comment.created|timesince }}
                                                     </div>
                                                 </div>
-                                                <div id="{{ comment.id }}" class="highlighted-code">
-                                                    {% if comment.active %}
-                                                        <div class="top-buttons d-flex">
-                                                            <div class="left d-inline-flex">
-                                                                <a class="btn btn-outline-secondary"
-                                                                   href="/{{ document.id }}#{{ comment.id }}">#</a>
-                                                                <!-- TODO: Implement Search by Document Syntax -->
-                                                                <a class="btn btn-outline-secondary" href="#">
-                                                                    {% if comment.syntax != "None" %}
-                                                                        {{ comment.syntax }}
-                                                                    {% else %}
-                                                                        text
-                                                                    {% endif %}
-                                                                </a>
-                                                                {{ comment.size }} |
-                                                                <!-- TODO: Implement Document Rating -->
-                                                                <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-up" aria-hidden="true"></i> 0</a>
-                                                                <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-down" aria-hidden="true"></i> 0</a>
-                                                            </div>
-                                                            <div class="right ms-auto d-inline-flex">
-                                                                <a class="btn btn-outline-secondary" href="/{{ comment.id }}/">view</a>
-                                                                {% if current_user == comment.author %}
-                                                                    {% if not comment_older_than_5_minutes(comment) %}
-                                                                        <a class="btn btn-outline-secondary" href="/edit/{{ comment.id }}/">edit</a>
-                                                                    {% endif %}
-                                                                {% endif %}
-                                                                {% if current_user == comment.author %}
-                                                                    <a class="btn btn-outline-secondary" href="/delete/{{ comment.id }}/">delete</a>
+                                            </div>
+                                            <div id="{{ comment.id }}" class="highlighted-code">
+                                                {% if comment.active %}
+                                                    <div class="top-buttons d-flex">
+                                                        <div class="left d-inline-flex">
+                                                            <a class="btn btn-outline-secondary"
+                                                               href="/{{ document.id }}#{{ comment.id }}">#</a>
+                                                            <!-- TODO: Implement Search by Document Syntax -->
+                                                            <a class="btn btn-outline-secondary" href="#">
+                                                                {% if comment.syntax != "None" %}
+                                                                    {{ comment.syntax }}
                                                                 {% else %}
-                                                                    <!-- TODO: Implement Document Reports -->
-                                                                    <a class="btn btn-outline-secondary" href="#">report</a>
+                                                                    text
                                                                 {% endif %}
-                                                                <a id="{{ comment.id }}" class="reply-btn btn btn-outline-secondary">reply</a>
-                                                            </div>
+                                                            </a>
+                                                            {{ comment.size }} |
+                                                            <!-- TODO: Implement Document Rating -->
+                                                            <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-up" aria-hidden="true"></i> 0</a>
+                                                            <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-down" aria-hidden="true"></i> 0</a>
                                                         </div>
-                                                    {% endif %}
-                                                    <div class="source">
-                                                        <pre><code>{{comment.content}}</code></pre>
+                                                        <div class="right ms-auto d-inline-flex">
+                                                            <a class="btn btn-outline-secondary" href="/{{ comment.id }}/">view</a>
+                                                            {% if current_user == comment.author %}
+                                                                {% if not comment_older_than_5_minutes(comment) %}
+                                                                    <a class="btn btn-outline-secondary" href="/edit/{{ comment.id }}/">edit</a>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                            {% if current_user == comment.author %}
+                                                                <a class="btn btn-outline-secondary" href="/delete/{{ comment.id }}/">delete</a>
+                                                            {% else %}
+                                                                <!-- TODO: Implement Document Reports -->
+                                                                <a class="btn btn-outline-secondary" href="#">report</a>
+                                                            {% endif %}
+                                                            <a id="{{ comment.id }}" class="reply-btn btn btn-outline-secondary">reply</a>
+                                                        </div>
                                                     </div>
-                                                    <div class="reply-form-container-{{ comment.id }}"></div>
-                                                    <div class="replies">
-                                                        {% if comment.comments %}
-                                                            <ul>
-                                                                {% for reply in comment.comments %}
-                                                                    <li>
-                                                                        <div class="details d-flex">
-                                                                            <img src="{{ profile_image(reply.author) }}" height="16" width="16">
-                                                                            <div class="info-bar d-inline-flex">
-                                                                                <div class="username">
-                                                                                    <a href="/u/{{ reply.author.username }}/">{{ reply.author.username }}</a>
+                                                {% endif %}
+                                                <div class="source">
+                                                    <pre><code>{{comment.content}}</code></pre>
+                                                </div>
+                                                <div class="reply-form-container-{{ comment.id }}"></div>
+                                                <div class="replies">
+                                                    {% if comment.comments %}
+                                                        <ul>
+                                                            {% for reply in comment.comments %}
+                                                                <li>
+                                                                    <div class="details d-flex">
+                                                                        <img src="{{ profile_image(reply.author) }}" height="16" width="16">
+                                                                        <div class="info-bar d-inline-flex">
+                                                                            <div class="username">
+                                                                                <a href="/u/{{ reply.author.username }}/">{{ reply.author.username }}</a>
+                                                                            </div>
+                                                                            <div class="date d-inline-flex">
+                                                                                <i class="fa fa-calendar" aria-hidden="true"></i>{{ reply.created|timesince }}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div id="{{ reply.id }}" class="highlighted-code">
+                                                                        {% if reply.active %}
+                                                                            <div class="top-buttons d-flex">
+                                                                                <div class="left d-inline-flex">
+                                                                                    <a class="btn btn-outline-secondary"
+                                                                                       href="/{{ document.id }}#{{ reply.id }}">#</a>
+                                                                                    <!-- TODO: Implement Search by Document Syntax -->
+                                                                                    <a class="btn btn-outline-secondary" href="#">
+                                                                                        {% if reply.syntax != "None" %}
+                                                                                            {{ reply.syntax }}
+                                                                                        {% else %}
+                                                                                            text
+                                                                                        {% endif %}
+                                                                                    </a>
+                                                                                    {{ reply.size }} |
+                                                                                    <!-- TODO: Implement Document Rating -->
+                                                                                    <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-up" aria-hidden="true"></i> 0</a>
+                                                                                    <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-down" aria-hidden="true"></i> 0</a>
                                                                                 </div>
-                                                                                <div class="date d-inline-flex">
-                                                                                    <i class="fa fa-calendar" aria-hidden="true"></i>{{ reply.created|timesince }}
+                                                                                <div class="right ms-auto d-inline-flex">
+                                                                                    <a class="btn btn-outline-secondary" href="/{{ reply.id }}/">view</a>
+                                                                                    {% if current_user == reply.author %}
+                                                                                        {% if not comment_older_than_5_minutes(reply) %}
+                                                                                            <a class="btn btn-outline-secondary" href="/edit/{{ reply.id }}/">edit</a>
+                                                                                        {% endif %}
+                                                                                    {% endif %}
+                                                                                    {% if current_user == reply.author %}
+                                                                                        <a class="btn btn-outline-secondary" href="/delete/{{ reply.id }}/">delete</a>
+                                                                                    {% else %}
+                                                                                        <!-- TODO: Implement Document Reports -->
+                                                                                        <a class="btn btn-outline-secondary" href="#">report</a>
+                                                                                    {% endif %}
+                                                                                    <a id="{{ reply.id }}" class="reply-btn btn btn-outline-secondary">reply</a>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-                                                                        <div id="{{ reply.id }}" class="highlighted-code">
-                                                                            {% if reply.active %}
-                                                                                <div class="top-buttons d-flex">
-                                                                                    <div class="left d-inline-flex">
-                                                                                        <a class="btn btn-outline-secondary"
-                                                                                           href="/{{ document.id }}#{{ reply.id }}">#</a>
-                                                                                        <!-- TODO: Implement Search by Document Syntax -->
-                                                                                        <a class="btn btn-outline-secondary" href="#">
-                                                                                            {% if reply.syntax != "None" %}
-                                                                                                {{ reply.syntax }}
-                                                                                            {% else %}
-                                                                                                text
-                                                                                            {% endif %}
-                                                                                        </a>
-                                                                                        {{ reply.size }} |
-                                                                                        <!-- TODO: Implement Document Rating -->
-                                                                                        <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-up" aria-hidden="true"></i> 0</a>
-                                                                                        <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-down" aria-hidden="true"></i> 0</a>
+                                                                    {% endif %}
+                                                                </li>
+                                                                <div class="source">
+                                                                    <pre><code>{{reply.content}}</code></pre>
+                                                                </div>
+                                                                <div class="reply-form-container-{{ reply.id }}">
+                                                                </div>
+                                                                <div class="replies">
+                                                                    {% if reply.comments %}
+                                                                        <ul>
+                                                                            {% for reply2 in reply.comments %}
+                                                                                <li>
+                                                                                    <div class="details d-flex">
+                                                                                        <img src="{{ profile_image(reply2.author) }}" height="16" width="16">
+                                                                                        <div class="info-bar d-inline-flex">
+                                                                                            <div class="username">
+                                                                                                <a href="/u/{{ reply2.author.username }}/">{{ reply2.author.username }}</a>
+                                                                                            </div>
+                                                                                            <div class="date d-inline-flex">
+                                                                                                <i class="fa fa-calendar" aria-hidden="true"></i>{{ reply2.created|timesince }}
+                                                                                            </div>
+                                                                                        </div>
                                                                                     </div>
-                                                                                    <div class="right ms-auto d-inline-flex">
-                                                                                        <a class="btn btn-outline-secondary" href="/{{ reply.id }}/">view</a>
-                                                                                        {% if current_user == reply.author %}
-                                                                                            {% if not comment_older_than_5_minutes(reply) %}
-                                                                                                <a class="btn btn-outline-secondary" href="/edit/{{ reply.id }}/">edit</a>
-                                                                                            {% endif %}
-                                                                                        {% endif %}
-                                                                                        {% if current_user == reply.author %}
-                                                                                            <a class="btn btn-outline-secondary" href="/delete/{{ reply.id }}/">delete</a>
-                                                                                        {% else %}
-                                                                                            <!-- TODO: Implement Document Reports -->
-                                                                                            <a class="btn btn-outline-secondary" href="#">report</a>
-                                                                                        {% endif %}
-                                                                                        <a id="{{ reply.id }}" class="reply-btn btn btn-outline-secondary">reply</a>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        {% endif %}
-                                                                    </li>
-                                                                    <div class="source">
-                                                                        <pre><code>{{reply.content}}</code></pre>
-                                                                    </div>
-                                                                    <div class="reply-form-container-{{ reply.id }}">
-                                                                    </div>
-                                                                    <div class="replies">
-                                                                        {% if reply.comments %}
-                                                                            <ul>
-                                                                                {% for reply2 in reply.comments %}
-                                                                                    <li>
-                                                                                        <div class="details d-flex">
-                                                                                            <img src="{{ profile_image(reply2.author) }}" height="16" width="16">
-                                                                                            <div class="info-bar d-inline-flex">
-                                                                                                <div class="username">
-                                                                                                    <a href="/u/{{ reply2.author.username }}/">{{ reply2.author.username }}</a>
+                                                                                    <div id="{{ reply2.id }}" class="highlighted-code">
+                                                                                        {% if reply2.active %}
+                                                                                            <div class="top-buttons d-flex">
+                                                                                                <div class="left d-inline-flex">
+                                                                                                    <a class="btn btn-outline-secondary"
+                                                                                                       href="/{{ document.id }}#{{ reply2.id }}">#</a>
+                                                                                                    <!-- TODO: Implement Search by Document Syntax -->
+                                                                                                    <a class="btn btn-outline-secondary" href="#">
+                                                                                                        {% if reply2.syntax != "None" %}
+                                                                                                            {{ reply2.syntax }}
+                                                                                                        {% else %}
+                                                                                                            text
+                                                                                                        {% endif %}
+                                                                                                    </a>
+                                                                                                    {{ reply2.size }} |
+                                                                                                    <!-- TODO: Implement Document Rating -->
+                                                                                                    <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-up" aria-hidden="true"></i> 0</a>
+                                                                                                    <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-down" aria-hidden="true"></i> 0</a>
                                                                                                 </div>
-                                                                                                <div class="date d-inline-flex">
-                                                                                                    <i class="fa fa-calendar" aria-hidden="true"></i>{{ reply2.created|timesince }}
+                                                                                                <div class="right ms-auto d-inline-flex">
+                                                                                                    <a class="btn btn-outline-secondary" href="/{{ reply2.id }}/">view</a>
+                                                                                                    {% if current_user == reply2.author %}
+                                                                                                        {% if not comment_older_than_5_minutes(reply2) %}
+                                                                                                            <a class="btn btn-outline-secondary" href="/edit/{{ reply2.id }}/">edit</a>
+                                                                                                        {% endif %}
+                                                                                                    {% endif %}
+                                                                                                    {% if current_user == reply2.author %}
+                                                                                                        <a class="btn btn-outline-secondary" href="/delete/{{ reply2.id }}/">delete</a>
+                                                                                                    {% else %}
+                                                                                                        <!-- TODO: Implement Document Reports -->
+                                                                                                        <a class="btn btn-outline-secondary" href="#">report</a>
+                                                                                                    {% endif %}
+                                                                                                    <a id="{{ reply2.id }}" class="reply-btn btn btn-outline-secondary">reply</a>
                                                                                                 </div>
                                                                                             </div>
                                                                                         </div>
-                                                                                        <div id="{{ reply2.id }}" class="highlighted-code">
-                                                                                            {% if reply2.active %}
-                                                                                                <div class="top-buttons d-flex">
-                                                                                                    <div class="left d-inline-flex">
-                                                                                                        <a class="btn btn-outline-secondary"
-                                                                                                           href="/{{ document.id }}#{{ reply2.id }}">#</a>
-                                                                                                        <!-- TODO: Implement Search by Document Syntax -->
-                                                                                                        <a class="btn btn-outline-secondary" href="#">
-                                                                                                            {% if reply2.syntax != "None" %}
-                                                                                                                {{ reply2.syntax }}
-                                                                                                            {% else %}
-                                                                                                                text
-                                                                                                            {% endif %}
-                                                                                                        </a>
-                                                                                                        {{ reply2.size }} |
-                                                                                                        <!-- TODO: Implement Document Rating -->
-                                                                                                        <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-up" aria-hidden="true"></i> 0</a>
-                                                                                                        <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-down" aria-hidden="true"></i> 0</a>
-                                                                                                    </div>
-                                                                                                    <div class="right ms-auto d-inline-flex">
-                                                                                                        <a class="btn btn-outline-secondary" href="/{{ reply2.id }}/">view</a>
-                                                                                                        {% if current_user == reply2.author %}
-                                                                                                            {% if not comment_older_than_5_minutes(reply2) %}
-                                                                                                                <a class="btn btn-outline-secondary" href="/edit/{{ reply2.id }}/">edit</a>
-                                                                                                            {% endif %}
-                                                                                                        {% endif %}
-                                                                                                        {% if current_user == reply2.author %}
-                                                                                                            <a class="btn btn-outline-secondary" href="/delete/{{ reply2.id }}/">delete</a>
-                                                                                                        {% else %}
-                                                                                                            <!-- TODO: Implement Document Reports -->
-                                                                                                            <a class="btn btn-outline-secondary" href="#">report</a>
-                                                                                                        {% endif %}
-                                                                                                        <a id="{{ reply2.id }}" class="reply-btn btn btn-outline-secondary">reply</a>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        {% endif %}
-                                                                                    </li>
-                                                                                    <div class="source">
-                                                                                        <pre><code>{{reply2.content}}</code></pre>
-                                                                                    </div>
-                                                                                    <div class="reply-form-container-{{ reply2.id }}">
-                                                                                    </div>
-                                                                                {% endfor %}
-                                                                            </ul>
-                                                                        {% endif %}
-                                                                    </div>
-                                                                {% endfor %}
-                                                            </ul>
-                                                        {% endif %}
-                                                    </div>
+                                                                                    {% endif %}
+                                                                                </li>
+                                                                                <div class="source">
+                                                                                    <pre><code>{{reply2.content}}</code></pre>
+                                                                                </div>
+                                                                                <div class="reply-form-container-{{ reply2.id }}">
+                                                                                </div>
+                                                                            {% endfor %}
+                                                                        </ul>
+                                                                    {% endif %}
+                                                                </div>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    {% endif %}
                                                 </div>
                                             </div>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-                            {% if current_user.is_authenticated %}
-                                <div class="reply-form-container-{{ document.id }}">
-                                    <div class="add_comment_form">
-                                        <form class="col" method="POST" action="/{{ document.id }}/">
-                                            {{ form.csrf_token }}
-                                            <div>
-                                                {{ form.content.label }}
-                                                {{ form.content }}
-                                            </div>
-                                            <div>
-                                                {{ form.syntax.label }}
-                                                {{ form.syntax }}
-                                            </div>
-                                            {{ form.submit }}
-                                        </form>
-                                    </div>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        {% if current_user.is_authenticated %}
+                            <div class="reply-form-container-{{ document.id }}">
+                                <div class="add_comment_form">
+                                    <form class="col" method="POST" action="/{{ document.id }}/">
+                                        {{ form.csrf_token }}
+                                        <div>
+                                            {{ form.content.label }}
+                                            {{ form.content }}
+                                        </div>
+                                        <div>
+                                            {{ form.syntax.label }}
+                                            {{ form.syntax }}
+                                        </div>
+                                        {{ form.submit }}
+                                    </form>
                                 </div>
-                            {% else %}
-                                <div class="content_text">
-                                    <i class="fa fa-info-circle" aria-hidden="true"></i>
-                                    Please, <a href="/login/">Sign In</a> to add comment
-                                </div>
-                            {% endif %}
+                            </div>
+                        {% else %}
+                            <div class="content_text">
+                                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                Please, <a href="/login/">Sign In</a> to add comment
+                            </div>
+                        {% endif %}
                         <a id="{{ document.id }}"
-                            class="reply-btn add-a-comment btn-outline-secondary">Add a Comment
+                           class="reply-btn add-a-comment btn-outline-secondary">Add a Comment
                         </a>
-                        </div>
                     </div>
                 </div>
             </div>
