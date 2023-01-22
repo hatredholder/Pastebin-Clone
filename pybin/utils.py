@@ -354,6 +354,7 @@ def create_base64_img_data(user):
 
 
 def get_my_pastes(current_user):
+    """Returns last 8 pastes current_user made"""
     my_pastes = models.Paste.objects.filter(author=current_user)[:8].order_by(
         "-created",
     )
@@ -361,6 +362,7 @@ def get_my_pastes(current_user):
 
 
 def get_public_pastes(current_user):
+    """Returns 8 most recenet public pastes"""
     public_pastes = models.Paste.objects.filter(exposure="Public")[:8].order_by(
         "-created",
     )
@@ -368,11 +370,13 @@ def get_public_pastes(current_user):
 
 
 def get_messages(current_user):
+    """Returns all messages that current_user sent or received"""
     messages = models.Message.objects(Q(author=current_user) | Q(receiver=current_user))
     return messages
 
 
 def delete_reply_by_uuid_hash(message, reply_hash):
+    """Deletes reply by uuid hash (wow thats a useful comment)"""
     message.update(pull__replies__uuid_hash=reply_hash)
 
 
