@@ -9,7 +9,7 @@ from app import app
 
 import authentication.models as auth_models
 
-from flask import flash, redirect, url_for
+from flask import flash, redirect, request, url_for
 
 from flask_login import current_user
 
@@ -45,7 +45,7 @@ def create_paste_if_submitted(form):
             flash("Max amount of tags is 10")
             return
 
-        # Add paste
+        # Add author to paste if user is authenticated
         if current_user.is_authenticated:
             paste = models.Paste(
                 content=content,
@@ -107,7 +107,7 @@ def create_reply_if_submitted(form, message):
 
     if form.validate_on_submit():
         content = form.content.data
-        
+
         reply = models.Reply(
             content=content,
             author=current_user,
@@ -378,6 +378,64 @@ def get_messages(current_user):
 def delete_reply_by_uuid_hash(message, reply_hash):
     """Deletes reply by uuid hash (wow thats a useful comment)"""
     message.update(pull__replies__uuid_hash=reply_hash)
+
+
+def get_document_and_rating_value_from_request():
+    """Gets document id and rating from request, sends document found by id and rating"""
+    return get_document_from_hash(request.form.get("data_key")), request.form.get("data_rating")
+
+
+def add_rating_to_document(document, rating_value):
+    """Checks document rating status by current_user and adds rating"""
+
+    # if like button is pressed
+    if rating_value == "1":
+
+        # if user already liked
+        if current_user in document.liked:
+            document.liked.remove(current_user)
+            document.rating -= 1
+
+        # if user already disliked
+        elif current_user in document.disliked:
+            document.disliked.remove(current_user)
+            document.liked.append(current_user)
+            document.rating += 2
+
+        # if user didnt set a rating yet
+        else:
+            document.liked.append(current_user)
+            document.rating += 1
+
+    # if dislike button is pressed
+    if rating_value == "-1":
+
+        # if user already liked
+        if current_user in document.liked:
+            document.disliked.append(current_user)
+            document.liked.remove(current_user)
+            document.rating -= 2
+
+        # if user already disliked
+        elif current_user in document.disliked:
+            document.disliked.remove(current_user)
+            document.rating += 1
+
+        # if user didnt set a rating yet
+        else:
+            document.disliked.append(current_user)
+            document.rating -= 1
+
+    document.save()
+
+
+def create_rating_json_response(document):
+    return {
+        "key": document.id,
+        "rating": document.rating,
+        "likes": len(document.liked),
+        "dislikes": len(document.disliked),
+    }
 
 
 # Decorators

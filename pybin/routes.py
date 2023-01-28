@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, request, url_for
+from flask import Blueprint, jsonify, redirect, render_template, request, url_for
 
 from flask_login import current_user, login_required
 
@@ -24,6 +24,17 @@ def home():
 @pybin.route("/error/<error_code>/")
 def error(error_code):
     return render_template("pybin/error.html", error_code=error_code)
+
+
+@pybin.route("/rating/", methods=["POST"])
+def rating():
+    if request.method == "POST":
+        document, rating_value = utils.get_document_and_rating_value_from_request()
+
+        utils.add_rating_to_document(document, rating_value)
+
+        # return json
+        return jsonify(utils.create_rating_json_response(document))
 
 
 @pybin.route("/<uuid_hash>/", methods=["GET", "POST"])
@@ -112,7 +123,7 @@ def message_view(uuid_hash):
 @pybin.route("/message/compose/")
 @login_required
 def send_message():
-    # NOTE: This route doesn't actually serve any purpose
+    # NOTE: This route doesn't actually serve any functionality
     # and is made just to make pybin look more like pastebin
     return render_template("pybin/send_message.html")
 
@@ -149,7 +160,11 @@ def my_comments(username):
 
     comments = models.Comment.objects(author=user, active=True)
 
-    return render_template("pybin/my_comments.html", user=user, comments=reversed(comments))
+    return render_template(
+        "pybin/my_comments.html",
+        user=user,
+        comments=reversed(comments),
+    )
 
 
 @pybin.route("/messages/")

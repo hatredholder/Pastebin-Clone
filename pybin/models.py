@@ -35,6 +35,10 @@ class Paste(db.Document):
         default="Public",
     )
 
+    rating = db.IntField(required=False, default=0)
+    liked = db.ListField(db.ReferenceField("User"))
+    disliked = db.ListField(db.ReferenceField("User"))
+
     comments = db.ListField(db.ReferenceField("Comment"))
 
     created = db.DateTimeField(default=datetime.datetime.now)
@@ -62,6 +66,10 @@ class Comment(db.Document):
     )
     size = db.FloatField(required=False)
     paste = db.ReferenceField("Paste", required=False)
+
+    rating = db.IntField(required=False, default=0)
+    liked = db.ListField(db.ReferenceField("User"))
+    disliked = db.ListField(db.ReferenceField("User"))
 
     comments = db.ListField(
         db.ReferenceField("self"),

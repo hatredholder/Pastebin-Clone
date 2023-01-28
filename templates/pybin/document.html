@@ -85,8 +85,42 @@
                                 {{ document.size }} |
                                 {% if document.category %}{{ document.category }} |{% endif %}
                                 <!-- TODO: Implement Document Rating -->
-                                <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-up" aria-hidden="true"></i> 0</a>
-                                <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-down" aria-hidden="true"></i> 0</a>
+                                {% if current_user in document.liked %}
+                                    <button data-rating="1" data-key="{{ document.id }}" class="rating-btn thumbs-up btn btn-success">
+                                        <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                        <span class="like-count">{{ document.liked|length()}}</span>
+                                    </button>
+                                    <button data-rating="-1"
+                                            data-key="{{ document.id }}"
+                                            class="rating-btn thumbs-down btn btn-outline-secondary">
+                                        <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                                        <span class="dislike-count">{{ document.disliked|length()}}</span>
+                                    </button>
+                                {% elif current_user in document.disliked %}
+                                    <button data-rating="1"
+                                            data-key="{{ document.id }}"
+                                            class="rating-btn thumbs-up btn btn-outline-secondary">
+                                        <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                        <span class="like-count">{{ document.liked|length()}}</span>
+                                    </button>
+                                    <button data-rating="-1" data-key="{{ document.id }}" class="rating-btn thumbs-down btn btn-danger">
+                                        <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                                        <span class="dislike-count">{{ document.disliked|length()}}</span>
+                                    </button>
+                                {% else %}
+                                    <button data-rating="1"
+                                            data-key="{{ document.id }}"
+                                            class="rating-btn thumbs-up btn btn-outline-secondary">
+                                        <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                        <span class="like-count">{{ document.liked|length()}}</span>
+                                    </button>
+                                    <button data-rating="-1"
+                                            data-key="{{ document.id }}"
+                                            class="rating-btn thumbs-down btn btn-outline-secondary">
+                                        <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                                        <span class="dislike-count">{{ document.disliked|length()}}</span>
+                                    </button>
+                                {% endif %}
                             </div>
                             <div class="right ms-auto d-inline-flex">
                                 <a class="btn btn-outline-secondary" href="/raw/{{ document.id }}">raw</a>
@@ -396,6 +430,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
         <script src="{{url_for('static', filename='js/reply.js')}}"></script>
+        <script src="{{url_for('static', filename='js/rating.js')}}"></script>
         <link rel="stylesheet"
               href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/base16/material-darker.min.css">
         <link rel="stylesheet"
