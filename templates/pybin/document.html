@@ -23,6 +23,7 @@
                 {% endif %}
             </div>
             <div class="content col">
+                <span hidden class="document_id">{{document.id}}</span>
                 <div class="post_view">
                     <div class="details d-flex">
                         <div class="p-2 user_icon">
@@ -44,7 +45,7 @@
                                 </div>
                                 <div class="px-2 rating" title="Rating">
                                     <i class="fa fa-star"></i>
-                                    {{ document.rating }}
+                                    <span class="rating_int">{{ document.rating }}</span>
                                 </div>
                                 <div class="px-2 expire" title="When this paste automatically deleted">
                                     <i class="fa fa-clock-o"></i>
@@ -84,42 +85,47 @@
                                 </a>
                                 {{ document.size }} |
                                 {% if document.category %}{{ document.category }} |{% endif %}
-                                <!-- TODO: Implement Document Rating -->
                                 {% if current_user in document.liked %}
-                                    <button data-rating="1" data-key="{{ document.id }}" class="rating-btn thumbs-up btn btn-success">
-                                        <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                                        <span class="like-count">{{ document.liked|length()}}</span>
-                                    </button>
-                                    <button data-rating="-1"
-                                            data-key="{{ document.id }}"
-                                            class="rating-btn thumbs-down btn btn-outline-secondary">
-                                        <i class="fa fa-thumbs-down" aria-hidden="true"></i>
-                                        <span class="dislike-count">{{ document.disliked|length()}}</span>
-                                    </button>
+                                    <div class="rating-btns">
+                                        <button data-rating="1" data-key="{{ document.id }}" class="rating-btn thumbs-up btn btn-success">
+                                            <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                            <span class="like-count">{{ document.liked|length()}}</span>
+                                        </button>
+                                        <button data-rating="-1"
+                                                data-key="{{ document.id }}"
+                                                class="rating-btn thumbs-down btn btn-outline-secondary">
+                                            <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                                            <span class="dislike-count">{{ document.disliked|length()}}</span>
+                                        </button>
+                                    </div>
                                 {% elif current_user in document.disliked %}
-                                    <button data-rating="1"
-                                            data-key="{{ document.id }}"
-                                            class="rating-btn thumbs-up btn btn-outline-secondary">
-                                        <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                                        <span class="like-count">{{ document.liked|length()}}</span>
-                                    </button>
-                                    <button data-rating="-1" data-key="{{ document.id }}" class="rating-btn thumbs-down btn btn-danger">
-                                        <i class="fa fa-thumbs-down" aria-hidden="true"></i>
-                                        <span class="dislike-count">{{ document.disliked|length()}}</span>
-                                    </button>
+                                    <div class="rating-btns">
+                                        <button data-rating="1"
+                                                data-key="{{ document.id }}"
+                                                class="rating-btn thumbs-up btn btn-outline-secondary">
+                                            <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                            <span class="like-count">{{ document.liked|length()}}</span>
+                                        </button>
+                                        <button data-rating="-1" data-key="{{ document.id }}" class="rating-btn thumbs-down btn btn-danger">
+                                            <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                                            <span class="dislike-count">{{ document.disliked|length()}}</span>
+                                        </button>
+                                    </div>
                                 {% else %}
-                                    <button data-rating="1"
-                                            data-key="{{ document.id }}"
-                                            class="rating-btn thumbs-up btn btn-outline-secondary">
-                                        <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                                        <span class="like-count">{{ document.liked|length()}}</span>
-                                    </button>
-                                    <button data-rating="-1"
-                                            data-key="{{ document.id }}"
-                                            class="rating-btn thumbs-down btn btn-outline-secondary">
-                                        <i class="fa fa-thumbs-down" aria-hidden="true"></i>
-                                        <span class="dislike-count">{{ document.disliked|length()}}</span>
-                                    </button>
+                                    <div class="rating-btns">
+                                        <button data-rating="1"
+                                                data-key="{{ document.id }}"
+                                                class="rating-btn thumbs-up btn btn-outline-secondary">
+                                            <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                            <span class="like-count">{{ document.liked|length()}}</span>
+                                        </button>
+                                        <button data-rating="-1"
+                                                data-key="{{ document.id }}"
+                                                class="rating-btn thumbs-down btn btn-outline-secondary">
+                                            <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                                            <span class="dislike-count">{{ document.disliked|length()}}</span>
+                                        </button>
+                                    </div>
                                 {% endif %}
                             </div>
                             <div class="right ms-auto d-inline-flex">
@@ -185,9 +191,48 @@
                                                                 {% endif %}
                                                             </a>
                                                             {{ comment.size }} |
-                                                            <!-- TODO: Implement Document Rating -->
-                                                            <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-up" aria-hidden="true"></i> 0</a>
-                                                            <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-down" aria-hidden="true"></i> 0</a>
+                                                            {% if current_user in comment.liked %}
+                                                                <div class="rating-btns">
+                                                                    <button data-rating="1" data-key="{{ comment.id }}" class="rating-btn thumbs-up btn btn-success">
+                                                                        <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                                                        <span class="like-count">{{ comment.liked|length()}}</span>
+                                                                    </button>
+                                                                    <button data-rating="-1"
+                                                                            data-key="{{ comment.id }}"
+                                                                            class="rating-btn thumbs-down btn btn-outline-secondary">
+                                                                        <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                                                                        <span class="dislike-count">{{ comment.disliked|length()}}</span>
+                                                                    </button>
+                                                                </div>
+                                                            {% elif current_user in comment.disliked %}
+                                                                <div class="rating-btns">
+                                                                    <button data-rating="1"
+                                                                            data-key="{{ comment.id }}"
+                                                                            class="rating-btn thumbs-up btn btn-outline-secondary">
+                                                                        <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                                                        <span class="like-count">{{ comment.liked|length()}}</span>
+                                                                    </button>
+                                                                    <button data-rating="-1" data-key="{{ comment.id }}" class="rating-btn thumbs-down btn btn-danger">
+                                                                        <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                                                                        <span class="dislike-count">{{ comment.disliked|length()}}</span>
+                                                                    </button>
+                                                                </div>
+                                                            {% else %}
+                                                                <div class="rating-btns">
+                                                                    <button data-rating="1"
+                                                                            data-key="{{ comment.id }}"
+                                                                            class="rating-btn thumbs-up btn btn-outline-secondary">
+                                                                        <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                                                        <span class="like-count">{{ comment.liked|length()}}</span>
+                                                                    </button>
+                                                                    <button data-rating="-1"
+                                                                            data-key="{{ comment.id }}"
+                                                                            class="rating-btn thumbs-down btn btn-outline-secondary">
+                                                                        <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                                                                        <span class="dislike-count">{{ comment.disliked|length()}}</span>
+                                                                    </button>
+                                                                </div>
+                                                            {% endif %}
                                                         </div>
                                                         <div class="right ms-auto d-inline-flex">
                                                             <a class="btn btn-outline-secondary" href="/{{ comment.id }}/">view</a>
@@ -241,9 +286,48 @@
                                                                                         {% endif %}
                                                                                     </a>
                                                                                     {{ reply.size }} |
-                                                                                    <!-- TODO: Implement Document Rating -->
-                                                                                    <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-up" aria-hidden="true"></i> 0</a>
-                                                                                    <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-down" aria-hidden="true"></i> 0</a>
+                                                                                    {% if current_user in reply.liked %}
+                                                                                        <div class="rating-btns">
+                                                                                            <button data-rating="1" data-key="{{ reply.id }}" class="rating-btn thumbs-up btn btn-success">
+                                                                                                <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                                                                                <span class="like-count">{{ reply.liked|length()}}</span>
+                                                                                            </button>
+                                                                                            <button data-rating="-1"
+                                                                                                    data-key="{{ reply.id }}"
+                                                                                                    class="rating-btn thumbs-down btn btn-outline-secondary">
+                                                                                                <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                                                                                                <span class="dislike-count">{{ reply.disliked|length()}}</span>
+                                                                                            </button>
+                                                                                        </div>
+                                                                                    {% elif current_user in reply.disliked %}
+                                                                                        <div class="rating-btns">
+                                                                                            <button data-rating="1"
+                                                                                                    data-key="{{ reply.id }}"
+                                                                                                    class="rating-btn thumbs-up btn btn-outline-secondary">
+                                                                                                <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                                                                                <span class="like-count">{{ reply.liked|length()}}</span>
+                                                                                            </button>
+                                                                                            <button data-rating="-1" data-key="{{ reply.id }}" class="rating-btn thumbs-down btn btn-danger">
+                                                                                                <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                                                                                                <span class="dislike-count">{{ reply.disliked|length()}}</span>
+                                                                                            </button>
+                                                                                        </div>
+                                                                                    {% else %}
+                                                                                        <div class="rating-btns">
+                                                                                            <button data-rating="1"
+                                                                                                    data-key="{{ reply.id }}"
+                                                                                                    class="rating-btn thumbs-up btn btn-outline-secondary">
+                                                                                                <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                                                                                <span class="like-count">{{ reply.liked|length()}}</span>
+                                                                                            </button>
+                                                                                            <button data-rating="-1"
+                                                                                                    data-key="{{ reply.id }}"
+                                                                                                    class="rating-btn thumbs-down btn btn-outline-secondary">
+                                                                                                <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                                                                                                <span class="dislike-count">{{ reply.disliked|length()}}</span>
+                                                                                            </button>
+                                                                                        </div>
+                                                                                    {% endif %}
                                                                                 </div>
                                                                                 <div class="right ms-auto d-inline-flex">
                                                                                     <a class="btn btn-outline-secondary" href="/{{ reply.id }}/">view</a>
@@ -300,9 +384,48 @@
                                                                                                         {% endif %}
                                                                                                     </a>
                                                                                                     {{ reply2.size }} |
-                                                                                                    <!-- TODO: Implement Document Rating -->
-                                                                                                    <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-up" aria-hidden="true"></i> 0</a>
-                                                                                                    <a class="btn btn-outline-secondary"><i class="fa fa-thumbs-down" aria-hidden="true"></i> 0</a>
+                                                                                                    {% if current_user in reply2.liked %}
+                                                                                                        <div class="rating-btns">
+                                                                                                            <button data-rating="1" data-key="{{ reply2.id }}" class="rating-btn thumbs-up btn btn-success">
+                                                                                                                <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                                                                                                <span class="like-count">{{ reply2.liked|length()}}</span>
+                                                                                                            </button>
+                                                                                                            <button data-rating="-1"
+                                                                                                                    data-key="{{ reply2.id }}"
+                                                                                                                    class="rating-btn thumbs-down btn btn-outline-secondary">
+                                                                                                                <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                                                                                                                <span class="dislike-count">{{ reply2.disliked|length()}}</span>
+                                                                                                            </button>
+                                                                                                        </div>
+                                                                                                    {% elif current_user in reply2.disliked %}
+                                                                                                        <div class="rating-btns">
+                                                                                                            <button data-rating="1"
+                                                                                                                    data-key="{{ reply2.id }}"
+                                                                                                                    class="rating-btn thumbs-up btn btn-outline-secondary">
+                                                                                                                <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                                                                                                <span class="like-count">{{ reply2.liked|length()}}</span>
+                                                                                                            </button>
+                                                                                                            <button data-rating="-1" data-key="{{ reply2.id }}" class="rating-btn thumbs-down btn btn-danger">
+                                                                                                                <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                                                                                                                <span class="dislike-count">{{ reply2.disliked|length()}}</span>
+                                                                                                            </button>
+                                                                                                        </div>
+                                                                                                    {% else %}
+                                                                                                        <div class="rating-btns">
+                                                                                                            <button data-rating="1"
+                                                                                                                    data-key="{{ reply2.id }}"
+                                                                                                                    class="rating-btn thumbs-up btn btn-outline-secondary">
+                                                                                                                <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                                                                                                <span class="like-count">{{ reply2.liked|length()}}</span>
+                                                                                                            </button>
+                                                                                                            <button data-rating="-1"
+                                                                                                                    data-key="{{ reply2.id }}"
+                                                                                                                    class="rating-btn thumbs-down btn btn-outline-secondary">
+                                                                                                                <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                                                                                                                <span class="dislike-count">{{ reply2.disliked|length()}}</span>
+                                                                                                            </button>
+                                                                                                        </div>
+                                                                                                    {% endif %}
                                                                                                 </div>
                                                                                                 <div class="right ms-auto d-inline-flex">
                                                                                                     <a class="btn btn-outline-secondary" href="/{{ reply2.id }}/">view</a>

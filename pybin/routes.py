@@ -33,7 +33,6 @@ def rating():
 
         utils.add_rating_to_document(document, rating_value)
 
-        # return json
         return jsonify(utils.create_rating_json_response(document))
 
 
