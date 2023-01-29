@@ -1,6 +1,10 @@
+import datetime
+
 from app import db
 
 from flask_login import UserMixin
+
+import pybin.models as pybin_models
 
 
 class User(UserMixin, db.Document):
@@ -21,9 +25,21 @@ class User(UserMixin, db.Document):
     # TODO: Implement Social Authentication (Set required to False)
     password_hash = db.StringField(max_length=1000, required=True)
 
+    created = db.DateTimeField(default=datetime.datetime.now)
+
     def clean(self):
         if not self.avatar:
             self.avatar.put(open("static/img/guest.png", "rb"))  # noqa: SIM115
 
     def __str__(self):
         return f"<User {self.username}>"
+
+    def get_total_rating(self):
+        """Returns total rating from all pastes and comments the user made"""
+
+        result = 0
+        for i in pybin_models.Paste.objects(author=self):
+            result += i.rating
+        for i in pybin_models.Comment.objects(author=self):
+            result += i.rating
+        return result
