@@ -9,7 +9,22 @@
                 {% endwith %}
             </div>
             <div class="content col">
-                {{ user.username|capitalize }}'s Pybin
+            <div class="user-view">
+                <div class="details d-flex">
+                    <div class="user-icon d-inline-flex">
+                        <img src="{{profile_image(user)}}" width="40" height="40">
+                    </div>
+                    <div class="info-bar">
+                        <div class="info-top">
+                            {{ user.username|capitalize }}'s Pybin
+                            <a href="/message/compose/" title="Send a private message to: {{ user.username }}"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>
+                        </div>
+                        <div class="info-bottom align-items-end d-flex">
+                            <span class="rating px-1" title="Accumulative total rating of all this users pastes."><i class="fa fa-star" aria-hidden="true"></i> {{user.get_total_rating()}}</span>
+                            <span class="date px-1" title="When this user joined Pybin"><i class="fa fa-calendar" aria-hidden="true"></i> {{user.created|timesince}}</span>
+                        </div>
+                    </div>
+                </div>
                 <table>
                     <thead>
                         <tr>
@@ -64,6 +79,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
+            </div>
             </div>
             <div class="sidebar col-sm-3">
                 {% if current_user.is_authenticated %}
