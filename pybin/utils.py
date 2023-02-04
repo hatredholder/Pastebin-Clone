@@ -382,7 +382,9 @@ def delete_reply_by_uuid_hash(message, reply_hash):
 
 def get_document_and_rating_value_from_request():
     """Gets document id and rating from request, sends document found by id and rating"""
-    return get_document_from_hash(request.form.get("data_key")), request.form.get("data_rating")
+    return get_document_from_hash(request.form.get("data_key")), request.form.get(
+        "data_rating",
+    )
 
 
 def add_rating_to_document(document, rating_value):
