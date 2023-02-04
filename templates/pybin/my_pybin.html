@@ -9,77 +9,85 @@
                 {% endwith %}
             </div>
             <div class="content col">
-            <div class="user-view">
-                <div class="details d-flex">
-                    <div class="user-icon d-inline-flex">
-                        <img src="{{profile_image(user)}}" width="40" height="40">
-                    </div>
-                    <div class="info-bar">
-                        <div class="info-top">
-                            {{ user.username|capitalize }}'s Pybin
-                            <a href="/message/compose/" title="Send a private message to: {{ user.username }}"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>
+                <div class="user-view">
+                    <div class="details d-flex">
+                        <div class="user-icon d-inline-flex">
+                            <img src="{{ profile_image(user)}}" width="40" height="40">
                         </div>
-                        <div class="info-bottom align-items-end d-flex">
-                            <span class="rating px-1" title="Accumulative total rating of all this users pastes."><i class="fa fa-star" aria-hidden="true"></i> {{user.get_total_rating()}}</span>
-                            <span class="date px-1" title="When this user joined Pybin"><i class="fa fa-calendar" aria-hidden="true"></i> {{user.created|timesince}}</span>
+                        <div class="info-bar">
+                            <div class="info-top">
+                                {{ user.username|capitalize }}'s Pybin
+                                <a href="/message/compose/"
+                                   title="Send a private message to: {{ user.username }}"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>
+                            </div>
+                            <div class="info-bottom align-items-end d-flex">
+                                <span class="rating px-1"
+                                      title="Accumulative total rating of all this users pastes."><i class="fa fa-star" aria-hidden="true"></i> {{ user.get_total_rating()}}</span>
+                                <span class="date px-1" title="When this user joined Pybin"><i class="fa fa-calendar" aria-hidden="true"></i> {{ user.created|timesince }}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Name / title</th>
-                            <th>Added</th>
-                            <th>Expires</th>
-                            <th>Comments</th>
-                            <th>Syntax</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for paste in pastes %}
+                    <table>
+                        <thead>
                             <tr>
-                                <td>
-                                    {% if paste.exposure == "Public" %}
-                                        <i class="fa fa-globe" aria-hidden="true"></i>
-                                    {% elif paste.exposure == 'Unlisted' %}
-                                        <i class="fa fa-link" aria-hidden="true"></i>
-                                    {% elif paste.exposure == 'Private' %}
-                                        <i class="fa fa-lock" aria-hidden="true"></i>
-                                    {% endif %}
-                                    <a href="/{{ paste.uuid_hash }}">{{ paste.title }}</a>
-                                </td>
-                                <td>{{ paste.created.strftime("%b %d, %Y")}}</td>
-                                {% if paste.expiration == 0 %}
-                                    <td>Never</td>
-                                {% elif paste.expiration == 3600 %}
-                                    <td>1 Hour</td>
-                                {% elif paste.expiration == 86400 %}
-                                    <td>1 Day</td>
-                                {% elif paste.expiration == 2592000 %}
-                                    <td>1 Month</td>
-                                {% elif paste.expiration == 31104000 %}
-                                    <td>1 Year</td>
-                                {% endif %}
-                                <td>{{ paste.expiration }}</td>
-                                <td>{{ paste.comments|length }}</td>
-                                <td>{% if paste.syntax != "plaintext" %}{{ paste.syntax }}{% else %}None{% endif %}</td>
-                                {% if current_user == paste.author %}
-                                    <td>
-                                        <a href="/delete/{{ paste.uuid_hash }}"
-                                           class="btn btn-danger"
-                                           type="submit">delete</a>
-                                    </td>
-                                    <td>
-                                        <a href="/edit/{{ paste.uuid_hash }}"
-                                           class="btn btn-success"
-                                           type="submit">edit</a>
-                                    </td>
-                                {% endif %}
+                                <th>Name / title</th>
+                                <th>Added</th>
+                                <th>Expires</th>
+                                <th>Comments</th>
+                                <th>Syntax</th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            {% for paste in pastes %}
+                                <tr>
+                                    <td>
+                                        {% if paste.exposure == "Public" %}
+                                            <i class="fa fa-globe" aria-hidden="true"></i>
+                                        {% elif paste.exposure == 'Unlisted' %}
+                                            <i class="fa fa-link" aria-hidden="true"></i>
+                                        {% elif paste.exposure == 'Private' %}
+                                            <i class="fa fa-lock" aria-hidden="true"></i>
+                                        {% endif %}
+                                        <a href="/{{ paste.uuid_hash }}">{{ paste.title }}</a>
+                                    </td>
+                                    <td>{{ paste.created.strftime("%b %d, %Y")}}</td>
+                                    {% if paste.expiration == 0 %}
+                                        <td>Never</td>
+                                    {% elif paste.expiration == 3600 %}
+                                        <td>1 Hour</td>
+                                    {% elif paste.expiration == 86400 %}
+                                        <td>1 Day</td>
+                                    {% elif paste.expiration == 2592000 %}
+                                        <td>1 Month</td>
+                                    {% elif paste.expiration == 31104000 %}
+                                        <td>1 Year</td>
+                                    {% endif %}
+                                    <td>{{ paste.expiration }}</td>
+                                    <td>{{ paste.comments|length }}</td>
+                                    <td>
+                                        {% if paste.syntax != "plaintext" %}
+                                            {{ paste.syntax }}
+                                        {% else %}
+                                            None
+                                        {% endif %}
+                                    </td>
+                                    {% if current_user == paste.author %}
+                                        <td>
+                                            <a href="/delete/{{ paste.uuid_hash }}"
+                                               class="btn btn-danger"
+                                               type="submit">delete</a>
+                                        </td>
+                                        <td>
+                                            <a href="/edit/{{ paste.uuid_hash }}"
+                                               class="btn btn-success"
+                                               type="submit">edit</a>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div class="sidebar col-sm-3">
                 {% if current_user.is_authenticated %}
