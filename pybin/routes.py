@@ -182,7 +182,7 @@ def profile():
     if utils.update_profile(form, current_user):
         return redirect(url_for("pybin.profile"))
 
-    return render_template("pybin/profile.html", form=form)
+    return render_template("pybin/edit_profile.html", form=form)
 
 
 @pybin.route("/user/change-avatar/", methods=["GET", "POST"])

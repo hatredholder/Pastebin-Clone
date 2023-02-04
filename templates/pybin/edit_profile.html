@@ -12,40 +12,57 @@
                 {% endwith %}
             </div>
             <div class="content col">
-                <form method="POST" action="/user/profile/">
-                    {{ form.csrf_token }}
-                    <div>
-                        Username:
-                        {{ current_user.username }}
+                <div class="content_title">
+                    My Profile
+                <hr>
+                </div>
+                <div class="user_page d-flex">
+                    <div class="form_frame_left col-sm-6">
+                        <form method="POST" action="/user/profile/">
+                            {{ form.csrf_token }}
+                            <div>
+                                Username:
+                                {{ current_user.username }}
+                            </div>
+                            <div>
+                                {{ form.email.label }}
+                                {{ form.email }}
+                            </div>
+                            <div>
+                                Email Status:
+                                {% if current_user.email_status %}
+                                    verified!
+                                {% else %}
+                                    <!-- TODO: Implement Email Verification -->
+                                    not verified! We have sent you an email [ <a href="#">resend verification email</a>]
+                                {% endif %}
+                            </div>
+                            <div>
+                                {{ form.website_url.label }}
+                                {{ form.website_url }}
+                            </div>
+                            <div>
+                                {{ form.location.label }}
+                                {{ form.location }}
+                            </div>
+                            <div>
+                                Avatar:
+                                <img src="{{ profile_image(current_user)}}">
+                                [ <a href="/user/change-avatar/">change avatar</a> ]
+                            </div>
+                            {{ form.submit }}
+                        </form>
                     </div>
-                    <div>
-                        {{ form.email.label }}
-                        {{ form.email }}
-                    </div>
-                    <div>
-                        Email Status:
-                        {% if current_user.email_status %}
-                            verified!
-                        {% else %}
-                            <!-- TODO: Implement Email Verification -->
-                            not verified! We have sent you an email [ <a href="#">resend verification email</a>]
-                        {% endif %}
-                    </div>
-                    <div>
-                        {{ form.website_url.label }}
-                        {{ form.website_url }}
-                    </div>
-                    <div>
-                        {{ form.location.label }}
-                        {{ form.location }}
-                    </div>
-                    <div>
-                        Avatar:
-                        <img src="{{ profile_image(current_user)}}">
-                        [ <a href="/user/change-avatar/">change avatar</a> ]
-                    </div>
-                    {{ form.submit }}
-                </form>
+                    <fieldset class="account_related_pages border rounded border-dark px-2 col-sm-2.5">
+                        <h6>ACCOUNT RELATED PAGES</h3>
+                        <a class="btn btn-outline-dark" href="/user/profile/">Profile</a>
+                        <br>
+                        <a class="btn btn-outline-dark" href="/user/password/">Password</a>
+                        <br>
+                        <a class="btn btn-outline-dark" href="/user/change-avatar/">Avatar</a>
+                        <br>
+                    </fieldset>
+                </div>
             </div>
             <div class="sidebar col-sm-3">
                 {% if current_user.is_authenticated %}

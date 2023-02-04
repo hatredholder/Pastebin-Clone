@@ -12,16 +12,33 @@
                 {% endwith %}
             </div>
             <div class="content col">
-                <form method="POST"
-                      action="/user/change-avatar/"
-                      enctype="multipart/form-data">
-                    {{ form.csrf_token }}
-                    <div>
-                        {{ form.avatar.label }}
-                        {{ form.avatar }}
+                <div class="content_title">
+                    Change Your Avatar
+                    <hr>
+                </div>
+                <div class="user_page d-flex">
+                    <div class="form_frame_left col-sm-6">
+                        <form method="POST"
+                              action="/user/change-avatar/"
+                              enctype="multipart/form-data">
+                            {{ form.csrf_token }}
+                            <div>
+                                {{ form.avatar.label }}
+                                {{ form.avatar }}
+                            </div>
+                            {{ form.submit }}
+                        </form>
                     </div>
-                    {{ form.submit }}
-                </form>
+                    <fieldset class="account_related_pages border rounded border-dark px-2 col-sm-2.5">
+                        <h6>ACCOUNT RELATED PAGES</h3>
+                        <a class="btn btn-outline-dark" href="/user/profile/">Profile</a>
+                        <br>
+                        <a class="btn btn-outline-dark" href="/user/password/">Password</a>
+                        <br>
+                        <a class="btn btn-outline-dark" href="/user/change-avatar/">Avatar</a>
+                        <br>
+                    </fieldset>
+                </div>
             </div>
             <div class="sidebar col-sm-3">
                 {% if current_user.is_authenticated %}
