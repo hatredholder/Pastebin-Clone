@@ -62,7 +62,7 @@
                                 {% endif %}
                                 <td>{{ paste.expiration }}</td>
                                 <td>{{ paste.comments|length }}</td>
-                                <td>{{ paste.syntax }}</td>
+                                <td>{% if paste.syntax != "plaintext" %}{{ paste.syntax }}{% else %}None{% endif %}</td>
                                 {% if current_user == paste.author %}
                                     <td>
                                         <a href="/delete/{{ paste.uuid_hash }}"
@@ -103,7 +103,7 @@
                                 {% endif %}
                                 <a href="/{{ paste.id }}">{{ paste.title }}</a>
                                 <div class="details">
-                                    {% if paste.syntax != "None" %}{{ paste.syntax|capitalize }} |{% endif %}
+                                    {% if paste.syntax != "plaintext" %}{{ paste.syntax|capitalize }} |{% endif %}
                                     {{ paste.created|timesince }}| {{ paste.size }} KB
                                 </div>
                             </li>
@@ -126,7 +126,7 @@
                             {% endif %}
                             <a href="/{{ paste.id }}">{{ paste.title }}</a>
                             <div class="details">
-                                {% if paste.syntax != "None" %}{{ paste.syntax|capitalize }} |{% endif %}
+                                {% if paste.syntax != "plaintext" %}{{ paste.syntax|capitalize }} |{% endif %}
                                 {{ paste.created|timesince }}| {{ paste.size }} KB
                             </div>
                         </li>

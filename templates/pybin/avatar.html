@@ -62,7 +62,7 @@
                                 {% endif %}
                                 <a href="/{{ paste.id }}">{{ paste.title }}</a>
                                 <div class="details">
-                                    {% if paste.syntax != "None" %}{{ paste.syntax|capitalize }} |{% endif %}
+                                    {% if paste.syntax != "plaintext" %}{{ paste.syntax|capitalize }} |{% endif %}
                                     {{ paste.created|timesince }}| {{ paste.size }} KB
                                 </div>
                             </li>
@@ -85,7 +85,7 @@
                             {% endif %}
                             <a href="/{{ paste.id }}">{{ paste.title }}</a>
                             <div class="details">
-                                {% if paste.syntax != "None" %}{{ paste.syntax|capitalize }} |{% endif %}
+                                {% if paste.syntax != "plaintext" %}{{ paste.syntax|capitalize }} |{% endif %}
                                 {{ paste.created|timesince }}| {{ paste.size }} KB
                             </div>
                         </li>

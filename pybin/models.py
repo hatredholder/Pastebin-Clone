@@ -16,7 +16,7 @@ class Paste(db.Document):
     syntax = db.StringField(
         choices=choices.SYNTAXES,
         required=True,
-        default="None",
+        default="plaintext",
     )
     category = db.StringField(
         choices=choices.CATEGORIES,

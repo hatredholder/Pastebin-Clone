@@ -45,7 +45,7 @@ EXPOSURE = (
 
 
 SYNTAXES = (
-    ("None", "None"),
+    ("plaintext", "None"),
     ("1c", "1C"),
     ("abnf", "ABNF"),
     ("accesslog", "Accesslogs"),
