@@ -388,54 +388,63 @@ def get_document_and_rating_value_from_request():
 def add_rating_to_document(document, rating_value):
     """Checks document rating status by current_user and adds rating"""
 
-    # if like button is pressed
-    if rating_value == "1":
+    # check if user is trying to rate their own document
+    if document.author != current_user:
 
-        # if user already liked
-        if current_user in document.liked:
-            document.liked.remove(current_user)
-            document.rating -= 1
+        # if like button is pressed
+        if rating_value == "1":
 
-        # if user already disliked
-        elif current_user in document.disliked:
-            document.disliked.remove(current_user)
-            document.liked.append(current_user)
-            document.rating += 2
+            # if user already liked
+            if current_user in document.liked:
+                document.liked.remove(current_user)
+                document.rating -= 1
 
-        # if user didnt set a rating yet
-        else:
-            document.liked.append(current_user)
-            document.rating += 1
+            # if user already disliked
+            elif current_user in document.disliked:
+                document.disliked.remove(current_user)
+                document.liked.append(current_user)
+                document.rating += 2
 
-    # if dislike button is pressed
-    if rating_value == "-1":
+            # if user didnt set a rating yet
+            else:
+                document.liked.append(current_user)
+                document.rating += 1
 
-        # if user already liked
-        if current_user in document.liked:
-            document.disliked.append(current_user)
-            document.liked.remove(current_user)
-            document.rating -= 2
+        # if dislike button is pressed
+        if rating_value == "-1":
 
-        # if user already disliked
-        elif current_user in document.disliked:
-            document.disliked.remove(current_user)
-            document.rating += 1
+            # if user already liked
+            if current_user in document.liked:
+                document.disliked.append(current_user)
+                document.liked.remove(current_user)
+                document.rating -= 2
 
-        # if user didnt set a rating yet
-        else:
-            document.disliked.append(current_user)
-            document.rating -= 1
+            # if user already disliked
+            elif current_user in document.disliked:
+                document.disliked.remove(current_user)
+                document.rating += 1
+
+            # if user didnt set a rating yet
+            else:
+                document.disliked.append(current_user)
+                document.rating -= 1
 
     document.save()
 
 
 def create_rating_json_response(document):
-    return {
-        "key": document.id,
-        "rating": document.rating,
-        "likes": len(document.liked),
-        "dislikes": len(document.disliked),
-    }
+    """Returns JSON response based on if current_user is trying to rate their own document"""
+
+    if document.author != current_user:
+        return {
+            "key": document.id,
+            "rating": document.rating,
+            "likes": len(document.liked),
+            "dislikes": len(document.disliked),
+            "success": True,
+        }
+    else:
+        return {"success": False}
 
 
 # Decorators

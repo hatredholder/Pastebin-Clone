@@ -11,6 +11,16 @@
             "data_rating": data_rating
         },
         success: (response) => {
+
+          // if success == false
+          if (!response.success){
+
+            // set rating to 0 so the rest of the code doesnt work
+            data_rating = 0
+
+            // send an alert
+            $(".errors").html('<div class="alert alert-danger">You can\'t rate your own pastes/comments</div>')
+          }
           
           // if LIKE button is pressed
           if (data_rating == 1) {
