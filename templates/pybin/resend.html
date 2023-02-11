@@ -1,70 +1,28 @@
 {% extends "base.html" %}
-{% block title %}Pybin.com - My Profile{% endblock %}
+{% block title %}Pybin.com - Change Your Password{% endblock %}
 {% block content %}
     <div class="container">
         <div class="row">
             <div class="errors">
-                {% if form.website_url.errors %}
-                    {% for error in form.content.errors %}{{ error }}{% endfor %}
-                {% endif %}
                 {% with messages = get_flashed_messages() %}
                     {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
                 {% endwith %}
             </div>
             <div class="content col">
                 <div class="content_title">
-                    My Profile
+                    Request New Activation Email
                     <hr>
                 </div>
-                <div class="user_page d-flex">
-                    <div class="form_frame_left col-sm-6">
-                        <form method="POST" action="/user/profile/">
-                            {{ form.csrf_token }}
-                            <div>
-                                Username:
-                                {{ current_user.username }}
-                            </div>
-                            <div>
-                                {{ form.email.label }}
-                                {{ form.email }}
-                            </div>
-                            <div>
-                                Email Status:
-                                {% if current_user.email_status %}
-                                    verified!
-                                {% else %}
-                                    <!-- TODO: Implement Email Verification -->
-                                    not verified! We have sent you an email [ <a href="resend/" resend verification email</a>]
-                                {% endif %}
-                            </div>
-                            <div>
-                                {{ form.website_url.label }}
-                                {{ form.website_url }}
-                            </div>
-                            <div>
-                                {{ form.location.label }}
-                                {{ form.location }}
-                            </div>
-                            <div>
-                                Avatar:
-                                <img src="{{ profile_image(current_user)}}">
-                                [ <a href="/user/change-avatar/">change avatar</a> ]
-                            </div>
-                            {{ form.submit }}
-                        </form>
-                    </div>
-                    <fieldset class="account_related_pages border rounded border-dark px-2 col-sm-2.5">
-                        <h6>
-                            ACCOUNT RELATED PAGES
-                        </h3>
-                        <a class="btn btn-outline-dark" href="/user/profile/">Profile</a>
-                        <br>
-                        <a class="btn btn-outline-dark" href="/user/password/">Password</a>
-                        <br>
-                        <a class="btn btn-outline-dark" href="/user/change-avatar/">Avatar</a>
-                        <br>
-                    </fieldset>
+                <div class="content_text">
+                    <i class="fa fa-info-circle" aria-hidden="true"></i>
+                    If you have not received the registration confirmation email, you can request another one here. 
                 </div>
+                <form method="POST" action="/resend/">
+                    {{ form.csrf_token }}
+
+                    {{ form.recaptcha }}
+                    {{ form.submit }}
+                </form>
             </div>
             <div class="sidebar col-sm-3">
                 {% if current_user.is_authenticated %}
@@ -121,3 +79,4 @@
         </div>
     </div>
 {% endblock %}
+
