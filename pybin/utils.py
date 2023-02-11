@@ -4,7 +4,6 @@ import functools
 import io
 import re
 
-
 from app import app
 
 import authentication.models as auth_models
