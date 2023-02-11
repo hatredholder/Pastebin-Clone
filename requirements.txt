@@ -1,5 +1,6 @@
 Flask
 Flask-MongoEngine
+Flask-Mail
 Flask-Login
 Pillow
 timeago
