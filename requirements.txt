@@ -3,4 +3,5 @@ Flask-MongoEngine
 Flask-Mail
 Flask-Login
 Pillow
+Python-Decouple
 timeago
