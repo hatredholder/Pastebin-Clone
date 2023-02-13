@@ -206,11 +206,3 @@ def password():
         return redirect(url_for("pybin.password"))
 
     return render_template("pybin/password.html", form=form)
-
-
-@pybin.route("/resend/", methods=["GET", "POST"])
-@login_required
-def resend():
-    form = forms.ResendForm()
-
-    return render_template("pybin/resend.html", form=form)

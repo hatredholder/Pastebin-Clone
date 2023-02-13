@@ -1,9 +1,10 @@
 import authentication.forms as forms
+import authentication.models as models
 import authentication.utils as utils
 
-from flask import Blueprint, redirect, render_template, url_for
+from flask import Blueprint, flash, redirect, render_template, url_for
 
-from flask_login import login_required, logout_user
+from flask_login import current_user, login_required, login_user, logout_user
 
 
 auth = Blueprint("auth", __name__)
@@ -36,3 +37,10 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for("pybin.home"))
+
+
+@auth.route("/resend/", methods=["GET", "POST"])
+def resend():
+    form = forms.ResendForm()
+
+    return render_template("authentication/resend.html", form=form)
