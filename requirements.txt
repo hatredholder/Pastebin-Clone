@@ -3,5 +3,6 @@ Flask-MongoEngine
 Flask-Mail
 Flask-Login
 Pillow
-Python-Decouple
+Python-Dotenv
+itsdangerous
 timeago

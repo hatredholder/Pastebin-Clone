@@ -2,6 +2,8 @@ from flask import Flask
 
 from flask_login import LoginManager
 
+from flask_mail import Mail
+
 from flask_mongoengine import MongoEngine
 
 
@@ -18,6 +20,7 @@ app.config["SECRET_KEY"] = "supersecretkey"
 app.config["RECAPTCHA_PUBLIC_KEY"] = "6Lc2biIjAAAAAK_wx4fiQ-mAdd0TQZzHKOPBurBD"
 app.config["RECAPTCHA_PRIVATE_KEY"] = "6Lc2biIjAAAAAA_JouXEC1IhL0hp1pxGZxRlEAay"
 
+app.config.from_prefixed_env()
 
 # Setup MongoEngine
 db = MongoEngine()
@@ -27,6 +30,9 @@ db.init_app(app)
 login_manager = LoginManager()
 login_manager.login_view = "auth.login"
 login_manager.init_app(app)
+
+# Setup Flask-Mail
+mail = Mail(app)
 
 
 # User-loader callback
