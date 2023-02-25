@@ -9,7 +9,7 @@ from flask_mongoengine import MongoEngine
 
 # Setup app
 app = Flask(__name__)
-app.config.from_prefixed_env()
+app.config.from_prefixed_env()  # Load env variables from .env and .flaskenv
 
 # Setup MongoEngine
 db = MongoEngine()
