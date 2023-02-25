@@ -44,3 +44,27 @@ def resend():
     form = forms.ResendForm()
 
     return render_template("authentication/resend.html", form=form)
+
+
+@auth.route("/verify-email/<token>/", methods=["GET", "POST"])
+def verify_email(token):
+
+    # if email_status == True
+    if current_user.email_status:
+        flash("Your email already verified.")
+        return redirect(url_for("pybin.home"))
+
+    email = utils.confirm_token(token)
+
+    if email:
+        user = models.User.objects(email=email)
+
+        user.email_status = True
+        user.save()
+
+        login_user(user)
+        flash("Your email has been confirmed!")
+
+        return redirect(url_for("pybin.profile"))
+
+    return redirect(url_for("pybin.error", error=400))

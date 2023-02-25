@@ -1,10 +1,16 @@
 import functools
 
+from app import app, mail
+
 import authentication.models as models
 
 from flask import flash, redirect, url_for
 
 from flask_login import current_user, login_user
+
+from flask_mail import Message
+
+from itsdangerous import BadSignature, URLSafeSerializer
 
 import pybin.models as pybin_models
 
@@ -26,6 +32,17 @@ def get_admin_user():
     admin = models.User(username="Admin", email="admin@email.com", password_hash="123")
     admin.save()
     return admin
+
+
+def check_if_email_already_used(email):
+    """Returns True if a user with specified email already exists"""
+    user = models.User.objects(email=email).first()
+
+    if user:
+        flash("Email address already exists.")
+        return True
+
+    return False
 
 
 def create_welcoming_message(new_user):
@@ -54,6 +71,22 @@ def create_welcoming_message(new_user):
     ).save()
 
 
+def create_email_confirmation_message(token, email, username):
+    """Sends a email confirmation message to the specified email"""
+
+    msg = Message(
+        "Account registration at Pybin",
+        sender=app.config["MAIL_USERNAME"],
+        recipients=[email],
+    )
+
+    link = url_for("auth.verify_email", token=token, _external=True)
+
+    msg.body = f"Hello {username},\nFollow the link below to verify your email\n{link}"
+
+    mail.send(msg)
+
+
 def signup_user_if_submitted(form):
     """Returns True if user was created successfully"""
 
@@ -62,10 +95,8 @@ def signup_user_if_submitted(form):
         email = form.email.data
         password = form.password.data
 
-        user = models.User.objects(email=email).first()
-
         # If email registered already - redirect back to signup
-        if user:
+        if check_if_email_already_used(email):
             flash("Email address already exists.")
             return
 
@@ -76,10 +107,21 @@ def signup_user_if_submitted(form):
             password_hash=generate_password_hash(password),
         ).save()
 
+        # Send a "My Messages" welcoming message
         create_welcoming_message(new_user)
 
-        login_user(new_user)
-        flash("Account created successfully!")
+        # Create token for email confirmation
+        token = generate_token(email)
+
+        # Send email confirmation message
+        create_email_confirmation_message(token, email, new_user.username)
+
+        flash(
+            f"Hi {new_user.username}, \
+              your account has been created! We have sent you an email to {new_user.email} with \
+              an activation link in it. Please click on the activation link \
+              to activate your account. ",
+        )
 
         return True
 
@@ -101,6 +143,28 @@ def login_user_if_submitted(form):
 
         login_user(user)
         return True
+
+
+def generate_token(email):
+    serializer = URLSafeSerializer(app.config["SECRET_KEY"])
+    return serializer.dumps(email)
+
+
+def confirm_token(token):
+    """Returns email if token is de-serialized successfully, False otherwise"""
+
+    serializer = URLSafeSerializer(app.config["SECRET_KEY"])
+
+    # If valid token - return the de-serialized email
+    try:
+        email = serializer.loads(
+            token,
+        )
+        return email
+
+    # If invalid token - return False
+    except BadSignature:
+        return False
 
 
 # Decorators
