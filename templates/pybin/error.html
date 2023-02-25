@@ -13,7 +13,10 @@
                     This page is no longer available. It has either expired, been removed by its creator, or removed by one of the Pybin staff.
                 {% elif error_code == "403" %}
                     Error, this is a private paste or is pending moderation. If this paste belongs to you, please login to Pybin to view it.
+                {% elif error_code == "400" %}
+                    Wrong verify email token. 
                 {% endif %}
+
             </div>
             <div class="sidebar col-sm-3">
                 {% if current_user.is_authenticated %}
