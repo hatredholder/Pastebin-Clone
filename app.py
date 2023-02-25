@@ -9,17 +9,6 @@ from flask_mongoengine import MongoEngine
 
 # Setup app
 app = Flask(__name__)
-app.config["MONGODB_SETTINGS"] = {
-    "db": "pastebinCloneDb",
-    "host": "localhost",
-    "port": 27017,
-    "username": "rootuser",
-    "password": "rootpass",
-}
-app.config["SECRET_KEY"] = "supersecretkey"
-app.config["RECAPTCHA_PUBLIC_KEY"] = "6Lc2biIjAAAAAK_wx4fiQ-mAdd0TQZzHKOPBurBD"
-app.config["RECAPTCHA_PRIVATE_KEY"] = "6Lc2biIjAAAAAA_JouXEC1IhL0hp1pxGZxRlEAay"
-
 app.config.from_prefixed_env()
 
 # Setup MongoEngine
