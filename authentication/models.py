@@ -11,9 +11,7 @@ class User(UserMixin, db.Document):
     username = db.StringField(min_length=4, max_length=20, unique=True, required=True)
     email = db.EmailField(max_length=100, unique=True, required=True)
 
-    # Set to True by default until Email Verification is implemented
-    # TODO: Implement Email Verification
-    email_status = db.BooleanField(required=False, default=True)
+    email_status = db.BooleanField(required=False, default=False)
 
     website_url = db.URLField(max_length=100, required=False)
     location = db.StringField(max_length=150, required=False)
