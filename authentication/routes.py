@@ -1,8 +1,7 @@
 import authentication.forms as forms
-import authentication.models as models
 import authentication.utils as utils
 
-from flask import Blueprint, flash, redirect, render_template, url_for
+from flask import Blueprint, redirect, render_template, url_for
 
 from flask_login import login_required, logout_user
 
