@@ -20,6 +20,17 @@ from werkzeug.security import check_password_hash, generate_password_hash
 # Helper Functions
 
 
+def check_if_email_already_used(email):
+    """Returns True if a user with specified email already exists"""
+    user = models.User.objects(email=email).first()
+
+    if user:
+        flash("Email address already exists.")
+        return True
+
+    return False
+
+
 def get_admin_user():
     """Returns Admin User object"""
 
@@ -32,17 +43,6 @@ def get_admin_user():
     admin = models.User(username="Admin", email="admin@email.com", password_hash="123")
     admin.save()
     return admin
-
-
-def check_if_email_already_used(email):
-    """Returns True if a user with specified email already exists"""
-    user = models.User.objects(email=email).first()
-
-    if user:
-        flash("Email address already exists.")
-        return True
-
-    return False
 
 
 def create_welcoming_message(new_user):
@@ -142,6 +142,30 @@ def login_user_if_submitted(form):
             return
 
         login_user(user)
+        return True
+
+
+def check_if_current_user_email_already_verified():
+    """Returns True if user is authenticated and email_status == True"""
+
+    if current_user.is_authenticated and current_user.email_status:
+        flash("Your email already verified.")
+
+        return True
+
+
+def verify_user_email(email):
+    """Returns True if Email != False"""
+
+    if email:
+        user = models.User.objects(email=email).first()
+
+        user.email_status = True
+        user.save()
+
+        login_user(user)
+        flash("Your email has been confirmed!")
+
         return True
 
 
