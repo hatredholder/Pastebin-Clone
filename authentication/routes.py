@@ -49,7 +49,6 @@ def resend():
 @auth.route("/verify-email/<token>/", methods=["GET", "POST"])
 def verify_email(token):
 
-    # if email_status == True
     if current_user.email_status:
         flash("Your email already verified.")
         return redirect(url_for("pybin.home"))
