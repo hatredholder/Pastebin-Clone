@@ -141,6 +141,17 @@ def login_user_if_submitted(form):
             flash("Please check your login details and try again.")
             return
 
+        # Check if user email if verified
+        if not user.email_status:
+            flash(
+                f"This account is not activated yet. \
+                Please click the activation link first. \
+                If you cannot find that link, \
+                <a href=\"{url_for('auth.resend')}\"> request new activation email </a> \
+                to resolve this!",
+            )
+            return
+
         login_user(user)
         return True
 

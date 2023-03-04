@@ -5,7 +5,7 @@
         <h3 class="title">Login Page</h3>
         <div class="box">
             {% with messages = get_flashed_messages() %}
-                {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
+                {% if messages %}<div class="notification is-danger">{{ messages[0]|safe }}</div>{% endif %}
             {% endwith %}
             <form method="POST" action="/login">
                 {{ form.csrf_token }}
