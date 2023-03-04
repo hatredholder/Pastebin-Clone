@@ -156,6 +156,12 @@
                             <pre><code class="language-{{document.syntax}}">{{document.content}}</code></pre>
                         </div>
                     </div>
+                    <div class="tags">
+                        Tags:
+                        {% for tag in document.tags %}
+                            <button type="button" class="btn btn-secondary" disabled>{{tag}}</button>
+                        {% endfor %}
+                    </div>
                     <div class="raw_paste_data">
                         <div>
                             RAW Paste Data
