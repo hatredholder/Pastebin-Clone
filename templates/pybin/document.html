@@ -260,7 +260,7 @@
                                                     </div>
                                                 {% endif %}
                                                 <div class="source">
-                                                    <pre><code>{{comment.content}}</code></pre>
+                                                    <pre><code class="language-{{comment.syntax}}">{{comment.content}}</code></pre>
                                                 </div>
                                                 <div class="reply-form-container-{{ comment.id }}">
                                                 </div>
@@ -362,7 +362,7 @@
                                                                     {% endif %}
                                                                 </li>
                                                                 <div class="source">
-                                                                    <pre><code>{{reply.content}}</code></pre>
+                                                                    <pre><code class="language-{{reply.syntax}}">{{reply.content}}</code></pre>
                                                                 </div>
                                                                 <div class="reply-form-container-{{ reply.id }}">
                                                                 </div>
@@ -464,7 +464,7 @@
                                                                                     {% endif %}
                                                                                 </li>
                                                                                 <div class="source">
-                                                                                    <pre><code>{{reply2.content}}</code></pre>
+                                                                                    <pre><code class="language-{{reply2.syntax}}">{{reply2.content}}</code></pre>
                                                                                 </div>
                                                                                 <div class="reply-form-container-{{ reply2.id }}">
                                                                                 </div>
