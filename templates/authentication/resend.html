@@ -20,6 +20,10 @@
                 <form method="POST" action="/resend/">
                     {{ form.csrf_token }}
 
+                    {% if not current_user.is_authenticated %}
+                        {{ form.username }}
+                    {% endif %}
+
                     {{ form.recaptcha }}
                     {{ form.submit }}
                 </form>

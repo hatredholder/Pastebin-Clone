@@ -180,6 +180,43 @@ def verify_user_email(email):
         return True
 
 
+def resend_verification_email(form):
+    """Sends a verification email if user with given username is found"""
+
+    if form.validate_on_submit():
+
+        user = current_user
+
+        # If current_user is not already logged in
+        if not current_user.is_authenticated:
+            user = models.User.objects(username=form.username.data).first()
+
+        # If user is found
+        if user:
+
+            # If user email already verified
+            if user.email_status:
+                flash("This username is not require verification.")
+                return
+
+            # Create token for email confirmation
+            token = generate_token(user.email)
+
+            # Send email confirmation message
+            create_email_confirmation_message(token, user.email, user.username)
+
+            flash(
+                "We have sent you an email! \
+                It can sometimes take a few minutes before the email arrives. \
+                If you cannot find this email, please check your spam/junk inbox, \
+                sometimes the emails end up there. If you still cannot find the email, \
+                please contact us. ",
+            )
+
+        # If user is not found
+        flash("This username is currently not registered in our database.")
+
+
 def generate_token(email):
     serializer = URLSafeSerializer(app.config["SECRET_KEY"])
     return serializer.dumps(email)

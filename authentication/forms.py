@@ -46,6 +46,9 @@ class LoginForm(FlaskForm):
     
 
 class ResendForm(FlaskForm):
+    username = wtforms.StringField(
+        "Username",
+    )
     recaptcha = RecaptchaField()
     submit = wtforms.SubmitField(
         "Resend Activation Email",

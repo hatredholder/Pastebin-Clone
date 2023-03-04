@@ -42,6 +42,8 @@ def logout():
 def resend():
     form = forms.ResendForm()
 
+    utils.resend_verification_email(form)
+
     return render_template("authentication/resend.html", form=form)
 
 
