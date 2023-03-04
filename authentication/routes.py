@@ -58,4 +58,4 @@ def verify_email(token):
     if utils.verify_user_email(email):
         return redirect(url_for("pybin.profile"))
 
-    return redirect(url_for("pybin.error", error=400))
+    return redirect(url_for("pybin.error", error_code=400))
