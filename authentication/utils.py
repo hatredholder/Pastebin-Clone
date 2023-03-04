@@ -227,11 +227,17 @@ def confirm_token(token):
 
     serializer = URLSafeSerializer(app.config["SECRET_KEY"])
 
-    # If valid token - return the de-serialized email
     try:
+        # Tries to get email from token, returns BadSignature if unsuccessful
         email = serializer.loads(
             token,
         )
+
+        # If email is already verified - return false
+        if models.User.objects(email=email).first().email_status:
+            return False
+
+        # Otherwise - return the de-serialized email
         return email
 
     # If invalid token - return False
