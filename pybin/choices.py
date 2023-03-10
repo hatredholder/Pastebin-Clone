@@ -1,6 +1,5 @@
 # Choice Tuples
 
-
 CATEGORIES = (
     "None",
     "Cryptocurrency",
