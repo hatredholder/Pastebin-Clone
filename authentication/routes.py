@@ -1,10 +1,9 @@
 import authentication.forms as forms
-import authentication.models as models
 import authentication.utils as utils
 
 from flask import Blueprint, redirect, render_template, session, url_for
 
-from flask_login import login_required, login_user, logout_user
+from flask_login import login_required, logout_user
 
 
 auth = Blueprint("auth", __name__)
