@@ -1,36 +1,13 @@
-from app import app
-
-import os
-import pathlib
-import requests
-
 import authentication.forms as forms
 import authentication.models as models
 import authentication.utils as utils
 
-from flask import Blueprint, redirect, render_template, url_for, session, request
+from flask import Blueprint, redirect, render_template, session, url_for
 
 from flask_login import login_required, login_user, logout_user
 
-from google.oauth2 import id_token
-from google_auth_oauthlib.flow import Flow
-from pip._vendor import cachecontrol
-import google.auth.transport.requests
-
-os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"  # to allow Http traffic for local dev
 
 auth = Blueprint("auth", __name__)
-client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client_secret.json")
-
-flow = Flow.from_client_secrets_file(
-    client_secrets_file=client_secrets_file,
-    scopes=[
-        "https://www.googleapis.com/auth/userinfo.profile",
-        "https://www.googleapis.com/auth/userinfo.email",
-        "openid",
-    ],
-    redirect_uri="http://127.0.0.1:5000/login/callback",
-)
 
 
 # Basic Authentication Routes
@@ -95,30 +72,16 @@ def verify_email(token):
 
 @auth.route("/site/auth-google/")
 def auth_google():
+    flow = utils.create_flow_from_client_secrets_file()
     authorization_url, _ = flow.authorization_url()
     return redirect(authorization_url)
 
 
 @auth.route("/login/callback/")
 def callback():
-    flow.fetch_token(authorization_response=request.url)
+    id_info = utils.get_id_info_from_flow()
 
-    credentials = flow.credentials
-    request_session = requests.session()
-    cached_session = cachecontrol.CacheControl(request_session)
-    token_request = google.auth.transport.requests.Request(session=cached_session)
-
-    id_info = id_token.verify_oauth2_token(
-        id_token=credentials._id_token,
-        request=token_request,
-        audience=app.config["GOOGLE_CLIENT_ID"],
-    )
-
-    # After google auth
-    user = models.User.objects(email=id_info.get("email")).first()
-
-    if user:
-        login_user(user)
+    if utils.check_if_user_already_exists(id_info.get("email")):
         return redirect(url_for("pybin.home"))
 
     session["google_auth"] = True

@@ -1,10 +1,12 @@
 import functools
+import os
+import pathlib
 
 from app import app, mail
 
 import authentication.models as models
 
-from flask import flash, redirect, session, url_for
+from flask import flash, redirect, request, session, url_for
 
 from flask_login import current_user, login_user
 
@@ -13,6 +15,8 @@ from flask_mail import Message
 from itsdangerous import BadSignature, URLSafeSerializer
 
 import pybin.models as pybin_models
+
+import requests
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -268,6 +272,64 @@ def confirm_token(token):
     # If invalid token - return False
     except BadSignature:
         return False
+
+
+def create_flow_from_client_secrets_file():
+    """Creates flow object from the client_secrets file"""
+    from google_auth_oauthlib.flow import Flow
+
+    # Find the client_secret file
+    client_secrets_file = os.path.join(pathlib.Path(__file__).parent.parent, "client_secret.json")
+
+    # Create flow from client_secret file
+    flow = Flow.from_client_secrets_file(
+        client_secrets_file=client_secrets_file,
+        scopes=[
+            "https://www.googleapis.com/auth/userinfo.profile",
+            "https://www.googleapis.com/auth/userinfo.email",
+            "openid",
+        ],
+        redirect_uri="http://127.0.0.1:5000/login/callback",
+    )
+
+    return flow
+
+
+def get_id_info_from_flow():
+    """Returns info from the flow's response (user's gmail address, name, etc.)"""
+    import google.auth.transport.requests
+    from google.oauth2 import id_token
+    from pip._vendor import cachecontrol
+
+    # Create the flow
+    flow = create_flow_from_client_secrets_file()
+
+    # Fetch the token
+    flow.fetch_token(authorization_response=request.url)
+
+    credentials = flow.credentials
+    request_session = requests.session()
+    cached_session = cachecontrol.CacheControl(request_session)
+    token_request = google.auth.transport.requests.Request(session=cached_session)
+
+    # Grab the info
+    id_info = id_token.verify_oauth2_token(
+        id_token=credentials._id_token,
+        request=token_request,
+        audience=app.config["GOOGLE_CLIENT_ID"],
+    )
+
+    return id_info
+
+
+def check_if_user_already_exists(email):
+    """Returns True and logins user if user with specified email exists already"""
+
+    user = models.User.objects(email=email).first()
+
+    if user:
+        login_user(user)
+        return True
 
 
 # Decorators
