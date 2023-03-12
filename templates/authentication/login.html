@@ -3,6 +3,7 @@
 {% block content %}
     <div class="column is-4 is-offset-4">
         <h3 class="title">Login Page</h3>
+        <a class="btn btn-outline-danger" href="/site/auth-google/">Sign in with Google</a>
         <div class="box">
             {% with messages = get_flashed_messages() %}
                 {% if messages %}<div class="notification is-danger">{{ messages[0]|safe }}</div>{% endif %}

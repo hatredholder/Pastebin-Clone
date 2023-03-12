@@ -4,7 +4,7 @@ from app import app, mail
 
 import authentication.models as models
 
-from flask import flash, redirect, url_for
+from flask import flash, redirect, session, url_for
 
 from flask_login import current_user, login_user
 
@@ -122,6 +122,31 @@ def signup_user_if_submitted(form):
               an activation link in it. Please click on the activation link \
               to activate your account. ",
         )
+
+        return True
+
+
+def signup_user_from_social_media(form, email):
+    """Returns True if user was created successfully"""
+
+    if form.validate_on_submit():
+        username = form.username.data
+
+        new_user = models.User(
+            email=email,
+            username=username,
+            email_status=True,
+        ).save()
+
+        # Send a "My Messages" welcoming message
+        create_welcoming_message(new_user)
+
+        # Delete session variables so user cant access
+        # signup_from_social_media without authorizing through Google Again
+        session.pop("google_auth")
+        session.pop("email")
+
+        login_user(new_user)
 
         return True
 
@@ -256,6 +281,22 @@ def not_authenticated(f):
 
         if current_user.is_authenticated:
             return redirect(url_for("pybin.home"))
+
+        result = f(*args, **kwargs)
+
+        return result
+
+    return wrapped
+
+
+def google_authorized(f):
+    """Redirects to auth.signup if google_auth isn't set in session"""
+
+    @functools.wraps(f)
+    def wrapped(*args, **kwargs):
+
+        if not session.get("google_auth"):
+            return redirect(url_for("auth.signup"))
 
         result = f(*args, **kwargs)
 

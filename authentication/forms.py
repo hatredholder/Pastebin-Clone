@@ -29,6 +29,17 @@ class SignupForm(FlaskForm):
     submit = wtforms.SubmitField("Create My Account")
 
 
+class GoogleSignupForm(FlaskForm):
+    username = wtforms.StringField(
+        "Username: ",
+        validators=[
+            valids.InputRequired(),
+            valids.Length(min=3, max=20),
+        ],
+    )
+    submit = wtforms.SubmitField("Create My Account")
+
+
 class LoginForm(FlaskForm):
     username = wtforms.StringField(
         "Your Username",

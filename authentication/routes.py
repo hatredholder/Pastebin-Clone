@@ -1,12 +1,39 @@
+from app import app
+
+import os
+import pathlib
+import requests
+
 import authentication.forms as forms
+import authentication.models as models
 import authentication.utils as utils
 
-from flask import Blueprint, redirect, render_template, url_for
+from flask import Blueprint, redirect, render_template, url_for, session, request
 
-from flask_login import login_required, logout_user
+from flask_login import login_required, login_user, logout_user
 
+from google.oauth2 import id_token
+from google_auth_oauthlib.flow import Flow
+from pip._vendor import cachecontrol
+import google.auth.transport.requests
+
+os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"  # to allow Http traffic for local dev
 
 auth = Blueprint("auth", __name__)
+client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client_secret.json")
+
+flow = Flow.from_client_secrets_file(
+    client_secrets_file=client_secrets_file,
+    scopes=[
+        "https://www.googleapis.com/auth/userinfo.profile",
+        "https://www.googleapis.com/auth/userinfo.email",
+        "openid",
+    ],
+    redirect_uri="http://127.0.0.1:5000/login/callback",
+)
+
+
+# Basic Authentication Routes
 
 
 @auth.route("/signup/", methods=["GET", "POST"])
@@ -38,6 +65,9 @@ def logout():
     return redirect(url_for("pybin.home"))
 
 
+# Email Verification Routes
+
+
 @auth.route("/resend/", methods=["GET", "POST"])
 def resend():
     form = forms.ResendForm()
@@ -49,7 +79,6 @@ def resend():
 
 @auth.route("/verify-email/<token>/", methods=["GET", "POST"])
 def verify_email(token):
-
     if utils.check_if_current_user_email_already_verified():
         return redirect(url_for("pybin.home"))
 
@@ -59,3 +88,50 @@ def verify_email(token):
         return redirect(url_for("pybin.profile"))
 
     return redirect(url_for("pybin.error", error_code=400))
+
+
+# Google Authentication Routes
+
+
+@auth.route("/site/auth-google/")
+def auth_google():
+    authorization_url, _ = flow.authorization_url()
+    return redirect(authorization_url)
+
+
+@auth.route("/login/callback/")
+def callback():
+    flow.fetch_token(authorization_response=request.url)
+
+    credentials = flow.credentials
+    request_session = requests.session()
+    cached_session = cachecontrol.CacheControl(request_session)
+    token_request = google.auth.transport.requests.Request(session=cached_session)
+
+    id_info = id_token.verify_oauth2_token(
+        id_token=credentials._id_token,
+        request=token_request,
+        audience=app.config["GOOGLE_CLIENT_ID"],
+    )
+
+    # After google auth
+    user = models.User.objects(email=id_info.get("email")).first()
+
+    if user:
+        login_user(user)
+        return redirect(url_for("pybin.home"))
+
+    session["google_auth"] = True
+    session["email"] = id_info.get("email")
+    return redirect(url_for("auth.signup_from_social_media"))
+
+
+@auth.route("/site/signup-from-social-media/", methods=["GET", "POST"])
+@utils.google_authorized
+def signup_from_social_media():
+    form = forms.GoogleSignupForm()
+
+    if utils.signup_user_from_social_media(form, session["email"]):
+        return redirect(url_for("pybin.home"))
+
+    return render_template("authentication/signup_from_social_media.html", form=form)

@@ -2,7 +2,10 @@ Flask
 Flask-MongoEngine
 Flask-Mail
 Flask-Login
+google-auth
+google-auth-oauthlib
 Pillow
 Python-Dotenv
+requests
 itsdangerous
 timeago
