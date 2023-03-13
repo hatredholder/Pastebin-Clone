@@ -1,22 +1,117 @@
-<!-- templates/authentication/login.html -->
 {% extends "base.html" %}
+{% block title %}Pybin.com - Login Page{% endblock %}
 {% block content %}
-    <div class="column is-4 is-offset-4">
-        <h3 class="title">Login Page</h3>
-        <a class="btn btn-outline-danger" href="/site/auth-google/">Sign in with Google</a>
-        <div class="box">
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}<div class="notification is-danger">{{ messages[0]|safe }}</div>{% endif %}
-            {% endwith %}
-            <form method="POST" action="/login">
-                {{ form.csrf_token }}
-                {{ form.username }}
-                <ul>
-                    {% for error in form.username.errors %}<li style="color:red;">{{ error }}</li>{% endfor %}
+    <div class="container">
+        <div class="row">
+            <div class="errors">
+                {% if form.username.errors %}
+                    {% for error in form.username.errors %}{{ error }}{% endfor %}
+                {% endif %}
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
+                {% endwith %}
+            </div>
+            <div class="content col">
+                <div class="content_title">
+                    <h4 class="title">Login Page</h4>
+                    <hr>
+                </div>
+                <div class="content_text border border-dark rounded py-2 px-2">
+                    <i class="fa fa-info-circle" aria-hidden="true"></i>
+                     To login you can use any of these social media accounts: 
+                </div>
+                <div class="social_auth py-2">
+                    <a class="btn btn-outline-danger" href="/site/auth-google/">Sign in with Google</a>
+                    <hr>
+                </div>
+                <div class="form d-flex">
+                    <div class="form_frame col-sm-6">
+                        <form method="POST" action="/login/">
+                            {{form.csrf_token}}
+                            <div class="mb-3 row">
+                                <label class="col-sm-2 col-form-label">{{form.username.label}}</label>
+                                <p class="col-sm-10">{{form.username}}</p>
+                            </div>
+                            <div class="mb-3 row">
+                                <label class="col-sm-2 col-form-label">{{form.password.label}}</label>
+                                <p class="col-sm-8">{{form.password}}</p>
+                            </div>
+                            {{form.submit}}
+                        </form>
+                    </div>
+                    <fieldset style="padding-bottom: 50px"class="account_related_pages border rounded border-dark px-2 col-sm-2.5">
+                        <h6>
+                            ACCOUNT RELATED PAGES
+                        </h6>
+                        <a class="btn btn-outline-dark" href="/signup/">Create New Account?</a>
+                        <br>
+                        <!--TODO: Make a username reminder through email (change url)-->
+                        <a class="btn btn-outline-dark" href="/user/password/">Forgot Username?</a>
+                        <br>
+                        <!--TODO: Make a password reminder through email (change url)-->
+                        <a class="btn btn-outline-dark" href="/user/change-avatar/">Forgot Password?</a>
+                        <br>
+                        <a class="btn btn-outline-dark" href="/resend/">No Activation Email?</a>
+                        <br>
+                    </fieldset>
+                </div>
+            </div>
+            <div class="sidebar col-sm-3">
+                {% if current_user.is_authenticated %}
+                    <div class="sidebar_title">
+                        <a href="#">My Pastes</a>
+                    </div>
+                    <ul class="sidebar_menu">
+                        {% if not my_pastes() %}
+                            <li>
+                                <i class="fa fa-globe" aria-hidden="true"></i>Nothing here yet...
+                            </li>
+                        {% endif %}
+                        {% for paste in my_pastes() %}
+                            <li>
+                                {% if paste.exposure == "Public" %}
+                                    <i class="fa fa-globe" aria-hidden="true"></i>
+                                {% elif paste.exposure == 'Unlisted' %}
+                                    <i class="fa fa-link" aria-hidden="true"></i>
+                                {% elif paste.exposure == 'Private' %}
+                                    <i class="fa fa-lock" aria-hidden="true"></i>
+                                {% endif %}
+                                <a href="/{{ paste.id }}">{{ paste.title }}</a>
+                                <div class="details">
+                                    {% if paste.syntax != "plaintext" %}{{ paste.syntax|capitalize }} |{% endif %}
+                                    {{ paste.created|timesince }}| {{ paste.size }} KB
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <div class="sidebar_sticky">
+                    <div style="padding-bottom:10px; padding-top:20px;"></div>
+                </div>
+                <div class="sidebar_title">
+                    <a href="#">Public Pastes</a>
+                </div>
+                <ul class="sidebar_menu">
+                    {% for paste in public_pastes() %}
+                        <li>
+                            {% if paste.exposure == "Public" %}
+                                <i class="fa fa-globe" aria-hidden="true"></i>
+                            {% elif paste.exposure == 'Unlisted' %}
+                                <i class="fa fa-link" aria-hidden="true"></i>
+                            {% elif paste.exposure == 'Private' %}
+                                <i class="fa fa-lock" aria-hidden="true"></i>
+                            {% endif %}
+                            <a href="/{{ paste.id }}">{{ paste.title }}</a>
+                            <div class="details">
+                                {% if paste.syntax != "plaintext" %}{{ paste.syntax|capitalize }} |{% endif %}
+                                {{ paste.created|timesince }}| {{ paste.size }} KB
+                            </div>
+                        </li>
+                    {% endfor %}
                 </ul>
-                {{ form.password }}
-                {{ form.submit }}
-            </form>
+            </div>
         </div>
     </div>
+{% endblock %}
+{% block scripts %}
 {% endblock %}

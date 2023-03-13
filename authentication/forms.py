@@ -42,18 +42,18 @@ class GoogleSignupForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     username = wtforms.StringField(
-        "Your Username",
+        "Username: ",
         validators=[
             valids.InputRequired(),
         ],
     )
     password = wtforms.PasswordField(
-        "Your Password",
+        "Password: ",
         validators=[
             valids.InputRequired(),
         ],
     )
-    submit = wtforms.SubmitField("Submit")
+    submit = wtforms.SubmitField("Login")
     
 
 class ResendForm(FlaskForm):
