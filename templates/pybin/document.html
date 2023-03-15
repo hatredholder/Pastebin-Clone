@@ -27,7 +27,11 @@
                 <div class="post_view">
                     <div class="details d-flex">
                         <div class="p-2 user_icon">
-                            <img src="{{ profile_image(document.author)}}" height="40" width="40">
+                            {% if document.author %}
+                                <img src="{{ profile_image(document.author)}}" height="40" width="40">
+                            {% else %}
+                                <img src="{{url_for('static', filename='img/guest.png')}}" height="40" width="40">
+                            {% endif %}
                         </div>
                         <div class="info_bar">
                             <div class="info_top">
@@ -36,7 +40,11 @@
                             <div class="info_bottom align-items-end d-inline-flex">
                                 <div class="username">
                                     <i class="fa fa-user-circle-o"></i>
-                                    <a href="/u/{{ document.author.username }}">{{ document.author.username|upper()}}</a>
+                                    {% if document.author %}
+                                        <a href="/u/{{ document.author.username }}">{{ document.author.username|upper()}}</a>
+                                    {% else %}
+                                        A GUEST
+                                    {% endif %}
                                 </div>
                                 <div class="px-2 date"
                                      title="{{ document.created.strftime("%A %d of %B %Y %I:%M:%S %p") }}">
