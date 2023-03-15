@@ -22,112 +22,114 @@
                     </form>
                 </div>
                 <div class="found_pastes">
-                    {% for paste in matching_pastes %}
-                        <div class="paste">
-                            <div class="title">
-                                <a href="/{{paste.uuid_hash}}/">{{paste.title}}</a>
-                            </div>
-                            <div class="details d-flex">
-                                <div class="pe-2 user_icon">
-                                    {% if paste.author %}
-                                        <img src="{{ profile_image(paste.author)}}" height="16" width="16">
-                                    {% else %}
-                                        <img src="{{url_for('static', filename='img/guest.png')}}" height="16" width="16">
-                                    {% endif %}
+                    {% if matching_pastes %}
+                        {% for paste in matching_pastes %}
+                            <div class="paste">
+                                <div class="title">
+                                    <a href="/{{paste.uuid_hash}}/">{{paste.title}}</a>
                                 </div>
-                                <div class="info_bar">
-                                    <div class="info_bottom align-items-end d-inline-flex">
-                                        <div class="username">
-                                            {% if paste.author %}
-                                                <a href="/u/{{ paste.author.username }}">{{ paste.author.username|upper()}}</a>
-                                            {% else %}
-                                                A GUEST
-                                            {% endif %}
-                                        </div>
-                                        <div class="px-2 date"
-                                             title="{{ paste.created.strftime("%A %d of %B %Y %I:%M:%S %p") }}">
-                                            <i class="fa fa-calendar"></i>
-                                            <span>{{ paste.created.strftime("%b %d, %Y") }}</span>
-                                        </div>
-                                        <div class="px-2 rating" title="Rating">
-                                            <i class="fa fa-star"></i>
-                                            <span class="rating_int">{{ paste.rating }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="highlighted_code">
-                                <div class="top_buttons d-flex">
-                                    <div class="left d-inline-flex">
-                                        <!-- TODO: Implement Search by paste Syntax -->
-                                        <a class="btn btn-outline-secondary" href="#">
-                                            {% if paste.syntax != "plaintext" %}
-                                                {{ paste.syntax }}
-                                            {% else %}
-                                                text
-                                            {% endif %}
-                                        </a>
-                                        {{ paste.size }} |
-                                        {% if paste.category %}{{ paste.category }} |{% endif %}
-                                        {% if current_user in paste.liked %}
-                                            <div class="rating-btns">
-                                                <button data-rating="1"
-                                                        data-key="{{ paste.id }}"
-                                                        class="rating-btn thumbs-up btn btn-success">
-                                                    <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                                                    <span class="like-count">{{ paste.liked|length()}}</span>
-                                                </button>
-                                                <button data-rating="-1"
-                                                        data-key="{{ paste.id }}"
-                                                        class="rating-btn thumbs-down btn btn-outline-secondary">
-                                                    <i class="fa fa-thumbs-down" aria-hidden="true"></i>
-                                                    <span class="dislike-count">{{ paste.disliked|length()}}</span>
-                                                </button>
-                                            </div>
-                                        {% elif current_user in paste.disliked %}
-                                            <div class="rating-btns">
-                                                <button data-rating="1"
-                                                        data-key="{{ paste.id }}"
-                                                        class="rating-btn thumbs-up btn btn-outline-secondary">
-                                                    <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                                                    <span class="like-count">{{ paste.liked|length()}}</span>
-                                                </button>
-                                                <button data-rating="-1"
-                                                        data-key="{{ paste.id }}"
-                                                        class="rating-btn thumbs-down btn btn-danger">
-                                                    <i class="fa fa-thumbs-down" aria-hidden="true"></i>
-                                                    <span class="dislike-count">{{ paste.disliked|length()}}</span>
-                                                </button>
-                                            </div>
+                                <div class="details d-flex">
+                                    <div class="pe-2 user_icon">
+                                        {% if paste.author %}
+                                            <img src="{{ profile_image(paste.author)}}" height="16" width="16">
                                         {% else %}
-                                            <div class="rating-btns">
-                                                <button data-rating="1"
-                                                        data-key="{{ paste.id }}"
-                                                        class="rating-btn thumbs-up btn btn-outline-secondary">
-                                                    <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                                                    <span class="like-count">{{ paste.liked|length()}}</span>
-                                                </button>
-                                                <button data-rating="-1"
-                                                        data-key="{{ paste.id }}"
-                                                        class="rating-btn thumbs-down btn btn-outline-secondary">
-                                                    <i class="fa fa-thumbs-down" aria-hidden="true"></i>
-                                                    <span class="dislike-count">{{ paste.disliked|length()}}</span>
-                                                </button>
-                                            </div>
+                                            <img src="{{url_for('static', filename='img/guest.png')}}" height="16" width="16">
                                         {% endif %}
                                     </div>
-                                    <div class="right ms-auto d-inline-flex">
-                                        <!-- TODO: Implement paste Reports -->
-                                        <a class="btn btn-outline-secondary" href="#">report</a>
-                                        <a class="btn btn-outline-secondary" href="/{{paste.uuid_hash}}/">view</a>
+                                    <div class="info_bar">
+                                        <div class="info_bottom align-items-end d-inline-flex">
+                                            <div class="username">
+                                                {% if paste.author %}
+                                                    <a href="/u/{{ paste.author.username }}">{{ paste.author.username|upper()}}</a>
+                                                {% else %}
+                                                    A GUEST
+                                                {% endif %}
+                                            </div>
+                                            <div class="px-2 date"
+                                                 title="{{ paste.created.strftime("%A %d of %B %Y %I:%M:%S %p") }}">
+                                                <i class="fa fa-calendar"></i>
+                                                <span>{{ paste.created.strftime("%b %d, %Y") }}</span>
+                                            </div>
+                                            <div class="px-2 rating" title="Rating">
+                                                <i class="fa fa-star"></i>
+                                                <span class="rating_int">{{ paste.rating }}</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="source_text">
-                                    <pre><code class="language-{{paste.syntax}}">{{paste.content}}</code></pre>
+                                <div class="highlighted_code">
+                                    <div class="top_buttons d-flex">
+                                        <div class="left d-inline-flex">
+                                            <!-- TODO: Implement Search by paste Syntax -->
+                                            <a class="btn btn-outline-secondary" href="#">
+                                                {% if paste.syntax != "plaintext" %}
+                                                    {{ paste.syntax }}
+                                                {% else %}
+                                                    text
+                                                {% endif %}
+                                            </a>
+                                            {{ paste.size }} |
+                                            {% if paste.category %}{{ paste.category }} |{% endif %}
+                                            {% if current_user in paste.liked %}
+                                                <div class="rating-btns">
+                                                    <button data-rating="1"
+                                                            data-key="{{ paste.id }}"
+                                                            class="rating-btn thumbs-up btn btn-success">
+                                                        <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                                        <span class="like-count">{{ paste.liked|length()}}</span>
+                                                    </button>
+                                                    <button data-rating="-1"
+                                                            data-key="{{ paste.id }}"
+                                                            class="rating-btn thumbs-down btn btn-outline-secondary">
+                                                        <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                                                        <span class="dislike-count">{{ paste.disliked|length()}}</span>
+                                                    </button>
+                                                </div>
+                                            {% elif current_user in paste.disliked %}
+                                                <div class="rating-btns">
+                                                    <button data-rating="1"
+                                                            data-key="{{ paste.id }}"
+                                                            class="rating-btn thumbs-up btn btn-outline-secondary">
+                                                        <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                                        <span class="like-count">{{ paste.liked|length()}}</span>
+                                                    </button>
+                                                    <button data-rating="-1"
+                                                            data-key="{{ paste.id }}"
+                                                            class="rating-btn thumbs-down btn btn-danger">
+                                                        <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                                                        <span class="dislike-count">{{ paste.disliked|length()}}</span>
+                                                    </button>
+                                                </div>
+                                            {% else %}
+                                                <div class="rating-btns">
+                                                    <button data-rating="1"
+                                                            data-key="{{ paste.id }}"
+                                                            class="rating-btn thumbs-up btn btn-outline-secondary">
+                                                        <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                                        <span class="like-count">{{ paste.liked|length()}}</span>
+                                                    </button>
+                                                    <button data-rating="-1"
+                                                            data-key="{{ paste.id }}"
+                                                            class="rating-btn thumbs-down btn btn-outline-secondary">
+                                                        <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                                                        <span class="dislike-count">{{ paste.disliked|length()}}</span>
+                                                    </button>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="right ms-auto d-inline-flex">
+                                            <!-- TODO: Implement paste Reports -->
+                                            <a class="btn btn-outline-secondary" href="#">report</a>
+                                            <a class="btn btn-outline-secondary" href="/{{paste.uuid_hash}}/">view</a>
+                                        </div>
+                                    </div>
+                                    <div class="source_text">
+                                        <pre><code class="language-{{paste.syntax}}">{{paste.content}}</code></pre>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
+                    {% endif %}
                 </div>
                 <div class="pagination"></div>
             </div>

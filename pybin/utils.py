@@ -448,6 +448,22 @@ def create_rating_json_response(document):
         return {"success": False}
 
 
+def find_matching_pastes_from_search_query():
+    """
+    Returns QuerySet of matching Pastes found if search_query wasn't empty,
+    returns None otherwise
+    """
+    search_query = request.args.get("q")
+
+    if not search_query:
+        return
+
+    matching_pastes = models.Paste.objects.filter(
+        Q(title__icontains=search_query) | Q(content__icontains=search_query),
+    ).order_by('-created')
+
+    return matching_pastes
+
 # Decorators
 
 
