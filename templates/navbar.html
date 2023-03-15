@@ -1,7 +1,7 @@
 <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="fs-4 font-monospace navbar-brand me-4" href="/">
-            <img src="https://cdn-icons-png.flaticon.com/512/3209/3209265.png"
+            <img src="{{url_for('static', filename='img/logo.png')}}"
                  width="32"
                  height="32">
             PYBIN
@@ -9,9 +9,10 @@
         <a href="/" class="ms-4 me-3 btn btn-success" type="submit">
             <i class="fa fa-plus"></i> paste
         </a>
-        <form class="d-flex">
+        <form action="{{url_for('pybin.search')}}" method="GET" class="d-flex">
             <input class="form-control me-2"
                    type="search"
+                   name='q'
                    placeholder="Search..."
                    aria-label="Search">
         </form>
