@@ -2,6 +2,8 @@ from flask import Blueprint, jsonify, redirect, render_template, request, url_fo
 
 from flask_login import current_user, login_required
 
+from mongoengine.queryset.visitor import Q
+
 import pybin.forms as forms
 import pybin.models as models
 import pybin.utils as utils
@@ -206,3 +208,14 @@ def password():
         return redirect(url_for("pybin.password"))
 
     return render_template("pybin/password.html", form=form)
+
+
+@pybin.route("/search/")
+@login_required
+def search_pastes():
+    search_query = request.args.get("q")
+    matching_pastes = models.Paste.objects.filter(
+        Q(title__icontains=search_query) | Q(content__icontains=search_query),
+    ).order_by('-created')
+
+    return render_template("pybin/search_pastes.html", matching_pastes=matching_pastes)

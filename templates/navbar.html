@@ -9,13 +9,16 @@
         <a href="/" class="ms-4 me-3 btn btn-success" type="submit">
             <i class="fa fa-plus"></i> paste
         </a>
-        <form action="{{url_for('pybin.search')}}" method="GET" class="d-flex">
-            <input class="form-control me-2"
-                   type="search"
-                   name='q'
-                   placeholder="Search..."
-                   aria-label="Search">
-        </form>
+        {% if not request.path == '/search/' %}
+            <form action="{{url_for('pybin.search_pastes')}}" method="GET" class="d-flex">
+                <input class="form-control me-2"
+                       type="search"
+                       name='q'
+                       placeholder="Search..."
+                       maxlength="128"
+                       aria-label="Search">
+            </form>
+        {% endif %}
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             {% if current_user.is_authenticated %}
                 <ul class="navbar-nav ms-auto dropstart mb-2 mb-lg-0">
