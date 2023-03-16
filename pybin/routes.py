@@ -122,7 +122,8 @@ def message_view(uuid_hash):
 @pybin.route("/message/compose/")
 @login_required
 def send_message():
-    # NOTE: This route doesn't actually serve any functionality
+    # NOTE:
+    # This route doesn't actually serve any functionality
     # and is made just to make pybin look more like pastebin
     return render_template("pybin/send_message.html")
 
@@ -144,9 +145,9 @@ def my_pybin(username):
     if not user:
         return redirect(url_for("pybin.error", error_code=404))
 
-    pastes = models.Paste.objects(author=user)
+    pastes = models.Paste.objects(author=user).order_by('-created')
 
-    return render_template("pybin/my_pybin.html", user=user, pastes=reversed(pastes))
+    return render_template("pybin/my_pybin.html", user=user, pastes=pastes)
 
 
 @pybin.route("/u/<username>/comments/")
