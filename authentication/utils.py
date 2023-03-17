@@ -75,8 +75,8 @@ def create_welcoming_message(new_user):
     ).save()
 
 
-def create_email_confirmation_message(token, email, username):
-    """Sends a email confirmation message to the specified email"""
+def create_email_verification_message(token, email, username):
+    """Sends a email verification message to the specified email"""
 
     msg = Message(
         "Account registration at Pybin",
@@ -91,12 +91,56 @@ def create_email_confirmation_message(token, email, username):
     mail.send(msg)
 
 
+def create_user_with_email_verification(email, username, password):
+    """Creates a user and sends an email for verification"""
+
+    # Add user
+    new_user = models.User(
+        email=email,
+        username=username,
+        password_hash=generate_password_hash(password),
+    ).save()
+
+    # Send a "My Messages" welcoming message
+    create_welcoming_message(new_user)
+
+    # Create token for email verification
+    token = generate_token(email)
+
+    # Send email verification message
+    create_email_verification_message(token, email, new_user.username)
+
+    flash(
+        f"Hi {new_user.username}, \
+          your account has been created! We have sent you an email to {new_user.email} with \
+          an activation link in it. Please click on the activation link \
+          to activate your account. ",
+    )
+    
+
+def create_user_without_email_verification(email, username, password):
+    """Creates a user without sending an email for verification"""
+
+    new_user = models.User(
+        email=email,
+        username=username,
+        password_hash=generate_password_hash(password),
+        email_status=True,
+    ).save()
+
+    # Send a "My Messages" welcoming message
+    create_welcoming_message(new_user)
+
+    # Login the user
+    login_user(new_user)
+
+
 def signup_user_if_submitted(form):
     """Returns True if user was created successfully"""
 
     if form.validate_on_submit():
-        username = form.username.data
         email = form.email.data
+        username = form.username.data
         password = form.password.data
 
         # If email registered already - redirect back to signup
@@ -104,28 +148,11 @@ def signup_user_if_submitted(form):
             flash("Email address already exists.")
             return
 
-        # Add user
-        new_user = models.User(
-            email=email,
-            username=username,
-            password_hash=generate_password_hash(password),
-        ).save()
-
-        # Send a "My Messages" welcoming message
-        create_welcoming_message(new_user)
-
-        # Create token for email confirmation
-        token = generate_token(email)
-
-        # Send email confirmation message
-        create_email_confirmation_message(token, email, new_user.username)
-
-        flash(
-            f"Hi {new_user.username}, \
-              your account has been created! We have sent you an email to {new_user.email} with \
-              an activation link in it. Please click on the activation link \
-              to activate your account. ",
-        )
+        # If email verification is enabled
+        if app.config.get("EMAIL_VERIFICATION_ENABLED", False):
+            create_user_with_email_verification(email, username, password)
+        else:
+            create_user_without_email_verification(email, username, password)
 
         return True
 
@@ -212,38 +239,45 @@ def verify_user_email(email):
 def resend_verification_email(form):
     """Sends a verification email if user with given username is found"""
 
-    if form.validate_on_submit():
+    # If email verification is enabled
+    if app.config.get("EMAIL_VERIFICATION_ENABLED", False):
 
-        user = current_user
+        if form.validate_on_submit():
 
-        # If current_user is not already logged in
-        if not current_user.is_authenticated:
-            user = models.User.objects(username=form.username.data).first()
+            user = current_user
 
-        # If user is found
-        if user:
+            # If current_user is not already logged in
+            if not current_user.is_authenticated:
+                user = models.User.objects(username=form.username.data).first()
 
-            # If user email already verified
-            if user.email_status:
-                flash("This username is not require verification.")
-                return
+            # If user is found
+            if user:
 
-            # Create token for email confirmation
-            token = generate_token(user.email)
+                # If user email already verified
+                if user.email_status:
+                    flash("This username is not require verification.")
+                    return
 
-            # Send email confirmation message
-            create_email_confirmation_message(token, user.email, user.username)
+                # Create token for email verification
+                token = generate_token(user.email)
 
-            flash(
-                "We have sent you an email! \
-                It can sometimes take a few minutes before the email arrives. \
-                If you cannot find this email, please check your spam/junk inbox, \
-                sometimes the emails end up there. If you still cannot find the email, \
-                please contact us. ",
-            )
+                # Send email verification message
+                create_email_verification_message(token, user.email, user.username)
 
-        # If user is not found
-        flash("This username is currently not registered in our database.")
+                flash(
+                    "We have sent you an email! \
+                    It can sometimes take a few minutes before the email arrives. \
+                    If you cannot find this email, please check your spam/junk inbox, \
+                    sometimes the emails end up there. If you still cannot find the email, \
+                    please contact us. ",
+                )
+
+            # If user is not found
+            flash("This username is currently not registered in our database.")
+
+    # If email verification is disabled
+    else:
+        flash("Email Verification is disabled!")
 
 
 def generate_token(email):
