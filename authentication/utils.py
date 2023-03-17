@@ -366,6 +366,19 @@ def check_if_user_already_exists(email):
         return True
 
 
+def check_if_social_authentication_is_enabled():
+    """
+    Returns False and sends a flash message
+    if SOCIAL_AUTHENTICATION_ENABLED enviroment variable is set to False
+    """
+
+    if not app.config.get("SOCIAL_AUTHENTICATION_ENABLED", False):
+        flash('Social authentication is disabled!')
+        return False
+
+    return True
+
+
 # Decorators
 
 

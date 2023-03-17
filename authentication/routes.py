@@ -71,6 +71,9 @@ def verify_email(token):
 
 @auth.route("/site/auth-google/")
 def auth_google():
+    if not utils.check_if_social_authentication_is_enabled():
+        return redirect(url_for("auth.login"))
+
     flow = utils.create_flow_from_client_secrets_file()
     authorization_url, _ = flow.authorization_url()
     return redirect(authorization_url)
