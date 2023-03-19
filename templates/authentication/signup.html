@@ -35,13 +35,20 @@
                                 <label class="col-sm-2 col-form-label">{{form.email.label}}</label>
                                 <p class="col-sm-10">{{form.email}}</p>
                             </div>
-
                             <div class="mb-3 row">
                                 <label class="col-sm-2 col-form-label">{{form.password.label}}</label>
                                 <p class="col-sm-8">{{form.password}}</p>
                             </div>
-                            {{form.recaptcha}}
-                            {{form.submit}}
+                            <div class="mb-3 row">
+                                <label class="col-sm-2 col-form-label"></label>
+                                <p class="input-sm col-sm-3">{{form.captcha}}</p>
+                                <img class="col-sm-3" src="{{url_for('auth.captcha')}}" width="120" height="30">
+                            </div>
+                            <div class="mb-3 row">
+                                <label class="col-sm-2 col-form-label"></label>
+                                <p class="col-sm-8">{{form.submit}}</p>
+                            </div>
+                            
                         </form>
                     </div>
                     <fieldset style="height: 200px"class="related_pages border rounded border-dark px-2 col-sm-2.5">

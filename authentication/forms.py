@@ -25,7 +25,12 @@ class SignupForm(FlaskForm):
             valids.Length(min=12, max=30),
         ],
     )
-    recaptcha = RecaptchaField()
+    captcha = wtforms.StringField(
+        render_kw={'style': 'width: 100px'},
+        validators=[
+            valids.InputRequired(),
+        ],
+    )
     submit = wtforms.SubmitField("Create My Account")
 
 

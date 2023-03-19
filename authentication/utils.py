@@ -2,6 +2,7 @@ import functools
 import io
 import os
 import pathlib
+import random
 
 from app import app, mail
 
@@ -119,7 +120,7 @@ def create_user_with_email_verification(email, username, password):
           an activation link in it. Please click on the activation link \
           to activate your account. ",
     )
-    
+
 
 def create_user_without_email_verification(email, username, password):
     """Creates a user without sending an email for verification"""
@@ -189,7 +190,6 @@ def login_user_if_submitted(form):
     """Returns True and logins user if submitted user credentials are correct"""
 
     if form.validate_on_submit():
-
         username = form.username.data
         password = form.password.data
 
@@ -244,9 +244,7 @@ def resend_verification_email(form):
 
     # If email verification is enabled
     if app.config.get("EMAIL_VERIFICATION_ENABLED", False):
-
         if form.validate_on_submit():
-
             user = current_user
 
             # If current_user is not already logged in
@@ -255,7 +253,6 @@ def resend_verification_email(form):
 
             # If user is found
             if user:
-
                 # If user email already verified
                 if user.email_status:
                     flash("This username is not require verification.")
@@ -316,7 +313,9 @@ def create_flow_from_client_secrets_file():
     from google_auth_oauthlib.flow import Flow
 
     # Find the client_secret file
-    client_secrets_file = os.path.join(pathlib.Path(__file__).parent.parent, "client_secret.json")
+    client_secrets_file = os.path.join(
+        pathlib.Path(__file__).parent.parent, "client_secret.json",
+    )
 
     # Create flow from client_secret file
     flow = Flow.from_client_secrets_file(
@@ -376,27 +375,55 @@ def check_if_social_authentication_is_enabled():
     """
 
     if not app.config.get("SOCIAL_AUTHENTICATION_ENABLED", False):
-        flash('Social authentication is disabled!')
+        flash("Social authentication is disabled!")
         return False
 
     return True
+
+
+def generate_captcha_code():
+    """Generates a captcha verification code and puts it into session"""
+
+    symbols = [
+        "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R",
+        "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+    ]
+    result = []
+
+    # Take 6 and put them into result
+    for _ in range(0, 6):
+        result.append(random.choice(symbols))
+
+    # Turn list into a string
+    captcha = "".join(result)
+
+    # Put inside a session variable
+    session["captcha"] = captcha
+
+    return captcha
 
 
 def get_captcha_image():
     """Returns a PIL image of captcha"""
 
     image = ImageCaptcha()
-    captcha = image.generate_image('1234')
-    return captcha
+    captcha_code = session.get("captcha")
+
+    if not captcha_code:
+        captcha_code = generate_captcha_code()
+
+    captcha_image = image.generate_image(session.get("captcha", captcha_code))
+    return captcha_image
 
 
 def serve_pil_image(captcha):
     """Accepts and serves a PIL image"""
 
     image_buffer = io.BytesIO()
-    captcha.save(image_buffer, 'png')
+    captcha.save(image_buffer, "png")
     image_buffer.seek(0)  # return the read cursor to the start of the file
-    return send_file(image_buffer, mimetype='image/jpeg')
+
+    return send_file(image_buffer, mimetype="image/jpeg")
 
 
 # Decorators
@@ -407,7 +434,6 @@ def not_authenticated(f):
 
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
-
         if current_user.is_authenticated:
             return redirect(url_for("pybin.home"))
 
@@ -423,7 +449,6 @@ def google_authorized(f):
 
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
-
         if not session.get("google_auth"):
             return redirect(url_for("auth.signup"))
 
