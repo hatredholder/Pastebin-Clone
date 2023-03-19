@@ -1,3 +1,4 @@
+captcha
 Flask
 Flask-MongoEngine
 Flask-Mail

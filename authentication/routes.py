@@ -100,3 +100,11 @@ def signup_from_social_media():
         return redirect(url_for("pybin.home"))
 
     return render_template("authentication/signup_from_social_media.html", form=form)
+
+
+# Captcha Route
+
+@auth.route("/site/captcha/")
+def captcha():
+    captcha = utils.get_captcha_image()
+    return utils.serve_pil_image(captcha)

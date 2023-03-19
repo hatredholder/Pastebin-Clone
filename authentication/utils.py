@@ -1,4 +1,5 @@
 import functools
+import io
 import os
 import pathlib
 
@@ -6,7 +7,9 @@ from app import app, mail
 
 import authentication.models as models
 
-from flask import flash, redirect, request, session, url_for
+from captcha.image import ImageCaptcha
+
+from flask import flash, redirect, request, send_file, session, url_for
 
 from flask_login import current_user, login_user
 
@@ -377,6 +380,23 @@ def check_if_social_authentication_is_enabled():
         return False
 
     return True
+
+
+def get_captcha_image():
+    """Returns a PIL image of captcha"""
+
+    image = ImageCaptcha()
+    captcha = image.generate_image('1234')
+    return captcha
+
+
+def serve_pil_image(captcha):
+    """Accepts and serves a PIL image"""
+
+    image_buffer = io.BytesIO()
+    captcha.save(image_buffer, 'png')
+    image_buffer.seek(0)  # return the read cursor to the start of the file
+    return send_file(image_buffer, mimetype='image/jpeg')
 
 
 # Decorators
