@@ -1,4 +1,4 @@
-from flask_wtf import FlaskForm, RecaptchaField
+from flask_wtf import FlaskForm
 
 import pybin.choices as choices
 import pybin.utils as utils
@@ -91,9 +91,6 @@ class AvatarForm(FlaskForm):
 class PasswordForm(FlaskForm):
     current_password = wtforms.PasswordField(
         "Current Password: ",
-        validators=[
-            valids.InputRequired(),
-        ],
     )
     password = wtforms.PasswordField(
         "New Password: ",
@@ -110,7 +107,12 @@ class PasswordForm(FlaskForm):
             valids.EqualTo("password_confirm", message="Passwords must match"),
         ],
     )
-    recaptcha = RecaptchaField()
+    captcha = wtforms.StringField(
+        render_kw={'style': 'width: 100px'},
+        validators=[
+            valids.InputRequired(),
+        ],
+    )
     submit = wtforms.SubmitField(
         "Change Password",
     )

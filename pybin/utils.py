@@ -7,6 +7,7 @@ import re
 from app import app
 
 import authentication.models as auth_models
+from authentication.utils import check_if_captcha_correct
 
 from flask import flash, redirect, request, url_for
 
@@ -321,6 +322,12 @@ def update_password(form, user):
 
     if form.validate_on_submit():
         password = form.password.data
+        captcha = form.captcha.data
+
+        # If captcha incorrect - redirect back to signup
+        if not check_if_captcha_correct(captcha):
+            flash("The verification code is incorrect.")
+            return
 
         if current_user.password_hash:
             current_password = form.current_password.data

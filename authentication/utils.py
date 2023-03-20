@@ -146,6 +146,12 @@ def signup_user_if_submitted(form):
         email = form.email.data
         username = form.username.data
         password = form.password.data
+        captcha = form.captcha.data
+
+        # If captcha incorrect - redirect back to signup
+        if not check_if_captcha_correct(captcha):
+            flash("The verification code is incorrect.")
+            return
 
         # If email registered already - redirect back to signup
         if check_if_email_already_used(email):
@@ -245,7 +251,13 @@ def resend_verification_email(form):
     # If email verification is enabled
     if app.config.get("EMAIL_VERIFICATION_ENABLED", False):
         if form.validate_on_submit():
+            captcha = form.captcha.data
             user = current_user
+
+            # If captcha incorrect - redirect back to signup
+            if not check_if_captcha_correct(captcha):
+                flash("The verification code is incorrect.")
+                return
 
             # If current_user is not already logged in
             if not current_user.is_authenticated:
@@ -414,6 +426,16 @@ def get_captcha_image():
 
     captcha_image = image.generate_image(session.get("captcha", captcha_code))
     return captcha_image
+
+
+def check_if_captcha_correct(captcha):
+    """Returns True if captcha is correct"""
+    
+    if captcha.lower() == session["captcha"].lower():
+
+        # Update captcha session variable
+        generate_captcha_code()
+        return True
 
 
 def serve_pil_image(captcha):

@@ -1,4 +1,4 @@
-from flask_wtf import FlaskForm, RecaptchaField
+from flask_wtf import FlaskForm
 
 import wtforms
 import wtforms.validators as valids
@@ -65,7 +65,12 @@ class ResendForm(FlaskForm):
     username = wtforms.StringField(
         "Username",
     )
-    recaptcha = RecaptchaField()
+    captcha = wtforms.StringField(
+        render_kw={'style': 'width: 100px'},
+        validators=[
+            valids.InputRequired(),
+        ],
+    )
     submit = wtforms.SubmitField(
         "Resend Activation Email",
     )
