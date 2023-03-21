@@ -23,7 +23,8 @@
                     <div class="captcha-form">
                         <div class="col-sm-9">
                             {{ form.captcha }}
-                            <img src="{{url_for('auth.captcha')}}" width="120" height="30">
+                            <img class="captcha-image" src="{{url_for('auth.captcha')}}" width="120" height="30">
+                            <a class="captcha-reload btn col-sm-1"><img src="{{url_for('static', filename='img/refresh.png')}}" width="16" height="16"></a>
                         </div>
                     </div>
                     <div class="btn-container">
@@ -90,4 +91,6 @@
         </div>
     </div>
 {% endblock %}
-
+{% block scripts %}
+    <script src="{{url_for('static', filename='js/captcha-reload.js')}}"></script>
+{% endblock %}

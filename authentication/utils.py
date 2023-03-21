@@ -428,6 +428,16 @@ def get_captcha_image():
     return captcha_image
 
 
+def get_reloaded_captcha_image():
+    """Returns a newly generated PIL image of captcha"""
+
+    image = ImageCaptcha()
+    captcha_code = generate_captcha_code()
+
+    captcha_image = image.generate_image(captcha_code)
+    return captcha_image
+
+
 def check_if_captcha_correct(captcha):
     """Returns True if captcha is correct"""
     

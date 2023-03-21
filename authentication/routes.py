@@ -108,3 +108,9 @@ def signup_from_social_media():
 def captcha():
     captcha = utils.get_captcha_image()
     return utils.serve_pil_image(captcha)
+
+
+@auth.route("/site/captcha/reload/")
+def captcha_reload():
+    captcha = utils.get_reloaded_captcha_image()
+    return utils.serve_pil_image(captcha)
