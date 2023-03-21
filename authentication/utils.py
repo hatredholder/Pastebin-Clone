@@ -424,7 +424,7 @@ def get_captcha_image():
     if not captcha_code:
         captcha_code = generate_captcha_code()
 
-    captcha_image = image.generate_image(session.get("captcha", captcha_code))
+    captcha_image = image.generate_image(captcha_code)
     return captcha_image
 
 
