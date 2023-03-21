@@ -5,8 +5,12 @@
         <div class="row">
             <div class="errors">
                 {% if form.website_url.errors %}
-                    {% for error in form.content.errors %}{{ error }}{% endfor %}
+                    {% for error in form.website_url.errors %}{{ error }}{% endfor %}
                 {% endif %}
+                {% if form.location.errors %}
+                    {% for error in form.location.errors %}{{ error }}{% endfor %}
+                {% endif %}
+
                 {% with messages = get_flashed_messages() %}
                     {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
                 {% endwith %}
@@ -26,7 +30,7 @@
                             </div>
                             <div>
                                 {{ form.email.label }}
-                                {{ form.email }}
+                                {{ form.email(placeholder="Your email address") }}
                             </div>
                             <div>
                                 Email Status:
@@ -38,11 +42,11 @@
                             </div>
                             <div>
                                 {{ form.website_url.label }}
-                                {{ form.website_url }}
+                                {{ form.website_url(placeholder="Enter a valid URL starting with http(s)://") }}
                             </div>
                             <div>
                                 {{ form.location.label }}
-                                {{ form.location }}
+                                {{ form.location(placeholder="Where are you from?") }}
                             </div>
                             <div>
                                 Avatar:

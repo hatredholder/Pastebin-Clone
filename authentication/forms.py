@@ -1,7 +1,25 @@
+import re
+
 from flask_wtf import FlaskForm
 
 import wtforms
 import wtforms.validators as valids
+from wtforms.validators import ValidationError
+
+
+# Validators
+
+
+def no_special_symbols(form, field):
+    regex = re.compile("[@!#$%^&*()<>?/\\|}{~:]")
+
+    if regex.search(field.data):
+        raise ValidationError(
+            message="Only the following chars are allowed in usernames: A-Z, 0-9, - and _.",
+        )
+
+
+# Forms
 
 
 class SignupForm(FlaskForm):
@@ -10,6 +28,7 @@ class SignupForm(FlaskForm):
         validators=[
             valids.InputRequired(),
             valids.Length(min=3, max=20),
+            no_special_symbols,
         ],
     )
     email = wtforms.EmailField(
@@ -26,7 +45,7 @@ class SignupForm(FlaskForm):
         ],
     )
     captcha = wtforms.StringField(
-        render_kw={'style': 'width: 100px'},
+        render_kw={"style": "width: 120px"},
         validators=[
             valids.InputRequired(),
         ],
@@ -40,6 +59,7 @@ class GoogleSignupForm(FlaskForm):
         validators=[
             valids.InputRequired(),
             valids.Length(min=3, max=20),
+            no_special_symbols,
         ],
     )
     submit = wtforms.SubmitField("Create My Account")
@@ -50,6 +70,7 @@ class LoginForm(FlaskForm):
         "Username: ",
         validators=[
             valids.InputRequired(),
+            valids.Length(max=20),
         ],
     )
     password = wtforms.PasswordField(
@@ -59,14 +80,14 @@ class LoginForm(FlaskForm):
         ],
     )
     submit = wtforms.SubmitField("Login")
-    
+
 
 class ResendForm(FlaskForm):
     username = wtforms.StringField(
         "Username",
     )
     captcha = wtforms.StringField(
-        render_kw={'style': 'width: 100px'},
+        render_kw={"style": "width: 120px"},
         validators=[
             valids.InputRequired(),
         ],

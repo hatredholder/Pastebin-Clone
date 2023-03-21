@@ -4,9 +4,6 @@
     <div class="container">
         <div class="row">
             <div class="errors">
-                {% if form.username.errors %}
-                    {% for error in form.username.errors %}{{ error }}{% endfor %}
-                {% endif %}
                 {% with messages = get_flashed_messages() %}
                     {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
                 {% endwith %}
@@ -29,19 +26,28 @@
                             {{form.csrf_token}}
                             <div class="mb-3 row">
                                 <label class="col-sm-2 col-form-label">{{form.username.label}}</label>
-                                <p class="col-sm-10">{{form.username}}</p>
+                                <p class="col-sm-10">{{form.username(placeholder="Your username")}}</p>
+                                <ul class="errors">
+                                    {% for error in form.username.errors %}<li style="color:red;">{{ error }}</li>{% endfor %}
+                                </ul>
                             </div>
                             <div class="mb-3 row">
                                 <label class="col-sm-2 col-form-label">{{form.email.label}}</label>
-                                <p class="col-sm-10">{{form.email}}</p>
+                                <p class="col-sm-10">{{form.email(placeholder="Your email address")}}</p>
+                                <ul class="errors">
+                                    {% for error in form.email.errors %}<li style="color:red;">{{ error }}</li>{% endfor %}
+                                </ul>
                             </div>
                             <div class="mb-3 row">
                                 <label class="col-sm-2 col-form-label">{{form.password.label}}</label>
-                                <p class="col-sm-8">{{form.password}}</p>
+                                <p class="col-sm-8">{{form.password(placeholder="Your password")}}</p>
+                                <ul class="errors">
+                                    {% for error in form.password.errors %}<li style="color:red;">{{ error }}</li>{% endfor %}
+                                </ul>
                             </div>
                             <div class="mb-3 row">
                                 <label class="col-sm-2 col-form-label"></label>
-                                <p class="input-sm col-sm-3">{{form.captcha}}</p>
+                                <p class="input-sm col-sm-3">{{form.captcha(placeholder="Enter captcha")}}</p>
                                 <img class="captcha-image col-sm-3" src="{{url_for('auth.captcha')}}" width="120" height="30">
                                 <a class="captcha-reload btn col-sm-1"><img src="{{url_for('static', filename='img/refresh.png')}}" width="16" height="16"></a>
                             </div>

@@ -17,7 +17,7 @@
             </div>
             <form method="POST" action="/site/signup-from-social-media/">
                 {{ form.csrf_token }}
-                {{ form.username }}
+                {{ form.username(placeholder="Your username") }}
                 <ul>
                     {% for error in form.username.errors %}<li style="color:red;">{{ error }}</li>{% endfor %}
                 </ul>

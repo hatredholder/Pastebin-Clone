@@ -20,9 +20,16 @@
                 <form method="POST" action="/resend/">
                     {{ form.csrf_token }}
                     
+                    {% if not current_user.is_authenticated %}
+                        {{ form.username(placeholder="Your username") }}
+                        <ul class="errors">
+                            {% for error in form.username.errors %}<li style="color:red;">{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+
                     <div class="captcha-form">
                         <div class="col-sm-9">
-                            {{ form.captcha }}
+                            {{ form.captcha(placeholder="Enter captcha") }}
                             <img class="captcha-image" src="{{url_for('auth.captcha')}}" width="120" height="30">
                             <a class="captcha-reload btn col-sm-1"><img src="{{url_for('static', filename='img/refresh.png')}}" width="16" height="16"></a>
                         </div>
@@ -30,10 +37,6 @@
                     <div class="btn-container">
                         {{ form.submit }}
                     </div>
-
-                    {% if not current_user.is_authenticated %}
-                        {{ form.username }}
-                    {% endif %}
                 </form>
             </div>
             <div class="sidebar col-sm-3">

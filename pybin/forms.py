@@ -55,6 +55,9 @@ class PasteForm(FlaskForm):
 class ProfileForm(FlaskForm):
     email = wtforms.EmailField(
         "Email Address: ",
+        validators=[
+            valids.InputRequired(),
+        ],
     )
     website_url = wtforms.StringField(
         "Website URL: ",
@@ -108,7 +111,7 @@ class PasswordForm(FlaskForm):
         ],
     )
     captcha = wtforms.StringField(
-        render_kw={'style': 'width: 100px'},
+        render_kw={"style": "width: 120px"},
         validators=[
             valids.InputRequired(),
         ],
