@@ -129,7 +129,7 @@ def create_user_without_email_verification(email, username, password):
         email=email,
         username=username,
         password_hash=generate_password_hash(password),
-        email_status=True,
+        email_verified=True,
     ).save()
 
     # Send a "My Messages" welcoming message
@@ -176,7 +176,7 @@ def signup_user_from_social_media(form, email):
         new_user = models.User(
             email=email,
             username=username,
-            email_status=True,
+            email_verified=True,
         ).save()
 
         # Send a "My Messages" welcoming message
@@ -207,7 +207,7 @@ def login_user_if_submitted(form):
             return
 
         # Check if user email if verified
-        if not user.email_status:
+        if not user.email_verified:
             flash(
                 f"This account is not activated yet. \
                 Please click the activation link first. \
@@ -252,9 +252,9 @@ def update_password(form, user):
 
 
 def check_if_current_user_email_already_verified():
-    """Returns True if user is authenticated and email_status == True"""
+    """Returns True if user is authenticated and email_verified == True"""
 
-    if current_user.is_authenticated and current_user.email_status:
+    if current_user.is_authenticated and current_user.email_verified:
         flash("Your email already verified.")
 
         return True
@@ -266,7 +266,7 @@ def verify_user_email(email):
     if email:
         user = models.User.objects(email=email).first()
 
-        user.email_status = True
+        user.email_verified = True
         user.save()
 
         login_user(user)
@@ -296,7 +296,7 @@ def resend_verification_email(form):
             # If user is found
             if user:
                 # If user email already verified
-                if user.email_status:
+                if user.email_verified:
                     flash("This username is not require verification.")
                     return
 
@@ -339,7 +339,7 @@ def confirm_token(token):
         )
 
         # If email is already verified - return false
-        if models.User.objects(email=email).first().email_status:
+        if models.User.objects(email=email).first().email_verified:
             return False
 
         # Otherwise - return the de-serialized email
@@ -356,7 +356,8 @@ def create_flow_from_client_secrets_file():
 
     # Find the client_secret file
     client_secrets_file = os.path.join(
-        pathlib.Path(__file__).parent.parent, "client_secret.json",
+        pathlib.Path(__file__).parent.parent,
+        "client_secret.json",
     )
 
     # Create flow from client_secret file
@@ -470,9 +471,8 @@ def get_reloaded_captcha_image():
 
 def check_if_captcha_correct(captcha):
     """Returns True if captcha is correct"""
-    
-    if captcha.lower() == session["captcha"].lower():
 
+    if captcha.lower() == session["captcha"].lower():
         # Update captcha session variable
         generate_captcha_code()
         return True
@@ -511,8 +511,7 @@ def email_verified(f):
 
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
-
-        if not current_user.email_status:
+        if not current_user.email_verified:
             flash("Please verify your email before changing your password!")
             return redirect(url_for("auth.resend"))
 

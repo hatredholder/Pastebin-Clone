@@ -116,6 +116,7 @@ def signup_from_social_media():
 
 # Captcha Route
 
+
 @auth.route("/site/captcha/")
 def captcha():
     captcha = utils.get_captcha_image()

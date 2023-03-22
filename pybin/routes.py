@@ -145,7 +145,7 @@ def my_pybin(username):
     if not user:
         return redirect(url_for("pybin.error", error_code=404))
 
-    pastes = models.Paste.objects(author=user).order_by('-created')
+    pastes = models.Paste.objects(author=user).order_by("-created")
 
     return render_template("pybin/my_pybin.html", user=user, pastes=pastes)
 

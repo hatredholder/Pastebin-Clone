@@ -76,12 +76,10 @@ def create_comment_if_submitted(form, document):
 
     # If document is a Paste
     if type(document) == models.Paste:
-
         # Set paste to document
         paste = document
 
     else:
-
         # Set paste to document's paste
         paste = document.paste
 
@@ -154,7 +152,6 @@ def delete_document(document):
 
     # If document is a Paste
     if type(document) == models.Paste:
-
         # Find paste's comments
         comments = models.Comment.objects(paste=document)
 
@@ -288,12 +285,12 @@ def update_profile(form, user):
             return
 
         # If user updated email,
-        # then set email_status to False,
+        # then set email_verified to False,
         # so that the user has to verify it
         if email != user.email:
             user.update(
                 email=email,
-                email_status=False,
+                email_verified=False,
             )
 
         user.update(
@@ -398,10 +395,8 @@ def add_rating_to_document(document, rating_value):
 
     # check if user is trying to rate their own document
     if document.author != current_user:
-
         # if like button is pressed
         if rating_value == "1":
-
             # if user already liked
             if current_user in document.liked:
                 document.liked.remove(current_user)
@@ -420,7 +415,6 @@ def add_rating_to_document(document, rating_value):
 
         # if dislike button is pressed
         if rating_value == "-1":
-
             # if user already liked
             if current_user in document.liked:
                 document.disliked.append(current_user)
@@ -467,9 +461,10 @@ def find_matching_pastes_from_search_query():
 
     matching_pastes = models.Paste.objects.filter(
         Q(title__icontains=search_query) | Q(content__icontains=search_query),
-    ).order_by('-created')
+    ).order_by("-created")
 
     return matching_pastes
+
 
 # Decorators
 
@@ -479,15 +474,12 @@ def document_exists(f):
 
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
-
         paste = get_paste_from_hash(kwargs["uuid_hash"])
 
         if not paste:
-
             comment = get_comment_from_hash(kwargs["uuid_hash"])
 
             if not comment or not comment.active:
-
                 return redirect(url_for("pybin.error", error_code=404))
 
         result = f(*args, **kwargs)
@@ -502,12 +494,10 @@ def paste_not_expired(f):
 
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
-
         paste = get_paste_from_hash(kwargs["uuid_hash"])
 
         # If current document is a paste
         if paste:  # noqa: SIM102
-
             # If expiration > 0 (set to expire)
             # and datetime.now() > paste creation date + expiration time
             if (
@@ -533,12 +523,10 @@ def paste_exposed(f):
 
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
-
         paste = get_paste_from_hash(kwargs["uuid_hash"])
 
         # If current document is a paste
         if paste:  # noqa: SIM102
-
             if paste.exposure == "Private" and paste.author != current_user:
                 return redirect(url_for("pybin.error", error_code=403))
 
@@ -554,7 +542,6 @@ def is_author(f):
 
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
-
         document = get_document_from_hash(kwargs["uuid_hash"])
 
         if document.author != current_user:
@@ -572,11 +559,9 @@ def message_exists(f):
 
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
-
         message = get_message_from_hash(kwargs["uuid_hash"])
 
         if not message:
-
             return redirect(url_for("pybin.error", error_code=404))
 
         result = f(*args, **kwargs)

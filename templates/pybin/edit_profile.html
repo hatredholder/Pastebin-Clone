@@ -34,7 +34,7 @@
                             </div>
                             <div>
                                 Email Status:
-                                {% if current_user.email_status %}
+                                {% if current_user.email_verified %}
                                     verified!
                                 {% else %}
                                     Not verified! We have sent you an email <div>[ <a href="/resend/"> resend verification email</a> ]</div>
