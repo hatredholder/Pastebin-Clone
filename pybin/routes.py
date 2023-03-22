@@ -197,18 +197,6 @@ def avatar():
     return render_template("pybin/avatar.html", form=form)
 
 
-@pybin.route("/user/password/", methods=["GET", "POST"])
-@login_required
-@utils.email_verified
-def password():
-    form = forms.PasswordForm()
-
-    if utils.update_password(form, current_user):
-        return redirect(url_for("pybin.password"))
-
-    return render_template("pybin/password.html", form=form)
-
-
 @pybin.route("/search/")
 @login_required
 def search_pastes():

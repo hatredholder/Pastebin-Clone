@@ -82,6 +82,36 @@ class LoginForm(FlaskForm):
     submit = wtforms.SubmitField("Login")
 
 
+class PasswordForm(FlaskForm):
+    current_password = wtforms.PasswordField(
+        "Current Password: ",
+    )
+    password = wtforms.PasswordField(
+        "New Password: ",
+        validators=[
+            valids.InputRequired(),
+            valids.Length(min=12, max=30),
+            valids.EqualTo("password_confirm", message="Passwords must match"),
+        ],
+    )
+    password_confirm = wtforms.PasswordField(
+        "New Password Again: ",
+        validators=[
+            valids.InputRequired(),
+            valids.EqualTo("password_confirm", message="Passwords must match"),
+        ],
+    )
+    captcha = wtforms.StringField(
+        render_kw={"style": "width: 120px"},
+        validators=[
+            valids.InputRequired(),
+        ],
+    )
+    submit = wtforms.SubmitField(
+        "Change Password",
+    )
+
+
 class ResendForm(FlaskForm):
     username = wtforms.StringField(
         "Username",

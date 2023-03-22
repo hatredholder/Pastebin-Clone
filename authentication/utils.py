@@ -221,6 +221,36 @@ def login_user_if_submitted(form):
         return True
 
 
+def update_password(form, user):
+    """Returns True if Password was updated successfully"""
+
+    if form.validate_on_submit():
+        password = form.password.data
+        captcha = form.captcha.data
+
+        # If captcha incorrect - redirect back to signup
+        if not check_if_captcha_correct(captcha):
+            flash("The verification code is incorrect.")
+            return
+
+        if current_user.password_hash:
+            current_password = form.current_password.data
+
+            if not check_password_hash(user.password_hash, current_password):
+                flash(
+                    "Your current password is not correct.\
+                    Please enter your current password correctly!",
+                )
+                return
+
+        user.update(
+            password_hash=generate_password_hash(password),
+        )
+
+        flash("Your password has been updated!")
+        return True
+
+
 def check_if_current_user_email_already_verified():
     """Returns True if user is authenticated and email_status == True"""
 
@@ -468,6 +498,23 @@ def not_authenticated(f):
     def wrapped(*args, **kwargs):
         if current_user.is_authenticated:
             return redirect(url_for("pybin.home"))
+
+        result = f(*args, **kwargs)
+
+        return result
+
+    return wrapped
+
+
+def email_verified(f):
+    """Redirects to email verification page if current_user's email is not verified"""
+
+    @functools.wraps(f)
+    def wrapped(*args, **kwargs):
+
+        if not current_user.email_status:
+            flash("Please verify your email before changing your password!")
+            return redirect(url_for("auth.resend"))
 
         result = f(*args, **kwargs)
 

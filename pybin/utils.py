@@ -567,23 +567,6 @@ def is_author(f):
     return wrapped
 
 
-def email_verified(f):
-    """Redirects to email verification page if current_user's email is not verified"""
-
-    @functools.wraps(f)
-    def wrapped(*args, **kwargs):
-
-        if not current_user.email_status:
-            flash("Please verify your email before changing your password!")
-            return redirect(url_for("auth.resend"))
-
-        result = f(*args, **kwargs)
-
-        return result
-
-    return wrapped
-
-
 def message_exists(f):
     """Redirects user to 404 error page if Message doesn't exist"""
 

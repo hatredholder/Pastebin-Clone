@@ -3,7 +3,7 @@ import authentication.utils as utils
 
 from flask import Blueprint, redirect, render_template, session, url_for
 
-from flask_login import login_required, logout_user
+from flask_login import current_user, login_required, logout_user
 
 
 auth = Blueprint("auth", __name__)
@@ -39,6 +39,18 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for("pybin.home"))
+
+
+@auth.route("/user/password/", methods=["GET", "POST"])
+@login_required
+@utils.email_verified
+def password():
+    form = forms.PasswordForm()
+
+    if utils.update_password(form, current_user):
+        return redirect(url_for("auth.password"))
+
+    return render_template("authentication/password.html", form=form)
 
 
 # Email Verification Routes
