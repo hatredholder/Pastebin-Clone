@@ -45,9 +45,10 @@ def create_paste_if_submitted(form):
             flash("Max amount of tags is 10")
             return
 
-        # Add author to paste if user is authenticated
+        # Add author field to paste if user is authenticated
         if current_user.is_authenticated:
             paste = models.Paste(
+                author=current_user,  # adding author
                 content=content,
                 category=category,
                 tags=tags,
@@ -55,7 +56,6 @@ def create_paste_if_submitted(form):
                 expiration=expiration,
                 exposure=exposure,
                 title=title,
-                author=current_user,
             ).save()
         else:
             paste = models.Paste(
@@ -79,6 +79,7 @@ def create_comment_if_submitted(form, document):
         # Set paste to document
         paste = document
 
+    # Else - document is a Comment
     else:
         # Set paste to document's paste
         paste = document.paste
@@ -174,8 +175,8 @@ def delete_document(document):
 
 def redirect_by_document_type(document):
     """
-    Redirects user to my_pybin route if document is a paste,
-    redirects to my_comments route if document is a comment
+    Redirects user to my_pybin route if document is a Paste,
+    redirects to my_comments route if document is a Comment
     """
     if type(document) == models.Paste:
         return redirect(url_for("pybin.my_pybin", username=document.author.username))
@@ -184,7 +185,10 @@ def redirect_by_document_type(document):
 
 
 def get_edit_form_by_document_type(document):
-    """Returns PasteForm if document is Paste and vice versa"""
+    """
+    Returns PasteForm if document is Paste,
+    returns Commentform if document is a Comment
+    """
     if type(document) == models.Paste:
         form = forms.PasteForm(obj=document)
     else:
@@ -206,7 +210,6 @@ def edit_document(form, document):
             exposure = form.exposure.data
             title = check_paste_title(form.title.data)
 
-            # Returns None if > 10 tags
             if len(tags) > 10:
                 flash("Max amount of tags is 10")
                 return
