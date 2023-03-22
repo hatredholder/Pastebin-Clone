@@ -1,17 +1,19 @@
+<!-- templates/pybin/search_pastes.html -->
 {% extends "base.html" %}
 {% block title %}Pastes - Pybin.com{% endblock %}
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="errors">
-            </div>
+            <div class="errors"></div>
             <div class="content col">
                 <div class="content_title">
                     Pastes
                     <hr>
                 </div>
                 <div class="d-flex justify-content-center search_form">
-                    <form action="{{url_for('pybin.search_pastes')}}" method="GET" class="d-flex">
+                    <form action="{{ url_for('pybin.search_pastes') }}"
+                          method="GET"
+                          class="d-flex">
                         <input class="form-control me-2"
                                type="search"
                                name='q'
@@ -26,21 +28,23 @@
                         {% for paste in matching_pastes %}
                             <div class="paste">
                                 <div class="title">
-                                    <a href="/{{paste.uuid_hash}}/">{{paste.title}}</a>
+                                    <a href="/{{ paste.uuid_hash }}/">{{ paste.title }}</a>
                                 </div>
                                 <div class="details d-flex">
                                     <div class="pe-2 user_icon">
                                         {% if paste.author %}
-                                            <img src="{{ profile_image(paste.author)}}" height="16" width="16">
+                                            <img src="{{ profile_image(paste.author) }}" height="16" width="16">
                                         {% else %}
-                                            <img src="{{url_for('static', filename='img/guest.png')}}" height="16" width="16">
+                                            <img src="{{ url_for('static', filename='img/guest.png') }}"
+                                                 height="16"
+                                                 width="16">
                                         {% endif %}
                                     </div>
                                     <div class="info_bar">
                                         <div class="info_bottom align-items-end d-inline-flex">
                                             <div class="username">
                                                 {% if paste.author %}
-                                                    <a href="/u/{{ paste.author.username }}">{{ paste.author.username|upper()}}</a>
+                                                    <a href="/u/{{ paste.author.username }}">{{ paste.author.username|upper() }}</a>
                                                 {% else %}
                                                     A GUEST
                                                 {% endif %}
@@ -76,13 +80,13 @@
                                                             data-key="{{ paste.id }}"
                                                             class="rating-btn thumbs-up btn btn-success">
                                                         <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                                                        <span class="like-count">{{ paste.liked|length()}}</span>
+                                                        <span class="like-count">{{ paste.liked|length() }}</span>
                                                     </button>
                                                     <button data-rating="-1"
                                                             data-key="{{ paste.id }}"
                                                             class="rating-btn thumbs-down btn btn-outline-secondary">
                                                         <i class="fa fa-thumbs-down" aria-hidden="true"></i>
-                                                        <span class="dislike-count">{{ paste.disliked|length()}}</span>
+                                                        <span class="dislike-count">{{ paste.disliked|length() }}</span>
                                                     </button>
                                                 </div>
                                             {% elif current_user in paste.disliked %}
@@ -91,13 +95,13 @@
                                                             data-key="{{ paste.id }}"
                                                             class="rating-btn thumbs-up btn btn-outline-secondary">
                                                         <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                                                        <span class="like-count">{{ paste.liked|length()}}</span>
+                                                        <span class="like-count">{{ paste.liked|length() }}</span>
                                                     </button>
                                                     <button data-rating="-1"
                                                             data-key="{{ paste.id }}"
                                                             class="rating-btn thumbs-down btn btn-danger">
                                                         <i class="fa fa-thumbs-down" aria-hidden="true"></i>
-                                                        <span class="dislike-count">{{ paste.disliked|length()}}</span>
+                                                        <span class="dislike-count">{{ paste.disliked|length() }}</span>
                                                     </button>
                                                 </div>
                                             {% else %}
@@ -106,13 +110,13 @@
                                                             data-key="{{ paste.id }}"
                                                             class="rating-btn thumbs-up btn btn-outline-secondary">
                                                         <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                                                        <span class="like-count">{{ paste.liked|length()}}</span>
+                                                        <span class="like-count">{{ paste.liked|length() }}</span>
                                                     </button>
                                                     <button data-rating="-1"
                                                             data-key="{{ paste.id }}"
                                                             class="rating-btn thumbs-down btn btn-outline-secondary">
                                                         <i class="fa fa-thumbs-down" aria-hidden="true"></i>
-                                                        <span class="dislike-count">{{ paste.disliked|length()}}</span>
+                                                        <span class="dislike-count">{{ paste.disliked|length() }}</span>
                                                     </button>
                                                 </div>
                                             {% endif %}
@@ -120,7 +124,7 @@
                                         <div class="right ms-auto d-inline-flex">
                                             <!-- TODO: Implement paste Reports -->
                                             <a class="btn btn-outline-secondary" href="#">report</a>
-                                            <a class="btn btn-outline-secondary" href="/{{paste.uuid_hash}}/">view</a>
+                                            <a class="btn btn-outline-secondary" href="/{{ paste.uuid_hash }}/">view</a>
                                         </div>
                                     </div>
                                     <div class="source_text">
@@ -196,7 +200,7 @@
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/base16/material-darker.min.css">
     <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/highlightjs.css')}}">
+          href="{{ url_for('static', filename='css/highlightjs.css') }}">
     <script>hljs.highlightAll();</script>
     <script>hljs.initLineNumbersOnLoad();</script>
-{% endblock%}
+{% endblock %}

@@ -1,3 +1,4 @@
+<!-- templates/pybin/edit_paste.html -->
 {% extends "base.html" %}
 {% block title %}Edit paste: {{ document.title }} - Pybin.com{% endblock %}
 {% block content %}
@@ -43,7 +44,7 @@
                     </div>
                     <div>
                         {{ form.tags.label }}
-                        {{ form.tags(placeholder="software, tutorial, data")}}
+                        {{ form.tags(placeholder="software, tutorial, data") }}
                     </div>
                     <div>
                         {{ form.syntax.label }}

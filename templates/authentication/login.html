@@ -1,3 +1,4 @@
+<!-- templates/authentication/login.html -->
 {% extends "base.html" %}
 {% block title %}Pybin.com - Login Page{% endblock %}
 {% block content %}
@@ -18,7 +19,7 @@
                 </div>
                 <div class="content_text border border-dark rounded py-2 px-2">
                     <i class="fa fa-info-circle" aria-hidden="true"></i>
-                     To login you can use any of these social media accounts: 
+                    To login you can use any of these social media accounts:
                 </div>
                 <div class="social_auth py-2">
                     <a class="btn btn-outline-danger" href="/site/auth-google/">Sign in with Google</a>
@@ -27,31 +28,30 @@
                 <div class="form d-flex">
                     <div class="form_frame col-sm-6">
                         <form method="POST" action="/login/">
-                            {{form.csrf_token}}
+                            {{ form.csrf_token }}
                             <div class="mb-3 row">
-                                <label class="col-sm-2 col-form-label">{{form.username.label}}</label>
-                                <p class="col-sm-10">{{form.username(placeholder="Your username")}}</p>
+                                <label class="col-sm-2 col-form-label">{{ form.username.label }}</label>
+                                <p class="col-sm-10">{{ form.username(placeholder="Your username") }}</p>
                                 <ul class="errors">
                                     {% for error in form.username.errors %}<li style="color:red;">{{ error }}</li>{% endfor %}
                                 </ul>
                             </div>
                             <div class="mb-3 row">
-                                <label class="col-sm-2 col-form-label">{{form.password.label}}</label>
-                                <p class="col-sm-8">{{form.password(placeholder="Your password")}}</p>
+                                <label class="col-sm-2 col-form-label">{{ form.password.label }}</label>
+                                <p class="col-sm-8">{{ form.password(placeholder="Your password") }}</p>
                                 <ul class="errors">
                                     {% for error in form.password.errors %}<li style="color:red;">{{ error }}</li>{% endfor %}
                                 </ul>
                             </div>
                             <div class="mb-3 row">
                                 <label class="col-sm-2 col-form-label"></label>
-                                <p class="col-sm-8">{{form.submit}}</p>
+                                <p class="col-sm-8">{{ form.submit }}</p>
                             </div>
                         </form>
                     </div>
-                    <fieldset style="height: 200px" class="related_pages border rounded border-dark px-2 col-sm-2.5">
-                        <h6>
-                            RELATED PAGES
-                        </h6>
+                    <fieldset style="height: 200px"
+                              class="related_pages border rounded border-dark px-2 col-sm-2.5">
+                        <h6>RELATED PAGES</h6>
                         <a class="btn btn-outline-dark" href="/signup/">Create New Account?</a>
                         <br>
                         <!--TODO: Make a username reminder through email (change url)-->
@@ -122,5 +122,4 @@
         </div>
     </div>
 {% endblock %}
-{% block scripts %}
-{% endblock %}
+{% block scripts %}{% endblock %}

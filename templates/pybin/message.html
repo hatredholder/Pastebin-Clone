@@ -1,3 +1,4 @@
+<!-- templates/pybin/message.html -->
 {% extends "base.html" %}
 {% block title %}Private Message: {{ message.title }}{% endblock %}
 {% block content %}
@@ -109,7 +110,7 @@
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/base16/material-darker.min.css">
     <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/highlightjs.css')}}">
+          href="{{ url_for('static', filename='css/highlightjs.css') }}">
     <script>hljs.highlightAll();</script>
     <script>hljs.initLineNumbersOnLoad();</script>
 {% endblock %}

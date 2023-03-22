@@ -1,4 +1,4 @@
-<!-- templates/authentication/home.html -->
+<!-- templates/pybin/home.html -->
 {% extends "base.html" %}
 {% block title %}Pybin.com - #2 paste tool since 2023!{% endblock %}
 {% block content %}
@@ -43,7 +43,7 @@
                             </div>
                             <div>
                                 {{ form.tags.label }}
-                                {{ form.tags(placeholder="software, tutorial, data")}}
+                                {{ form.tags(placeholder="software, tutorial, data") }}
                             </div>
                             <div>
                                 {{ form.syntax.label }}
@@ -68,7 +68,7 @@
                                 {% if current_user.is_authenticated %}
                                     <div class="form_avatar">
                                         <a href="/u/{{ current_user.username }}/">
-                                            <img src="{{ profile_image(current_user)}}" width="50" height="50">
+                                            <img src="{{ profile_image(current_user) }}" width="50" height="50">
                                         </a>
                                     </div>
                                     <div class="form_text">
@@ -83,7 +83,7 @@
                                 {% else %}
                                     <div class="form_user">
                                         <div class="form_avatar">
-                                            <img src="{{ url_for('static', filename='img/guest.png')}}"
+                                            <img src="{{ url_for('static', filename='img/guest.png') }}"
                                                  width="50"
                                                  height="50">
                                         </div>

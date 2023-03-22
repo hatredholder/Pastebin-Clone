@@ -1,3 +1,4 @@
+<!-- templates/pybin/edit_profile.html -->
 {% extends "base.html" %}
 {% block title %}Pybin.com - My Profile{% endblock %}
 {% block content %}
@@ -10,7 +11,6 @@
                 {% if form.location.errors %}
                     {% for error in form.location.errors %}{{ error }}{% endfor %}
                 {% endif %}
-
                 {% with messages = get_flashed_messages() %}
                     {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
                 {% endwith %}
@@ -37,7 +37,10 @@
                                 {% if current_user.email_verified %}
                                     verified!
                                 {% else %}
-                                    Not verified! We have sent you an email <div>[ <a href="/resend/"> resend verification email</a> ]</div>
+                                    Not verified! We have sent you an email
+                                    <div>
+                                        [ <a href="/resend/">resend verification email</a> ]
+                                    </div>
                                 {% endif %}
                             </div>
                             <div>
@@ -50,7 +53,7 @@
                             </div>
                             <div>
                                 Avatar:
-                                <img src="{{ profile_image(current_user)}}">
+                                <img src="{{ profile_image(current_user) }}">
                                 [ <a href="/user/change-avatar/">change avatar</a> ]
                             </div>
                             {{ form.submit }}

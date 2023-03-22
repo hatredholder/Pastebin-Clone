@@ -5,15 +5,11 @@
         <h3 class="title">Just 1 more thing...</h3>
         <div class="box">
             {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    <div class="notification is-danger">
-                        {{ messages[0] }}
-                    </div>
-                {% endif %}
+                {% if messages %}<div class="notification is-danger">{{ messages[0] }}</div>{% endif %}
             {% endwith %}
             <div>
                 <i class="fa fa-info-circle" aria-hidden="true"></i>
-                What username would you like to use for your account? 
+                What username would you like to use for your account?
             </div>
             <form method="POST" action="/site/signup-from-social-media/">
                 {{ form.csrf_token }}

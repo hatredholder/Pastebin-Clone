@@ -1,3 +1,4 @@
+<!-- templates/authentication/resend.html -->
 {% extends "base.html" %}
 {% block title %}Pybin.com - Request New Activation Email{% endblock %}
 {% block content %}
@@ -15,28 +16,31 @@
                 </div>
                 <div class="content_text">
                     <i class="fa fa-info-circle" aria-hidden="true"></i>
-                    If you have not received the registration confirmation email, you can request another one here. 
+                    If you have not received the registration confirmation email, you can request another one here.
                 </div>
                 <form method="POST" action="/resend/">
                     {{ form.csrf_token }}
-                    
                     {% if not current_user.is_authenticated %}
                         {{ form.username(placeholder="Your username") }}
                         <ul class="errors">
                             {% for error in form.username.errors %}<li style="color:red;">{{ error }}</li>{% endfor %}
                         </ul>
                     {% endif %}
-
                     <div class="captcha-form">
                         <div class="col-sm-9">
                             {{ form.captcha(placeholder="Enter captcha") }}
-                            <img class="captcha-image" src="{{url_for('auth.captcha')}}" width="120" height="30">
-                            <a class="captcha-reload btn col-sm-1"><img src="{{url_for('static', filename='img/refresh.png')}}" width="16" height="16"></a>
+                            <img class="captcha-image"
+                                 src="{{ url_for('auth.captcha') }}"
+                                 width="120"
+                                 height="30">
+                            <a class="captcha-reload btn col-sm-1">
+                                <img src="{{ url_for('static', filename='img/refresh.png') }}"
+                                     width="16"
+                                     height="16">
+                            </a>
                         </div>
                     </div>
-                    <div class="btn-container">
-                        {{ form.submit }}
-                    </div>
+                    <div class="btn-container">{{ form.submit }}</div>
                 </form>
             </div>
             <div class="sidebar col-sm-3">
@@ -94,6 +98,4 @@
         </div>
     </div>
 {% endblock %}
-{% block scripts %}
-    <script src="{{url_for('static', filename='js/captcha-reload.js')}}"></script>
-{% endblock %}
+{% block scripts %}<script src="{{url_for('static', filename='js/captcha-reload.js') }}"></script>{% endblock %}

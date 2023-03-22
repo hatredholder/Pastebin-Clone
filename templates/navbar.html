@@ -1,7 +1,8 @@
+<!-- templates/navbar.html -->
 <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="fs-4 font-monospace navbar-brand me-4" href="/">
-            <img src="{{url_for('static', filename='img/logo.png')}}"
+            <img src="{{ url_for('static', filename='img/logo.png') }}"
                  width="32"
                  height="32">
             PYBIN
@@ -10,7 +11,9 @@
             <i class="fa fa-plus"></i> paste
         </a>
         {% if not request.path == '/search/' %}
-            <form action="{{url_for('pybin.search_pastes')}}" method="GET" class="d-flex">
+            <form action="{{ url_for('pybin.search_pastes') }}"
+                  method="GET"
+                  class="d-flex">
                 <input class="form-control me-2"
                        type="search"
                        name='q'
@@ -71,7 +74,7 @@
                             </li>
                         </ul>
                     </li>
-                    <img src="{{ profile_image(current_user)}}" width="40" height="40">
+                    <img src="{{ profile_image(current_user) }}" width="40" height="40">
                 </ul>
             {% else %}
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">

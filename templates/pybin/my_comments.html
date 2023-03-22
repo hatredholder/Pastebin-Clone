@@ -1,3 +1,4 @@
+<!-- templates/pybin/my_comments.html -->
 {% extends "base.html" %}
 {% block title %}{{ user.username|capitalize }}'s Comments - Pybin.com{% endblock %}
 {% block content %}
@@ -24,7 +25,7 @@
                                 <td>
                                     <a href="/{{ comment.uuid_hash }}">{{ comment.content }}</a>
                                 </td>
-                                <td>{{ comment.created.strftime("%b %d, %Y")}}</td>
+                                <td>{{ comment.created.strftime("%b %d, %Y") }}</td>
                                 <td>{{ comment.comments|length }}</td>
                                 <td>{{ comment.syntax }}</td>
                                 {% if current_user == comment.author %}
