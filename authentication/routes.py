@@ -66,10 +66,8 @@ def resend():
 
 
 @auth.route("/verify-email/<token>/", methods=["GET", "POST"])
+@utils.email_unverified
 def verify_email(token):
-    if utils.check_if_current_user_email_already_verified():
-        return redirect(url_for("pybin.home"))
-
     email = utils.confirm_token(token)
 
     if utils.verify_user_email(email):
@@ -82,10 +80,8 @@ def verify_email(token):
 
 
 @auth.route("/site/auth-google/")
+@utils.social_authentication_enabled
 def auth_google():
-    if not utils.check_if_social_authentication_is_enabled():
-        return redirect(url_for("auth.login"))
-
     flow = utils.create_flow_from_client_secrets_file()
     authorization_url, _ = flow.authorization_url()
     return redirect(authorization_url)

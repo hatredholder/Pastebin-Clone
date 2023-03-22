@@ -30,6 +30,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 def check_if_email_already_used(email):
     """Returns True if a user with specified email already exists"""
+
     user = models.User.objects(email=email).first()
 
     if user:
@@ -323,6 +324,8 @@ def resend_verification_email(form):
 
 
 def generate_token(email):
+    """Returns a token generated with a url-safe serializer"""
+
     serializer = URLSafeSerializer(app.config["SECRET_KEY"])
     return serializer.dumps(email)
 
@@ -514,6 +517,36 @@ def email_verified(f):
         if not current_user.email_verified:
             flash("Please verify your email before changing your password!")
             return redirect(url_for("auth.resend"))
+
+        result = f(*args, **kwargs)
+
+        return result
+
+    return wrapped
+
+
+def email_unverified(f):
+    """Redirects to home page if current_user's email is already verified"""
+
+    @functools.wraps(f)
+    def wrapped(*args, **kwargs):
+        if check_if_current_user_email_already_verified():
+            return redirect(url_for("pybin.home"))
+
+        result = f(*args, **kwargs)
+
+        return result
+
+    return wrapped
+
+
+def social_authentication_enabled(f):
+    """Redirects to home page if current_user's email is already verified"""
+
+    @functools.wraps(f)
+    def wrapped(*args, **kwargs):
+        if not check_if_social_authentication_is_enabled():
+            return redirect(url_for("auth.login"))
 
         result = f(*args, **kwargs)
 
