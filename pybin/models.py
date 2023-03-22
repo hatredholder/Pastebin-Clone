@@ -11,6 +11,7 @@ class Paste(db.Document):
     author = db.ReferenceField("User", required=False)
 
     uuid_hash = db.StringField(default=lambda: str(uuid.uuid4())[:8], primary_key=True)
+
     size = db.FloatField(required=False)
     title = db.StringField(max_length=50, required=False, default="Untitled")
     syntax = db.StringField(
@@ -44,7 +45,7 @@ class Paste(db.Document):
     created = db.DateTimeField(default=datetime.datetime.now)
 
     def clean(self):
-        # Set size on document save
+        # Set size in KB (kilobytes) on document save
         self.size = float(str(len(self.content) / 1000)[:4])
 
     def __str__(self):
@@ -59,6 +60,7 @@ class Comment(db.Document):
     active = db.BooleanField(required=True, default=True)
 
     uuid_hash = db.StringField(default=lambda: str(uuid.uuid4())[:8], primary_key=True)
+
     syntax = db.StringField(
         choices=choices.SYNTAXES,
         required=True,
@@ -78,7 +80,7 @@ class Comment(db.Document):
     created = db.DateTimeField(default=datetime.datetime.now)
 
     def clean(self):
-        # Set size on document save
+        # Set size in KB (kilobytes) on document save
         self.size = float(str(len(self.content) / 1000)[:4])
 
     def __str__(self):
