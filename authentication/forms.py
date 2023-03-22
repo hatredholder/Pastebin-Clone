@@ -11,6 +11,10 @@ from wtforms.validators import ValidationError
 
 
 def no_special_symbols(form, field):
+    """
+    Raises a ValidationError if field contains special symbols
+    (symbols in the regex variable)
+    """
     regex = re.compile("[@!#$%^&*()<>?/\\|}{~:]")
 
     if regex.search(field.data):
@@ -23,6 +27,9 @@ def no_special_symbols(form, field):
 
 
 class SignupForm(FlaskForm):
+    """
+    Form used in the authentication.signup route
+    """
     username = wtforms.StringField(
         "Username: ",
         validators=[
@@ -54,6 +61,9 @@ class SignupForm(FlaskForm):
 
 
 class GoogleSignupForm(FlaskForm):
+    """
+    Form used in the authentication.signup_from_social_media route
+    """
     username = wtforms.StringField(
         "Username: ",
         validators=[
@@ -66,6 +76,9 @@ class GoogleSignupForm(FlaskForm):
 
 
 class LoginForm(FlaskForm):
+    """
+    Form used in the authentication.login route
+    """
     username = wtforms.StringField(
         "Username: ",
         validators=[
@@ -83,6 +96,9 @@ class LoginForm(FlaskForm):
 
 
 class PasswordForm(FlaskForm):
+    """
+    Form used in the authentication.password route
+    """
     current_password = wtforms.PasswordField(
         "Current Password: ",
     )
@@ -113,6 +129,9 @@ class PasswordForm(FlaskForm):
 
 
 class ResendForm(FlaskForm):
+    """
+    Form used in the authentication.resend route
+    """
     username = wtforms.StringField(
         "Username",
     )
