@@ -1,4 +1,6 @@
-# Choice Tuples
+#
+# This module contains choice tuples
+#
 
 CATEGORIES = (
     "None",

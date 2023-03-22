@@ -8,6 +8,9 @@ import wtforms.validators as valids
 
 
 class PasteForm(FlaskForm):
+    """
+    Form used in the pybin.home route and pybin.document_clone route
+    """
     content = wtforms.TextAreaField(
         "New Paste",
         validators=[
@@ -53,6 +56,9 @@ class PasteForm(FlaskForm):
 
 
 class ProfileForm(FlaskForm):
+    """
+    Form used in the pybin.profile route
+    """
     email = wtforms.EmailField(
         "Email Address: ",
         validators=[
@@ -83,6 +89,9 @@ class ProfileForm(FlaskForm):
 
 
 class AvatarForm(FlaskForm):
+    """
+    Form used in the pybin.avatar route
+    """
     avatar = wtforms.FileField(
         "Avatar (jpg/png/gif): ",
     )
@@ -92,6 +101,9 @@ class AvatarForm(FlaskForm):
 
 
 class CommentForm(FlaskForm):
+    """
+    Form used in the pybin.document_view route
+    """
     content = wtforms.TextAreaField(
         "Your Comment",
         validators=[
@@ -112,6 +124,9 @@ class CommentForm(FlaskForm):
 
 
 class MessageForm(FlaskForm):
+    """
+    Form used in the pybin.message_view route
+    """
     content = wtforms.TextAreaField(
         validators=[
             valids.InputRequired(),
