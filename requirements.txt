@@ -7,6 +7,7 @@ google-auth
 google-auth-oauthlib
 Pillow
 Python-Dotenv
+pytest
 requests
 itsdangerous
 timeago
