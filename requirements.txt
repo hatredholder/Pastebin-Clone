@@ -8,6 +8,7 @@ google-auth-oauthlib
 Pillow
 Python-Dotenv
 pytest
+pytest-cov
 requests
 itsdangerous
 timeago

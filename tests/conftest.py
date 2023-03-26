@@ -1,3 +1,4 @@
+from flask import template_rendered
 
 from flask_mongoengine import MongoEngine
 
@@ -15,6 +16,7 @@ def app():
 
     app.config["TESTING"] = True  # enable testing
     app.config["WTF_CSRF_ENABLED"] = False  # disable csrf for forms
+    app.config["SECRET_KEY"] = "test_key"
 
     mongoengine.connection.disconnect_all()
 
@@ -50,3 +52,32 @@ def db(app):
 
     # Teardown (clear database after tests)
     db.connection["default"].drop_database("pastebin_test_db")
+
+
+@pytest.fixture
+def client(app):
+    """
+    Returns Flask's test client to send requests with
+    """
+    return app.test_client()
+
+
+@pytest.fixture
+def captured_templates(app, db):
+    """
+    Returns a list of tuples (returns 1 tuple if route uses 1 template)
+    which contains used template and context
+    """
+    recorded = []
+
+    def record(sender, template, context, **extra):
+        # Add a tuple to the list
+        recorded.append((template, context))
+
+    template_rendered.connect(record, app)
+    try:
+        # Send the list
+        yield recorded
+    finally:
+        # Disconnect when finished
+        template_rendered.disconnect(record, app)

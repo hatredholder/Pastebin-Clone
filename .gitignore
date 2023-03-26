@@ -1,4 +1,5 @@
 __pycache__
+.cov
 .env
 client_secret.json
 .pytest_cache
