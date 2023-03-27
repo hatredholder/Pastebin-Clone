@@ -27,6 +27,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 # Helper Functions
 
+
 def check_if_username_already_used(username):
     """Returns True if a user with specified username already exists"""
 
@@ -92,9 +93,17 @@ def create_welcoming_message(new_user):
 def create_email_verification_message(token, email, username):
     """Sends a email verification message to the specified email"""
 
+    # if MAIL_USERNAME env variable not set
+    mail_username = app.config.get("MAIL_USERNAME")
+    if not mail_username:
+        raise ValueError(
+            "\"MAIL_USERNAME\" Enviroment variable isn't set! Either set it to your email or "
+            "set \"EMAIL_VERIFICATION_ENABLED\" to False",
+        )
+
     msg = Message(
         "Account registration at Pybin",
-        sender=app.config["MAIL_USERNAME"],
+        sender=mail_username,
         recipients=[email],
     )
 
@@ -445,8 +454,42 @@ def generate_captcha_code():
     """Generates a captcha verification code and puts it into session"""
 
     symbols = [
-        "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R",
-        "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
     ]
     result = []
 
