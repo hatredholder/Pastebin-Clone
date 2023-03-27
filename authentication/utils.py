@@ -27,6 +27,16 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 # Helper Functions
 
+def check_if_username_already_used(username):
+    """Returns True if a user with specified username already exists"""
+
+    user = models.User.objects(username=username).first()
+
+    if user:
+        return True
+
+    return False
+
 
 def check_if_email_already_used(email):
     """Returns True if a user with specified email already exists"""
@@ -34,7 +44,6 @@ def check_if_email_already_used(email):
     user = models.User.objects(email=email).first()
 
     if user:
-        flash("Email address already exists.")
         return True
 
     return False
@@ -152,6 +161,11 @@ def signup_user_if_submitted(form):
         # If captcha incorrect - redirect back to signup
         if not check_if_captcha_correct(captcha):
             flash("The verification code is incorrect.")
+            return
+
+        # If username registered already - redirect back to signup
+        if check_if_username_already_used(username):
+            flash("This username has already been taken.")
             return
 
         # If email registered already - redirect back to signup
