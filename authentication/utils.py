@@ -475,7 +475,14 @@ def get_reloaded_captcha_image():
 def check_if_captcha_correct(captcha):
     """Returns True if captcha is correct"""
 
-    if captcha.lower() == session["captcha"].lower():
+    # Get captcha variable from session
+    session_captcha = session.get("captcha")
+
+    # If captcha not generated yet
+    if not session_captcha:
+        session_captcha = generate_captcha_code()
+
+    if captcha.lower() == session_captcha.lower():
         # Update captcha session variable
         generate_captcha_code()
         return True
