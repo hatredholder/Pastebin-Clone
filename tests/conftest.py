@@ -55,15 +55,16 @@ def db(app):
 
 
 @pytest.fixture
-def client(app):
+def client(app, db):
     """
     Returns Flask's test client to send requests with
     """
+    # NOTE: db fixture is required for public_pastes() method used in templates
     return app.test_client()
 
 
 @pytest.fixture
-def captured_templates(app, db):
+def captured_templates(app):
     """
     Returns a list of tuples (returns 1 tuple if route uses 1 template)
     which contains used template and context
