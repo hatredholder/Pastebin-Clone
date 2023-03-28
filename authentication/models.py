@@ -25,7 +25,7 @@ class User(UserMixin, db.Document):
 
     created = db.DateTimeField(default=datetime.datetime.now)
 
-    # Setup avatar image when not set
+    # Setup avatar image when unset
     def clean(self):
         if not self.avatar:
             self.avatar.put(open("static/img/guest.png", "rb"))  # noqa: SIM115
