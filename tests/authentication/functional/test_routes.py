@@ -324,11 +324,36 @@ def test_password_route_incorrect_captcha(authorized_client):
     assert b'The verification code is incorrect.' in response.data
 
 
+def test_password_route_blank_current_password(authorized_client):
+    """
+    GIVEN an authorized Flask client
+    WHEN a POST request with data is sent to "/user/password/" page
+    THEN check if flash message is displayed
+    """
+    # Access "/site/captcha" to generate a captcha code
+    response = authorized_client.get("/site/captcha/")
+    assert response.status_code == 200
+
+    with authorized_client.session_transaction() as session:
+        data = {
+            "current_password": "",
+            "password": "updated_password",
+            "password_confirm": "updated_password",
+            "captcha": session.get("captcha"),  # get generated captcha code
+            "submit": "",
+        }
+
+    response = authorized_client.post("/user/password/", data=data)
+    assert response.status_code == 200
+
+    assert b'Current Password cannot be blank.' in response.data
+
+
 def test_password_route_incorrect_current_password(authorized_client):
     """
     GIVEN an authorized Flask client
     WHEN a POST request with data is sent to "/user/password/" page
-    THEN check if password got updated
+    THEN check if flash message is displayed
     """
     # Access "/site/captcha" to generate a captcha code
     response = authorized_client.get("/site/captcha/")
