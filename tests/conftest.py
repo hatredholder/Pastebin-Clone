@@ -1,5 +1,7 @@
 from flask import template_rendered
 
+from flask_login import FlaskLoginClient
+
 from flask_mongoengine import MongoEngine
 
 import mongoengine
@@ -17,6 +19,8 @@ def app():
     app.config["TESTING"] = True  # enable testing
     app.config["WTF_CSRF_ENABLED"] = False  # disable csrf for forms
     app.config["SECRET_KEY"] = "test_key"
+
+    app.test_client_class = FlaskLoginClient
 
     mongoengine.connection.disconnect_all()
 
@@ -57,10 +61,19 @@ def db(app):
 @pytest.fixture
 def client(app, db):
     """
-    Returns Flask's test client to send requests with
+    Returns Flask test client to send requests with
     """
     # NOTE: db fixture is required for public_pastes() method used in templates
     return app.test_client()
+
+
+@pytest.fixture
+def authorized_client(app, db, create_test_user):
+    """
+    Returns an authorized Flask test client to send requests with
+    """
+    # NOTE: db fixture is required for public_pastes() method used in templates
+    return app.test_client(user=create_test_user)
 
 
 @pytest.fixture
