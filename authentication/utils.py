@@ -260,6 +260,12 @@ def update_password(form, user):
         if current_user.password_hash:
             current_password = form.current_password.data
 
+            if not current_password:
+                flash(
+                    "Current Password cannot be blank.",
+                )
+                return
+
             if not check_password_hash(user.password_hash, current_password):
                 flash(
                     "Your current password is not correct.\
@@ -267,7 +273,7 @@ def update_password(form, user):
                 )
                 return
 
-        user.update(
+        current_user.update(
             password_hash=generate_password_hash(password),
         )
 
@@ -428,7 +434,10 @@ def get_id_info_from_flow():
 
 
 def check_if_user_already_exists(email):
-    """Returns True and logins user if user with specified email exists already"""
+    """
+    Returns True and logins user if user with specified email exists already
+    Used in /login/callback/ route
+    """
 
     user = models.User.objects(email=email).first()
 
@@ -454,42 +463,8 @@ def generate_captcha_code():
     """Generates a captcha verification code and puts it into session"""
 
     symbols = [
-        "A",
-        "B",
-        "C",
-        "D",
-        "E",
-        "F",
-        "G",
-        "H",
-        "I",
-        "J",
-        "K",
-        "L",
-        "M",
-        "N",
-        "O",
-        "P",
-        "Q",
-        "R",
-        "S",
-        "T",
-        "U",
-        "V",
-        "W",
-        "X",
-        "Y",
-        "Z",
-        "0",
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
+        "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R",
+        "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
     ]
     result = []
 
