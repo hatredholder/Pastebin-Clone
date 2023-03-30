@@ -1,6 +1,8 @@
 import authentication.forms as forms
 import authentication.models as models
 
+import pytest
+
 from werkzeug.security import check_password_hash
 
 # Signup Route
@@ -119,31 +121,58 @@ def test_signup_route_signup_user_already_used_email(client, create_test_user):
     assert b"Email address already exists." in response.data
 
 
-# def test_signup_route_signup_user_email_verification_enabled(client, enable_email_verification):
-# TODO: Write this test later when I feel like doing it
+def test_signup_route_signup_user_email_verification_enabled(
+    client, enable_email_verification,
+):
+    """
+    GIVEN a Flask client and email verification enabled
+    WHEN a POST request with data is sent to "/signup/" page
+    THEN check if user got created and his email is unverified
+    """
+    # Access "/site/captcha" to generate a captcha code
+    response = client.get("/site/captcha/")
+    assert response.status_code == 200
 
-# """
-# GIVEN a Flask client
-# WHEN a POST request with data is sent to "/signup/" page
-# THEN check if user got created
-# """
-# # Access "/site/captcha" to generate a captcha code
-# response = client.get("/site/captcha/")
-# assert response.status_code == 200
-#
-# with client.session_transaction() as session:
-#     data = {
-#         "username": "new_signup_user",
-#         "email": "new_signup_user@gmail.com",
-#         "password": "new_signup_password",
-#         "captcha": session.get("captcha"),  # get generated captcha code
-#         "submit": "",
-#     }
-#
-# response = client.post("/signup/", data=data)
-# assert response.status_code == 302
-#
-# assert not models.User.objects.first().email_verified
+    with client.session_transaction() as session:
+        data = {
+            "username": "new_signup_user",
+            "email": "new_signup_user@gmail.com",
+            "password": "new_signup_password",
+            "captcha": session.get("captcha"),  # get generated captcha code
+            "submit": "",
+        }
+
+    response = client.post("/signup/", data=data)
+    assert response.status_code == 302
+
+    assert models.User.objects.first().email_verified == False  # noqa: E712
+
+
+def test_signup_route_signup_user_email_verification_mail_username_not_set(
+    client, enable_email_verification, app,
+):
+    """
+    GIVEN a Flask client, email verification enabled, and app
+    WHEN a POST request with data is sent to "/signup/" page
+    THEN check if ValueError is raised when MAIL_USERNAME is set to None/unset
+    """
+    # Access "/site/captcha" to generate a captcha code
+    response = client.get("/site/captcha/")
+    assert response.status_code == 200
+
+    app.config["MAIL_USERNAME"] = ""
+
+    with client.session_transaction() as session:
+        data = {
+            "username": "new_signup_user",
+            "email": "new_signup_user@gmail.com",
+            "password": "new_signup_password",
+            "captcha": session.get("captcha"),  # get generated captcha code
+            "submit": "",
+        }
+
+    with pytest.raises(ValueError):
+        response = client.post("/signup/", data=data)
 
 
 # Login Route
@@ -300,7 +329,8 @@ def test_password_route_update_password(authorized_client):
 
     # Check if password has been updated
     assert check_password_hash(
-        models.User.objects(username="new_user").first().password_hash, "updated_password",
+        models.User.objects(username="new_user").first().password_hash,
+        "updated_password",
     )
 
 
@@ -321,7 +351,7 @@ def test_password_route_incorrect_captcha(authorized_client):
     response = authorized_client.post("/user/password/", data=data)
     assert response.status_code == 200
 
-    assert b'The verification code is incorrect.' in response.data
+    assert b"The verification code is incorrect." in response.data
 
 
 def test_password_route_blank_current_password(authorized_client):
@@ -346,7 +376,7 @@ def test_password_route_blank_current_password(authorized_client):
     response = authorized_client.post("/user/password/", data=data)
     assert response.status_code == 200
 
-    assert b'Current Password cannot be blank.' in response.data
+    assert b"Current Password cannot be blank." in response.data
 
 
 def test_password_route_incorrect_current_password(authorized_client):
@@ -371,7 +401,7 @@ def test_password_route_incorrect_current_password(authorized_client):
     response = authorized_client.post("/user/password/", data=data)
     assert response.status_code == 200
 
-    assert b'Your current password is not correct.' in response.data
+    assert b"Your current password is not correct." in response.data
 
 
 def test_password_route_redirect_unauthorized_user(client):
@@ -385,7 +415,8 @@ def test_password_route_redirect_unauthorized_user(client):
 
 
 def test_password_route_redirect_unverified_email_user(
-    authorized_client, create_test_user,
+    authorized_client,
+    create_test_user,
 ):
     """
     GIVEN an authorized Flask client and test user object

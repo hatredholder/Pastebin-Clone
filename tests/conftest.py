@@ -2,6 +2,8 @@ from flask import template_rendered
 
 from flask_login import FlaskLoginClient
 
+from flask_mail import Mail
+
 from flask_mongoengine import MongoEngine
 
 import mongoengine
@@ -20,8 +22,14 @@ def app():
     app.config["WTF_CSRF_ENABLED"] = False  # disable csrf for forms
     app.config["SECRET_KEY"] = "test_key"
 
+    # Setup Flask-Mail
+    Mail(app)
+
+    # Setup Flask-Login test_client
+    # (required for authorizating the client in tests)
     app.test_client_class = FlaskLoginClient
 
+    # Disconnecting to avoid ConnectionFailure with MongoEngine
     mongoengine.connection.disconnect_all()
 
     # Use app_context
