@@ -429,3 +429,23 @@ def test_password_route_redirect_unverified_email_user(
 
     response = authorized_client.get("/user/password/")
     assert response.status_code == 302
+
+
+# Resend route
+
+
+def test_resend_route_template_and_context(client, captured_templates):
+    """
+    GIVEN a Flask client and captured_templates function
+    WHEN the "/resend/" page is requested
+    THEN check if template used is "authentication/signup.html" and
+    form in context is of type SignupForm
+    """
+    response = client.get("/resend/")
+    assert response.status_code == 200
+
+    assert len(captured_templates) == 1
+    template, context = captured_templates[0]
+
+    assert template.name == "authentication/resend.html"
+    assert type(context.get("form")) == forms.ResendForm
