@@ -122,7 +122,8 @@ def test_signup_route_signup_user_already_used_email(client, create_test_user):
 
 
 def test_signup_route_signup_user_email_verification_enabled(
-    client, enable_email_verification,
+    client,
+    enable_email_verification,
 ):
     """
     GIVEN a Flask client and email verification enabled
@@ -149,7 +150,9 @@ def test_signup_route_signup_user_email_verification_enabled(
 
 
 def test_signup_route_signup_user_email_verification_mail_username_not_set(
-    client, enable_email_verification, app,
+    client,
+    enable_email_verification,
+    app,
 ):
     """
     GIVEN a Flask client, email verification enabled, and app
@@ -239,9 +242,10 @@ def test_login_route_login_user_email_unverified(client, create_test_user):
     WHEN a POST request with unverified email data of create_test_user is sent to "/login/" page
     THEN check if flash message is displayed
     """
-    # Set email_verified to False and save
-    create_test_user.email_verified = False
-    create_test_user.save()
+    # Set email to unverified
+    create_test_user.update(
+        email_verified=False,
+    )
 
     data = {
         "username": "new_user",
@@ -424,8 +428,9 @@ def test_password_route_redirect_unverified_email_user(
     THEN check if authorized user with unverified email gets redirected
     """
     # Set email to unverified
-    create_test_user.email_verified = False
-    create_test_user.save()
+    create_test_user.update(
+        email_verified=False,
+    )
 
     response = authorized_client.get("/user/password/")
     assert response.status_code == 302
@@ -449,3 +454,124 @@ def test_resend_route_template_and_context(client, captured_templates):
 
     assert template.name == "authentication/resend.html"
     assert type(context.get("form")) == forms.ResendForm
+
+
+def test_resend_route_send_email(
+    client, enable_email_verification, create_test_user,
+):
+    """
+    GIVEN an authorized Flask client, enabled email verification and test user object
+    WHEN a POST request with data is sent to "/resend/" page
+    THEN check if flash message is displayed
+    """
+    # Access "/site/captcha" to generate a captcha code
+    response = client.get("/site/captcha/")
+    assert response.status_code == 200
+
+    # Set email to unverified
+    create_test_user.update(
+        email_verified=False,
+    )
+
+    with client.session_transaction() as session:
+        data = {
+            "username": "new_user",
+            "captcha": session.get("captcha"),  # get generated captcha code
+            "submit": "",
+        }
+
+    response = client.post("/resend/", data=data)
+    assert response.status_code == 200
+
+    assert b"We have sent you an email!" in response.data
+
+
+def test_resend_route_incorrect_captcha(
+    client, enable_email_verification, create_test_user,
+):
+    """
+    GIVEN an authorized Flask client, enabled email verification and test user object
+    WHEN a POST request with incorrect captcha data is sent to "/resend/" page
+    THEN check if flash message is displayed
+    """
+    data = {
+        "username": "new_user",
+        "captcha": "incorrect_captcha",
+        "submit": "",
+    }
+
+    response = client.post("/resend/", data=data)
+    assert response.status_code == 200
+
+    assert b"The verification code is incorrect." in response.data
+
+
+def test_resend_route_doesnt_require_verification(
+    client, enable_email_verification, create_test_user,
+):
+    """
+    GIVEN an authorized Flask client, enabled email verification and test user object
+    WHEN a POST request with data is sent to "/resend/" page
+    THEN check if flash message is displayed
+    """
+    # Access "/site/captcha" to generate a captcha code
+    response = client.get("/site/captcha/")
+    assert response.status_code == 200
+
+    with client.session_transaction() as session:
+        data = {
+            "username": "new_user",
+            "captcha": session.get("captcha"),  # get generated captcha code
+            "submit": "",
+        }
+
+    response = client.post("/resend/", data=data)
+    assert response.status_code == 200
+
+    assert b"This username is not require verification." in response.data
+
+
+def test_resend_route_user_not_registered(client, enable_email_verification):
+    """
+    GIVEN an authorized Flask client and enabled email verification
+    WHEN a POST request with data is sent to "/resend/" page
+    THEN check if flash message is displayed
+    """
+    # Access "/site/captcha" to generate a captcha code
+    response = client.get("/site/captcha/")
+    assert response.status_code == 200
+
+    with client.session_transaction() as session:
+        data = {
+            "username": "new_user",
+            "captcha": session.get("captcha"),  # get generated captcha code
+            "submit": "",
+        }
+
+    response = client.post("/resend/", data=data)
+    assert response.status_code == 200
+
+    assert b"This username is currently not registered in our database." in response.data
+
+
+def test_resend_route_email_verification_disabled(client):
+    """
+    GIVEN an authorized Flask client
+    WHEN a POST request with data is sent to "/resend/" page
+    THEN check if flash message is displayed
+    """
+    # Access "/site/captcha" to generate a captcha code
+    response = client.get("/site/captcha/")
+    assert response.status_code == 200
+
+    with client.session_transaction() as session:
+        data = {
+            "username": "new_user",
+            "captcha": session.get("captcha"),  # get generated captcha code
+            "submit": "",
+        }
+
+    response = client.post("/resend/", data=data)
+    assert response.status_code == 200
+
+    assert b"Email Verification is disabled!" in response.data

@@ -42,3 +42,11 @@ def enable_email_verification(app):
 
     # Setup the .env file
     app.config.from_prefixed_env()
+
+    # Enable email verification
+    app.config["EMAIL_VERIFICATION_ENABLED"] = True
+
+    yield True
+
+    # Disable email verification on teardown
+    app.config["EMAIL_VERIFICATION_ENABLED"] = False
