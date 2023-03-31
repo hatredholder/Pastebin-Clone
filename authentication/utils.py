@@ -191,31 +191,6 @@ def signup_user_if_submitted(form):
         return True
 
 
-def signup_user_from_social_media(form, email):
-    """Returns True if user was created successfully"""
-
-    if form.validate_on_submit():
-        username = form.username.data
-
-        new_user = models.User(
-            email=email,
-            username=username,
-            email_verified=True,
-        ).save()
-
-        # Send a "My Messages" welcoming message
-        create_welcoming_message(new_user)
-
-        # Delete session variables so user cant access
-        # signup_from_social_media without authorizing through Google Again
-        session.pop("google_auth")
-        session.pop("email")
-
-        login_user(new_user)
-
-        return True
-
-
 def login_user_if_submitted(form):
     """Returns True and logins user if submitted user credentials are correct"""
 
@@ -376,6 +351,31 @@ def confirm_token(token):
     # If invalid token - return False
     except BadSignature:
         return False
+
+
+def signup_user_from_social_media(form, email):
+    """Returns True if user was created successfully"""
+
+    if form.validate_on_submit():
+        username = form.username.data
+
+        new_user = models.User(
+            email=email,
+            username=username,
+            email_verified=True,
+        ).save()
+
+        # Send a "My Messages" welcoming message
+        create_welcoming_message(new_user)
+
+        # Delete session variables so user cant access
+        # signup_from_social_media without authorizing through Google Again
+        session.pop("google_auth")
+        session.pop("email")
+
+        login_user(new_user)
+
+        return True
 
 
 def create_flow_from_client_secrets_file():
