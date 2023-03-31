@@ -1,5 +1,6 @@
 import authentication.forms as forms
 import authentication.models as models
+import authentication.utils as utils
 
 import pytest
 
@@ -575,3 +576,51 @@ def test_resend_route_email_verification_disabled(client):
     assert response.status_code == 200
 
     assert b"Email Verification is disabled!" in response.data
+
+
+# Verify_Email route
+
+
+def test_verify_email_route_verify_email(authorized_client, create_test_user):
+    """
+    GIVEN an authorized Flask client and test user object
+    WHEN the "/verify-email/<token>/" page where "token" is correct is requested
+    THEN check if client with unverified email gets their email verified
+    """
+    # Set email to unverified
+    create_test_user.update(
+        email_verified=False,
+    )
+
+    token = utils.generate_token(create_test_user.email)
+
+    authorized_client.get(f"/verify-email/{token}/")
+
+    assert create_test_user.email_verified == True  # noqa: E712
+
+
+def test_verify_email_route_email_already_verified(authorized_client):
+    """
+    GIVEN an authorized Flask client
+    WHEN the "/verify-email/" page is requested
+    THEN check if client with already verified email gets redirected to home url
+    """
+    response = authorized_client.get("/verify-email/token/", follow_redirects=True)
+
+    assert response.request.path == "/"
+
+
+def test_verify_email_route_invalid_token(authorized_client, create_test_user):
+    """
+    GIVEN an authorized Flask client and test user object
+    WHEN the "/verify-email/<token>/" page where "token" is incorrect is requested
+    THEN check if client gets redirected to error url
+    """
+    # Set email to unverified
+    create_test_user.update(
+        email_verified=False,
+    )
+
+    response = authorized_client.get("/verify-email/incorrect_token/", follow_redirects=True)
+
+    assert response.request.path == "/error/400/"
