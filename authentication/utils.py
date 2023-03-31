@@ -370,11 +370,7 @@ def confirm_token(token):
             token,
         )
 
-        # If email is already verified - return false
-        if models.User.objects(email=email).first().email_verified:
-            return False
-
-        # Otherwise - return the de-serialized email
+        # Return the de-serialized email
         return email
 
     # If invalid token - return False
