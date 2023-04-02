@@ -369,7 +369,7 @@ def signup_user_from_social_media(form, email):
         create_welcoming_message(new_user)
 
         # Delete session variables so user cant access
-        # signup_from_social_media without authorizing through Google Again
+        # signup_from_social_media route without authorizing through Google Again
         session.pop("google_auth")
         session.pop("email")
 
@@ -407,12 +407,17 @@ def get_id_info_from_flow():
     import google.auth.transport.requests
     from google.oauth2 import id_token
     from pip._vendor import cachecontrol
+    from oauthlib.oauth2.rfc6749.errors import MissingCodeError
 
     # Create the flow
     flow = create_flow_from_client_secrets_file()
 
     # Fetch the token
-    flow.fetch_token(authorization_response=request.url)
+    try:
+        flow.fetch_token(authorization_response=request.url)
+    # Return none if error
+    except MissingCodeError:
+        return
 
     credentials = flow.credentials
     request_session = requests.session()

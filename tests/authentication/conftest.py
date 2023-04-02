@@ -50,3 +50,29 @@ def enable_email_verification(app):
 
     # Disable email verification on teardown
     app.config["EMAIL_VERIFICATION_ENABLED"] = False
+
+
+@pytest.fixture
+def enable_social_authentication(app):
+    """
+    Enable social authentication
+    (Requires social authentication settings to be set in a .env file)
+    """
+
+    # Find and load the .env file
+    dotenv_path = os.path.join(
+        pathlib.Path(__file__).parent.parent.parent,
+        ".env",
+    )
+    load_dotenv(dotenv_path)
+
+    # Setup the .env file
+    app.config.from_prefixed_env()
+
+    # Enable social authentication
+    app.config["SOCIAL_AUTHENTICATION_ENABLED"] = True
+
+    yield True
+
+    # Disable social authentication on teardown
+    app.config["SOCIAL_AUTHENTICATION_ENABLED"] = False

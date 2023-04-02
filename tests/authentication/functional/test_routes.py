@@ -48,7 +48,36 @@ def test_signup_route_signup_user(client):
     response = client.post("/signup/", data=data)
     assert response.status_code == 302
 
+    # Check if admin user got created
+    # (admin user sends the welcoming message to newly signed up users)
+    assert utils.get_admin_user()
+
     assert models.User.objects.first().username == "new_signup_user"
+
+
+def test_signup_route_signup_user_special_symbols(client):
+    """
+    GIVEN a Flask client
+    WHEN a POST request with data is sent to "/signup/" page
+    THEN check if user got created
+    """
+    # Access "/site/captcha" to generate a captcha code
+    response = client.get("/site/captcha/")
+    assert response.status_code == 200
+
+    with client.session_transaction() as session:
+        data = {
+            "username": "new_signup_user@!#$%^&*",
+            "email": "new_signup_user@gmail.com",
+            "password": "new_signup_password",
+            "captcha": session.get("captcha"),  # get generated captcha code
+            "submit": "",
+        }
+
+    response = client.post("/signup/", data=data)
+    assert response.status_code == 200
+
+    assert b'Only the following chars are allowed in usernames: A-Z, 0-9, - and _.' in response.data
 
 
 def test_signup_route_signup_user_incorrect_captcha(client):
@@ -177,6 +206,16 @@ def test_signup_route_signup_user_email_verification_mail_username_not_set(
 
     with pytest.raises(ValueError):
         response = client.post("/signup/", data=data)
+
+
+def test_signup_route_already_authenticated(authorized_client):
+    """
+    GIVEN an authorized Flask client
+    WHEN the "/signup/" page is requested
+    THEN check if user gets redirected
+    """
+    response = authorized_client.get("/signup/")
+    assert response.status_code == 302
 
 
 # Login Route
@@ -578,7 +617,7 @@ def test_resend_route_email_verification_disabled(client):
     assert b"Email Verification is disabled!" in response.data
 
 
-# Verify_Email route
+# Verify_email route
 
 
 def test_verify_email_route_verify_email(authorized_client, create_test_user):
@@ -624,3 +663,138 @@ def test_verify_email_route_invalid_token(authorized_client, create_test_user):
     response = authorized_client.get("/verify-email/incorrect_token/", follow_redirects=True)
 
     assert response.request.path == "/error/400/"
+
+
+# Auth_google route
+
+
+def test_auth_google(client, enable_social_authentication):
+    """
+    GIVEN a Flask client and enabled social authentication
+    WHEN the "/site/auth-google" is requested
+    THEN check if client gets redirected
+    """
+    response = client.get("/site/auth-google/")
+
+    assert response.status_code == 302
+
+
+def test_auth_google_social_authentication_disabled(client):
+    """
+    GIVEN a Flask client
+    WHEN the "/site/auth-google" is requested and social authentication is disabled
+    THEN check if client gets redirected to login url
+    """
+    response = client.get("/site/auth-google/", follow_redirects=True)
+
+    assert response.request.path == "/login/"
+
+
+# Callback route
+
+
+def test_callback(client, enable_social_authentication):
+    """
+    GIVEN a Flask client
+    WHEN the "/login/callback/" is requested
+    THEN check if client gets redirected
+    """
+    response = client.get("/login/callback/")
+
+    assert response.status_code == 302
+
+
+# Signup_from_social_media route
+
+
+def test_signup_from_social_media_route_template_and_context(client, captured_templates):
+    """
+    GIVEN a Flask client and captured_templates function
+    WHEN the "/site/signup-from-social-media/" page is requested
+    THEN check if template used is "authentication/signup_from_social_media.html" and
+    form in context is of type GoogleSignupForm
+    """
+    # Set session variables
+    # (required to get access to this route)
+    with client.session_transaction() as session:
+        session["google_auth"] = True
+        session["email"] = "media_user@gmail.com"
+
+    response = client.get("/site/signup-from-social-media/")
+    assert response.status_code == 200
+
+    assert len(captured_templates) == 1
+    template, context = captured_templates[0]
+
+    assert template.name == "authentication/signup_from_social_media.html"
+    assert type(context.get("form")) == forms.GoogleSignupForm
+
+
+def test_signup_from_social_media_route_signup_user(client):
+    """
+    GIVEN a Flask client
+    WHEN a POST request with data is sent to "/site/signup-from-social-media/" page
+    THEN check if user got created
+    """
+    with client.session_transaction() as session:
+        session["google_auth"] = True
+        session["email"] = "media_user@gmail.com"
+
+    data = {
+        "username": "social_media_user",
+        "submit": "",
+    }
+
+    response = client.post("/site/signup-from-social-media/", data=data)
+    assert response.status_code == 302
+
+    assert models.User.objects.first().username == "social_media_user"
+
+
+def test_signup_from_social_media_route_redirect_no_session_variable(client):
+    """
+    GIVEN a Flask client
+    WHEN no session variable is set and "/site/signup-from-social-media/" page is requested
+    THEN check if user gets redirected
+    """
+    response = client.get("/site/signup-from-social-media/")
+    assert response.status_code == 302
+
+
+# Captcha route
+
+
+def test_captcha_route(client):
+    """
+    GIVEN a Flask client
+    WHEN the "/site/captcha/reload/" is requested
+    THEN check if captcha code is set
+    """
+    response = client.get("/site/captcha/")
+    assert response.status_code == 200
+
+    with client.session_transaction() as session:
+        assert session.get("captcha")
+
+
+def test_captcha_reload_route(client):
+    """
+    GIVEN a Flask client
+    WHEN the "/site/captcha/reload/" is requested
+    THEN check if captcha code is updated
+    """
+    # Load old captcha
+    response = client.get("/site/captcha/")
+    assert response.status_code == 200
+
+    # Get the old captcha
+    with client.session_transaction() as session:
+        old_captcha = session.get("captcha")
+
+    # Update the captcha
+    response = client.get("/site/captcha/reload/")
+    assert response.status_code == 200
+
+    # Check if captcha updated
+    with client.session_transaction() as session:
+        assert session.get("captcha") != old_captcha

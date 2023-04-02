@@ -91,6 +91,9 @@ def auth_google():
 def callback():
     id_info = utils.get_id_info_from_flow()
 
+    if not id_info:
+        return redirect(url_for("pybin.error", error_code=404))
+
     if utils.check_if_user_already_exists(id_info.get("email")):
         return redirect(url_for("pybin.home"))
 
@@ -104,7 +107,7 @@ def callback():
 def signup_from_social_media():
     form = forms.GoogleSignupForm()
 
-    if utils.signup_user_from_social_media(form, session["email"]):
+    if utils.signup_user_from_social_media(form, session.get("email")):
         return redirect(url_for("pybin.home"))
 
     return render_template("authentication/signup_from_social_media.html", form=form)
