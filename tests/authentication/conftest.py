@@ -13,7 +13,7 @@ from werkzeug.security import generate_password_hash
 @pytest.fixture
 def create_test_user(db):
     """
-    Create and return a User object
+    Create, save and return a User object
     """
     new_user = models.User(
         username="new_user",
