@@ -64,7 +64,7 @@ class Comment(db.Document):
     syntax = db.StringField(
         choices=choices.SYNTAXES,
         required=True,
-        default="None",
+        default="plaintext",
     )
     size = db.FloatField(required=False)
     paste = db.ReferenceField("Paste", required=False)
