@@ -96,3 +96,21 @@ def test_home_route_create_paste_more_than_10_tags(client):
     assert response.status_code == 200
 
     assert b'Max amount of tags is 10' in response.data
+
+
+# Error Route
+
+
+def test_error_route_template_and_context(client, captured_templates):
+    """
+    GIVEN a Flask client and captured_templates function
+    WHEN the "/error/404/" page is requested
+    THEN check if template used is "pybin/error.html"
+    """
+    response = client.get("/error/404/")
+    assert response.status_code == 200
+
+    assert len(captured_templates) == 1
+    template, context = captured_templates[0]
+
+    assert template.name == "pybin/error.html"
