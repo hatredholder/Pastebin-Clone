@@ -382,12 +382,12 @@ def get_messages(current_user):
 
 
 def delete_reply_by_uuid_hash(message, reply_hash):
-    """Deletes reply by uuid hash (wow thats a useful comment)"""
+    """Deletes reply by uuid hash (wow, thats a useful comment)"""
     message.update(pull__replies__uuid_hash=reply_hash)
 
 
 def get_document_and_rating_value_from_request():
-    """Gets document id and rating from request, sends document found by id and rating"""
+    """Sends document found by id and rating from request"""
     return get_document_from_hash(request.form.get("data_key")), request.form.get(
         "data_rating",
     )
