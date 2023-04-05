@@ -288,3 +288,61 @@ def test_rating_route_rate_own_paste(authorized_client, create_test_paste):
     assert response.status_code == 200
 
     assert models.Paste.objects.first().rating == 0
+
+
+# Document_view Route
+
+
+def test_document_view_route_template_and_context(client, captured_templates, create_test_paste):
+    """
+    GIVEN a Flask client, captured_templates function and Paste object
+    WHEN the "/<uuid_hash>/" page is requested where uuid_hash is paste's uuid_hash
+    THEN check if template used is "pybin/document.html" and
+    form in context is of type CommentForm
+    """
+    response = client.get(f"/{create_test_paste.uuid_hash}/")
+    assert response.status_code == 200
+
+    assert len(captured_templates) == 1
+    template, context = captured_templates[0]
+
+    assert template.name == "pybin/document.html"
+    assert type(context.get("form")) == forms.CommentForm
+
+
+def test_document_view_route_create_comment_for_paste(authorized_client, create_test_paste):
+    """
+    GIVEN an authorized Flask client and Paste object
+    WHEN a POST request with data is sent to "/<uuid_hash>/" page
+    where uuid_hash is paste's uuid_hash
+    THEN check if comment got created
+    """
+    data = {
+        "content": "new comment",
+        "syntax": "plaintext",
+        "submit": "",
+    }
+
+    response = authorized_client.post(f"/{create_test_paste.uuid_hash}/", data=data)
+    assert response.status_code == 302
+
+    assert len(models.Comment.objects.all()) == 1
+
+
+def test_document_view_route_create_comment_for_comment(authorized_client, create_test_comment):
+    """
+    GIVEN an authorized Flask client and Paste object
+    WHEN a POST request with data is sent to "/<uuid_hash>/" page
+    where uuid_hash is paste's uuid_hash
+    THEN check if comment got created
+    """
+    data = {
+        "content": "new comment",
+        "syntax": "plaintext",
+        "submit": "",
+    }
+
+    response = authorized_client.post(f"/{create_test_comment.uuid_hash}/", data=data)
+    assert response.status_code == 302
+
+    assert len(models.Comment.objects.all()) == 2
