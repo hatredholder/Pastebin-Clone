@@ -114,3 +114,177 @@ def test_error_route_template_and_context(client, captured_templates):
     template, context = captured_templates[0]
 
     assert template.name == "pybin/error.html"
+
+
+# Rating Route
+
+
+def test_rating_route_like_paste(authorized_client):
+    """
+    GIVEN an authorized Flask client
+    WHEN a POST request with data is sent to "rating" page
+    THEN check if paste rating is updated
+    """
+    # Create a new paste
+    new_paste = models.Paste.objects.create(
+        content="new paste content",
+    )
+
+    data = {
+        "data_key": new_paste.uuid_hash,
+        "data_rating": "1",
+    }
+
+    response = authorized_client.post("/rating/", data=data)
+    assert response.status_code == 200
+
+    assert models.Paste.objects.first().rating == 1
+
+
+def test_rating_route_dislike_paste(authorized_client):
+    """
+    GIVEN an authorized Flask client
+    WHEN a POST request with data is sent to "rating" page
+    THEN check if paste rating is updated
+    """
+    # Create a new paste
+    new_paste = models.Paste.objects.create(
+        content="new paste content",
+    )
+
+    data = {
+        "data_key": new_paste.uuid_hash,
+        "data_rating": "-1",
+    }
+
+    response = authorized_client.post("/rating/", data=data)
+    assert response.status_code == 200
+
+    assert models.Paste.objects.first().rating == -1
+
+
+def test_rating_route_already_liked(authorized_client):
+    """
+    GIVEN an authorized Flask client
+    WHEN a POST request with data is sent to "rating" page
+    THEN check if paste rating is updated
+    """
+    # Create a new paste
+    new_paste = models.Paste.objects.create(
+        content="new paste content",
+    )
+
+    data = {
+        "data_key": new_paste.uuid_hash,
+        "data_rating": "1",
+    }
+
+    response = authorized_client.post("/rating/", data=data)
+    assert response.status_code == 200
+
+    response = authorized_client.post("/rating/", data=data)
+    assert response.status_code == 200
+
+    assert models.Paste.objects.first().rating == 0
+
+
+def test_rating_route_already_disliked(authorized_client):
+    """
+    GIVEN an authorized Flask client
+    WHEN a POST request with data is sent to "rating" page
+    THEN check if paste rating is updated
+    """
+    # Create a new paste
+    new_paste = models.Paste.objects.create(
+        content="new paste content",
+    )
+
+    data = {
+        "data_key": new_paste.uuid_hash,
+        "data_rating": "-1",
+    }
+
+    response = authorized_client.post("/rating/", data=data)
+    assert response.status_code == 200
+
+    response = authorized_client.post("/rating/", data=data)
+    assert response.status_code == 200
+
+    assert models.Paste.objects.first().rating == 0
+
+
+def test_rating_route_like_after_dislike(authorized_client):
+    """
+    GIVEN an authorized Flask client
+    WHEN a POST request with data is sent to "rating" page
+    THEN check if paste rating is updated
+    """
+    # Create a new paste
+    new_paste = models.Paste.objects.create(
+        content="new paste content",
+    )
+
+    data = {
+        "data_key": new_paste.uuid_hash,
+        "data_rating": "-1",
+    }
+
+    response = authorized_client.post("/rating/", data=data)
+    assert response.status_code == 200
+
+    data = {
+        "data_key": new_paste.uuid_hash,
+        "data_rating": "1",
+    }
+
+    response = authorized_client.post("/rating/", data=data)
+    assert response.status_code == 200
+
+    assert models.Paste.objects.first().rating == 1
+
+
+def test_rating_route_dislike_after_like(authorized_client):
+    """
+    GIVEN an authorized Flask client
+    WHEN a POST request with data is sent to "rating" page
+    THEN check if paste rating is updated
+    """
+    # Create a new paste
+    new_paste = models.Paste.objects.create(
+        content="new paste content",
+    )
+
+    data = {
+        "data_key": new_paste.uuid_hash,
+        "data_rating": "1",
+    }
+
+    response = authorized_client.post("/rating/", data=data)
+    assert response.status_code == 200
+
+    data = {
+        "data_key": new_paste.uuid_hash,
+        "data_rating": "-1",
+    }
+
+    response = authorized_client.post("/rating/", data=data)
+    assert response.status_code == 200
+
+    assert models.Paste.objects.first().rating == -1
+
+
+def test_rating_route_rate_own_paste(authorized_client, create_test_paste):
+    """
+    GIVEN an authorized Flask client and Paste object
+    WHEN a POST request with own data is sent to "rating" page
+    THEN check if paste rating isn't updated
+    """
+    data = {
+        "data_key": create_test_paste.uuid_hash,
+        "data_rating": "1",
+    }
+
+    response = authorized_client.post("/rating/", data=data)
+    assert response.status_code == 200
+
+    assert models.Paste.objects.first().rating == 0
