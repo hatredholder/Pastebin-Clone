@@ -7,7 +7,6 @@ import re
 from app import app
 
 import authentication.models as auth_models
-from authentication.utils import check_if_captcha_correct
 
 from flask import flash, redirect, request, url_for
 
@@ -19,8 +18,6 @@ import pybin.forms as forms
 import pybin.models as models
 
 import timeago
-
-from werkzeug.security import check_password_hash, generate_password_hash
 
 from wtforms.fields import StringField
 
@@ -265,11 +262,17 @@ def update_profile(form, user):
 
     if form.validate_on_submit():
         email = form.email.data
-        website_url = form.website_url.data
         location = form.location.data
 
-        # Check if email entered by the user isn't used by someone already
+        # Protect from empty URL ValidationError in MongoEngine
+        if form.website_url.data:
+            website_url = form.website_url.data
+        else:
+            website_url = None
+
+        # Check if user updated his email
         if email != user.email:  # noqa: SIM102
+            # Check if email entered by the user isn't used by someone already
             if auth_models.User.objects(email=email).first():
                 flash("This email address has already been taken.")
                 return
@@ -314,36 +317,6 @@ def update_avatar(form, user):
         user.avatar.replace(io.BytesIO(avatar.read()))
         user.save()
 
-        return True
-
-
-def update_password(form, user):
-    """Returns True if Password was updated successfully"""
-
-    if form.validate_on_submit():
-        password = form.password.data
-        captcha = form.captcha.data
-
-        # If captcha incorrect - redirect back to signup
-        if not check_if_captcha_correct(captcha):
-            flash("The verification code is incorrect.")
-            return
-
-        if current_user.password_hash:
-            current_password = form.current_password.data
-
-            if not check_password_hash(user.password_hash, current_password):
-                flash(
-                    "Your current password is not correct.\
-                    Please enter your current password correctly!",
-                )
-                return
-
-        user.update(
-            password_hash=generate_password_hash(password),
-        )
-
-        flash("Your password has been updated!")
         return True
 
 

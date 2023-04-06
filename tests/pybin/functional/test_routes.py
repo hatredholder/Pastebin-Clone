@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 
+from authentication.models import User
+
 import pybin.forms as forms
 import pybin.models as models
 import pybin.utils as utils
@@ -316,6 +318,71 @@ def test_document_view_route_template_and_context(
     assert type(context.get("form")) == forms.CommentForm
 
 
+def test_document_view_route_5_minute_old_comment(
+    authorized_client,
+    create_test_comment,
+):
+    """
+    GIVEN a Flask client and a Comment object
+    WHEN the "/<uuid_hash>/" page is requested where uuid_hash is comment's uuid_hash
+    THEN check if edit button is gone
+    """
+    # Make comment older than 5 mintues
+    five_minutes_older = datetime.utcnow() - timedelta(minutes=5)
+
+    create_test_comment.created = five_minutes_older
+    create_test_comment.save()
+
+    response = authorized_client.get(f"/{create_test_comment.uuid_hash}/")
+    assert response.status_code == 200
+
+    assert b'edit' not in response.data
+
+
+def test_document_view_route_incorrect_hash(client):
+    """
+    GIVEN a Flask client and a Paste object
+    WHEN the "/<uuid_hash>/" page is requested where uuid_hash is incorrect uuid_hash
+    THEN check if user gets redirected
+    """
+    response = client.get("/incorrect_hash/")
+    assert response.status_code == 302
+
+
+def test_document_view_route_expired_paste(client, create_test_paste):
+    """
+    GIVEN a Flask client and a expired Paste object
+    WHEN the "/<uuid_hash>/" page is requested where uuid_hash is paste's uuid_hash
+    THEN check if user gets redirected and paste is deleted
+    """
+    # Make paste an hour older
+    one_hour_older = datetime.utcnow() - timedelta(hours=1)
+    create_test_paste.created = one_hour_older
+
+    # Set expiration to an hour
+    create_test_paste.expiration = 3600
+    create_test_paste.save()
+
+    response = client.get(f"/{create_test_paste.uuid_hash}/")
+
+    assert response.status_code == 302
+    assert len(models.Paste.objects.all()) == 0
+
+
+def test_document_view_route_private_paste(client, create_test_paste):
+    """
+    GIVEN a Flask client and a expired Paste object
+    WHEN the "/<uuid_hash>/" page is requested where uuid_hash is private paste's uuid_hash
+    THEN check if user gets redirecte
+    """
+    create_test_paste.exposure = "Private"
+    create_test_paste.save()
+
+    response = client.get(f"/{create_test_paste.uuid_hash}/")
+
+    assert response.status_code == 302
+
+
 def test_document_view_route_create_comment_for_paste(
     authorized_client,
     create_test_paste,
@@ -381,7 +448,7 @@ def test_document_raw_view_route(client, create_test_paste):
 def test_document_delete_route_delete_paste(authorized_client, create_test_paste):
     """
     GIVEN an authorized Flask client and Paste object
-    WHEN a POST request with data is sent to "/delete/<uuid_hash>/" page
+    WHEN a request is sent to "/delete/<uuid_hash>/" page
     where uuid_hash is paste's uuid_hash
     THEN check if paste got deleted
     """
@@ -389,6 +456,23 @@ def test_document_delete_route_delete_paste(authorized_client, create_test_paste
     assert response.status_code == 302
 
     assert len(models.Paste.objects.all()) == 0
+
+
+def test_document_delete_route_delete_paste_not_author(authorized_client):
+    """
+    GIVEN an authorized Flask client
+    WHEN a request is sent to "/delete/<uuid_hash>/" page
+    THEN check if paste didn't get deleted
+    """
+    new_paste = models.Paste.objects.create(
+        content="new paste content",
+    )
+    new_paste.save()
+
+    response = authorized_client.get(f"/delete/{new_paste.uuid_hash}/")
+    assert response.status_code == 302
+
+    assert len(models.Paste.objects.all()) == 1
 
 
 def test_document_delete_route_delete_comment(authorized_client, create_test_comment):
@@ -477,7 +561,8 @@ def test_document_edit_route_edit_paste(authorized_client, create_test_paste):
 
 
 def test_document_edit_route_edit_paste_more_than_10_tags(
-    authorized_client, create_test_paste,
+    authorized_client,
+    create_test_paste,
 ):
     """
     GIVEN an authorized Flask client and Paste object
@@ -557,3 +642,356 @@ def test_document_edit_route_edit_comment_older_than_5_minutes(
     assert response.status_code == 302
 
     assert models.Comment.objects.first().content != "edited comment"
+
+
+# Document_clone Route
+
+
+def test_document_clone_route_template_and_context(
+    authorized_client,
+    captured_templates,
+    create_test_paste,
+):
+    """
+    GIVEN an authroized Flask client and captured_templates function
+    WHEN the "/clone/<uuid_hash>/" page is requested
+    THEN check if template used is "pybin/clone_document.html" and
+    form in context is of type PasteForm
+    """
+    response = authorized_client.get(f"/clone/{create_test_paste.uuid_hash}/")
+    assert response.status_code == 200
+
+    assert len(captured_templates) == 1
+    template, context = captured_templates[0]
+
+    assert template.name == "pybin/clone_document.html"
+    assert type(context.get("form")) == forms.PasteForm
+
+
+# Message_view Route
+
+
+def test_message_view_route_template_and_context(
+    authorized_client,
+    captured_templates,
+    create_test_message,
+):
+    """
+    GIVEN a Flask client and captured_templates function
+    WHEN the "/message/<uuid_hash>" page is requested
+    THEN check if template used is "pybin/message.html" and
+    form in context is of type MessageForm
+    """
+    response = authorized_client.get(f"/message/{create_test_message.uuid_hash}/")
+    assert response.status_code == 200
+
+    assert len(captured_templates) == 1
+    template, context = captured_templates[0]
+
+    assert template.name == "pybin/message.html"
+    assert type(context.get("form")) == forms.MessageForm
+
+
+def test_message_view_route_incorrect_hash(
+    authorized_client,
+):
+    """
+    GIVEN a Flask client and captured_templates function
+    WHEN the "/message/<uuid_hash>" page is requested
+    THEn check if user is redirected
+    """
+    response = authorized_client.get("/message/incorrect_hash/")
+    assert response.status_code == 302
+
+
+def test_message_view_route_create_reply(
+    authorized_client,
+    captured_templates,
+    create_test_message,
+):
+    """
+    GIVEN a Flask client
+    WHEN a POST request with data is sent to "/" page
+    THEN check if paste got created and author is None
+    """
+    data = {
+        "content": "new reply",
+        "submit": "",
+    }
+
+    response = authorized_client.post(
+        f"/message/{create_test_message.uuid_hash}/",
+        data=data,
+    )
+    assert response.status_code == 302
+
+    assert len(models.Message.objects.first().replies) == 1
+
+
+# Send_message Route
+
+
+def test_send_message_route_template_and_context(authorized_client, captured_templates):
+    """
+    GIVEN a Flask client and captured_templates function
+    WHEN the "/message/compose/" page is requested
+    THEN check if template used is "pybin/send_message.html"
+    """
+    response = authorized_client.get("/message/compose/")
+    assert response.status_code == 200
+
+    assert len(captured_templates) == 1
+    template, context = captured_templates[0]
+
+    assert template.name == "pybin/send_message.html"
+
+
+# Reply_delete Route
+
+
+def test_reply_delete_route_delete_reply(
+    authorized_client,
+    create_test_message,
+    create_test_reply,
+):
+    """
+    GIVEN an authorized Flask client and Paste object
+    WHEN a request is sent to "/reply/delete/<message_hash>/<reply_hash>/" page
+    THEN check if reply got deleted
+    """
+    create_test_message.replies.append(create_test_reply)
+    create_test_message.save()
+
+    response = authorized_client.get(
+        f"/reply/delete/{create_test_message.uuid_hash}/{create_test_reply.uuid_hash}/",
+    )
+    assert response.status_code == 302
+
+    assert len(models.Message.objects.first().replies) == 0
+
+
+# My_pybin Route
+
+
+def test_my_pybin_route_template_and_context(
+    client, captured_templates, create_test_user,
+):
+    """
+    GIVEN a Flask client, captured_templates function and a user object
+    WHEN the "/u/<username>/" page is requested
+    THEN check if template used is "pybin/my_pybin.html"
+    """
+    response = client.get(f"/u/{create_test_user.username}/")
+    assert response.status_code == 200
+
+    assert len(captured_templates) == 1
+    template, context = captured_templates[0]
+
+    assert template.name == "pybin/my_pybin.html"
+
+
+def test_my_pybin_route_redirect_incorrect_username(client):
+    """
+    GIVEN a Flask client function
+    WHEN the "/u/<username>/" page is requested where username is incorrect
+    THEN check if user is redirected
+    """
+    response = client.get("/u/incorrect_username/")
+    assert response.status_code == 302
+
+
+# My_comments Route
+
+
+def test_my_comments_route_template_and_context(
+    authorized_client, captured_templates, create_test_user,
+):
+    """
+    GIVEN a Flask client, captured_templates function and a user object
+    WHEN the "/u/<username>/comments/" page is requested
+    THEN check if template used is "pybin/my_comments.html"
+    """
+    response = authorized_client.get(f"/u/{create_test_user.username}/comments/")
+    assert response.status_code == 200
+
+    assert len(captured_templates) == 1
+    template, context = captured_templates[0]
+
+    assert template.name == "pybin/my_comments.html"
+
+
+def test_my_comments_route_redirect_incorrect_username(authorized_client):
+    """
+    GIVEN an authorized Flask client function
+    WHEN the "/u/<username>/comments" page is requested where username is incorrect
+    THEN check if user is redirected
+    """
+    response = authorized_client.get("/u/incorrect_username/comments/")
+    assert response.status_code == 302
+
+
+# My_messages Route
+
+
+def test_my_messages_route_template_and_context(authorized_client, captured_templates):
+    """
+    GIVEN a Flask client and captured_templates function
+    WHEN the "/messages/" page is requested
+    THEN check if template used is "pybin/my_messages.html"
+    """
+    response = authorized_client.get("/messages/")
+    assert response.status_code == 200
+
+    assert len(captured_templates) == 1
+    template, context = captured_templates[0]
+
+    assert template.name == "pybin/my_messages.html"
+
+
+# Profile Route
+
+
+def test_profile_route_template_and_context(authorized_client, captured_templates):
+    """
+    GIVEN an authorized Flask client and captured_templates function
+    WHEN the "/user/profile/" page is requested
+    THEN check if template used is "pybin/edit_profile.html" and
+    form in context is of type ProfileForm
+    """
+    response = authorized_client.get("/user/profile/")
+    assert response.status_code == 200
+
+    assert len(captured_templates) == 1
+    template, context = captured_templates[0]
+
+    assert template.name == "pybin/edit_profile.html"
+    assert type(context.get("form")) == forms.ProfileForm
+
+
+def test_profile_route_set_email(authorized_client, create_test_user):
+    """
+    GIVEN an authorized Flask client
+    WHEN a POST request with data is sent to "/user/profile/" page
+    THEN check if profile got updated
+    """
+    data = {
+        "email": "brand_new_email@gmail.com",
+        "location": "",
+        "website_url": "",
+        "submit": "",
+    }
+
+    response = authorized_client.post("/user/profile/", data=data)
+    assert response.status_code == 302
+
+    assert User.objects.first().email == "brand_new_email@gmail.com"
+    assert User.objects.first().email_verified == False  # noqa: E712
+
+
+def test_profile_route_update_email_already_taken(authorized_client):
+    """
+    GIVEN an authorized Flask client
+    WHEN a POST request with data is sent to "/user/profile/" page
+    THEN check if flash message is displayed
+    """
+    user_with_already_taken_email = User(
+        username="taken_email",
+        email="taken_email@gmail.com",
+        password_hash="taken_email_password",
+    )
+    user_with_already_taken_email.save()
+
+    data = {
+        "email": "taken_email@gmail.com",
+        "website_url": "",
+        "location": "",
+        "submit": "",
+    }
+
+    response = authorized_client.post("/user/profile/", data=data)
+    assert response.status_code == 200
+
+    assert b"This email address has already been taken." in response.data
+
+
+def test_profile_route_set_incorrect_website_url(authorized_client, create_test_user):
+    """
+    GIVEN an authorized Flask client
+    WHEN a POST request with data is sent to "/user/profile/" page
+    THEN check if flash message is displayed
+    """
+    data = {
+        "email": create_test_user.email,
+        "website_url": "google.com",
+        "location": "",
+        "submit": "",
+    }
+
+    response = authorized_client.post("/user/profile/", data=data)
+    assert response.status_code == 200
+
+    assert b"Please make sure your website starts with http:// or https://" in response.data
+
+
+# Avatar Route
+
+
+def test_avatar_route_template_and_context(authorized_client, captured_templates):
+    """
+    GIVEN an authorized Flask client and captured_templates function
+    WHEN the "/user/change-avatar/" page is requested
+    THEN check if template used is "pybin/avatar.html"
+    """
+    response = authorized_client.get("/user/change-avatar/")
+    assert response.status_code == 200
+
+    assert len(captured_templates) == 1
+    template, context = captured_templates[0]
+
+    assert template.name == "pybin/avatar.html"
+    assert type(context.get("form")) == forms.AvatarForm
+
+
+def test_avatar_route_update_avatar(authorized_client):
+    """
+    GIVEN an authorized Flask client
+    WHEN a POST request with data is sent to "/" page
+    THEN check if paste got created and author is None
+    """
+    data = {
+        "avatar": open("static/img/guest.png", "rb"),  # noqa: SIM115
+        "submit": "",
+    }
+
+    response = authorized_client.post("/user/change-avatar/", data=data)
+    assert response.status_code == 302
+
+
+# Search_pastes Route
+
+
+def test_search_pastes_route_template_and_context(authorized_client, captured_templates):
+    """
+    GIVEN an authorized Flask client and captured_templates function
+    WHEN the "/search/" page is requested
+    THEN check if template used is "pybin/search_pastes.html"
+    """
+    response = authorized_client.get("/search/")
+    assert response.status_code == 200
+
+    assert len(captured_templates) == 1
+    template, context = captured_templates[0]
+
+    assert template.name == "pybin/search_pastes.html"
+
+
+def test_search_pastes_route_with_search_query(authorized_client, create_test_paste):
+    """
+    GIVEN an authorized Flask client and captured_templates function
+    WHEN the "/search/" page is requested
+    THEN check if template used is "pybin/search_pastes.html"
+    """
+    response = authorized_client.get("/search/?q=untitled")
+    assert response.status_code == 200
+
+    assert b'test paste' in response.data
