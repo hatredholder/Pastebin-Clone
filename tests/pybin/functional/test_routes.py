@@ -4,9 +4,6 @@ from authentication.models import User
 
 import pybin.forms as forms
 import pybin.models as models
-import pybin.utils as utils
-
-import pytest
 
 
 # Home Route
