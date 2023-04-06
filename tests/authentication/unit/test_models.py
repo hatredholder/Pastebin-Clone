@@ -26,19 +26,24 @@ def test_user_model_get_total_rating_method_is_zero(db, create_test_user):
     assert create_test_user.get_total_rating() == 0
 
 
-def test_user_model_get_total_rating_method_with_rated_paste(db, create_test_user):
+def test_user_model_get_total_rating_method_with_rated_paste(
+    db, create_test_user, create_paste_with_rating,
+):
     """
     GIVEN a User model and Paste(author=create_test_user, rating=1) model
     WHEN get_total_rating method is called
     THEN check if method returns 1
     """
-    # TODO: Write this test after implementing create_paste_with_rating fixture
+
+    assert create_test_user.get_total_rating() == 1
 
 
-def test_user_model_get_total_rating_method_with_rated_comment(db, create_test_user):
+def test_user_model_get_total_rating_method_with_rated_comment(
+    db, create_test_user, create_comment_with_rating,
+):
     """
     GIVEN a User model and Comment(author=create_test_user, rating=1) model
     WHEN get_total_rating method is called
     THEN check if method returns 1
     """
-    # TODO: Write this test after implementing create_comment_with_rating fixture
+    assert create_test_user.get_total_rating() == 1

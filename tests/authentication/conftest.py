@@ -5,6 +5,8 @@ import authentication.models as models
 
 from dotenv import load_dotenv
 
+from pybin.models import Comment, Paste
+
 import pytest
 
 from werkzeug.security import generate_password_hash
@@ -76,3 +78,33 @@ def enable_social_authentication(app):
 
     # Disable social authentication on teardown
     app.config["SOCIAL_AUTHENTICATION_ENABLED"] = False
+
+
+@pytest.fixture
+def create_paste_with_rating(db, create_test_user):  # noqa: F811
+    """
+    Create and return a Paste object
+    """
+    new_paste = Paste(
+        content="test paste",
+        author=create_test_user,
+        rating=1,
+    )
+    new_paste.save()
+
+    return new_paste
+
+
+@pytest.fixture
+def create_comment_with_rating(db, create_test_user):  # noqa: F811
+    """
+    Create and return a Paste object
+    """
+    new_comment = Comment(
+        content="test paste",
+        author=create_test_user,
+        rating=1,
+    )
+    new_comment.save()
+
+    return new_comment
