@@ -78,7 +78,10 @@ def test_signup_route_signup_user_special_symbols(client):
     response = client.post("/signup/", data=data)
     assert response.status_code == 200
 
-    assert b'Only the following chars are allowed in usernames: A-Z, 0-9, - and _.' in response.data
+    assert (
+        b"Only the following chars are allowed in usernames: A-Z, 0-9, - and _."
+        in response.data
+    )
 
 
 def test_signup_route_signup_user_incorrect_captcha(client):
@@ -498,7 +501,9 @@ def test_resend_route_template_and_context(client, captured_templates):
 
 
 def test_resend_route_send_email(
-    client, enable_email_verification, create_test_user,
+    client,
+    enable_email_verification,
+    create_test_user,
 ):
     """
     GIVEN an authorized Flask client, enabled email verification and test user object
@@ -528,7 +533,9 @@ def test_resend_route_send_email(
 
 
 def test_resend_route_incorrect_captcha(
-    client, enable_email_verification, create_test_user,
+    client,
+    enable_email_verification,
+    create_test_user,
 ):
     """
     GIVEN an authorized Flask client, enabled email verification and test user object
@@ -548,7 +555,9 @@ def test_resend_route_incorrect_captcha(
 
 
 def test_resend_route_doesnt_require_verification(
-    client, enable_email_verification, create_test_user,
+    client,
+    enable_email_verification,
+    create_test_user,
 ):
     """
     GIVEN an authorized Flask client, enabled email verification and test user object
@@ -592,7 +601,9 @@ def test_resend_route_user_not_registered(client, enable_email_verification):
     response = client.post("/resend/", data=data)
     assert response.status_code == 200
 
-    assert b"This username is currently not registered in our database." in response.data
+    assert (
+        b"This username is currently not registered in our database." in response.data
+    )
 
 
 def test_resend_route_email_verification_disabled(client):
@@ -661,7 +672,10 @@ def test_verify_email_route_invalid_token(authorized_client, create_test_user):
         email_verified=False,
     )
 
-    response = authorized_client.get("/verify-email/incorrect_token/", follow_redirects=True)
+    response = authorized_client.get(
+        "/verify-email/incorrect_token/",
+        follow_redirects=True,
+    )
 
     assert response.request.path == "/error/400/"
 
@@ -694,21 +708,63 @@ def test_auth_google_social_authentication_disabled(client):
 # Callback route
 
 
-def test_callback(client, enable_social_authentication):
+def test_callback_redirect_to_error_when_testing_disabled(
+    app, client, enable_social_authentication,
+):
     """
-    GIVEN a Flask client
-    WHEN the "/login/callback/" is requested
-    THEN check if client gets redirected
+    GIVEN a Flask app, a Flask client and enabled social authentication
+    WHEN testing disabled and the "/login/callback/" is requested
+    THEN check if client gets redirected to error 404
     """
-    response = client.get("/login/callback/")
+    app.config["TESTING"] = False  # disabling testing just for this test
+    response = client.get("/login/callback/", follow_redirects=True)
 
-    assert response.status_code == 302
+    assert response.request.path == "/error/404/"
+
+
+def test_callback_redirect_to_signup_from_social_media(
+    client, enable_social_authentication,
+):
+    """
+    GIVEN a Flask client and enabled social authentication
+    WHEN the "/login/callback/" is requested
+    THEN check if client gets redirected to signup from social media
+    and session variables are set
+    """
+    response = client.get("/login/callback/", follow_redirects=True)
+
+    assert response.request.path == "/site/signup-from-social-media/"
+
+    with client.session_transaction() as session:
+        assert session.get("google_auth")
+        assert session.get("email")
+
+
+def test_callback_login_already_signed_up_user(
+    client, create_test_user, enable_social_authentication,
+):
+    """
+    GIVEN a Flask client, user object, and enabled social authentication
+    WHEN the "/login/callback/" is requested
+    THEN check if client gets redirected to home
+    and user is logged in
+    """
+    response = client.get("/login/callback/", follow_redirects=True)
+
+    assert response.request.path == "/"
+
+    # If _user_id is present in session - user is logged in
+    with client.session_transaction() as session:
+        assert session.get("_user_id")
 
 
 # Signup_from_social_media route
 
 
-def test_signup_from_social_media_route_template_and_context(client, captured_templates):
+def test_signup_from_social_media_route_template_and_context(
+    client,
+    captured_templates,
+):
     """
     GIVEN a Flask client and captured_templates function
     WHEN the "/site/signup-from-social-media/" page is requested

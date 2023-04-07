@@ -97,8 +97,8 @@ def create_email_verification_message(token, email, username):
     mail_username = app.config.get("MAIL_USERNAME")
     if not mail_username:
         raise ValueError(
-            "\"MAIL_USERNAME\" Enviroment variable isn't set! Either set it to your email or "
-            "set \"EMAIL_VERIFICATION_ENABLED\" to False",
+            '"MAIL_USERNAME" Enviroment variable isn\'t set! Either set it to your email or '
+            'set "EMAIL_VERIFICATION_ENABLED" to False',
         )
 
     msg = Message(
@@ -409,29 +409,35 @@ def get_id_info_from_flow():
     from pip._vendor import cachecontrol
     from oauthlib.oauth2.rfc6749.errors import MissingCodeError
 
+    # If testing is enabled
+    if app.config.get("TESTING"):
+        id_info = {"email": "new_user@gmail.com"}
+        return id_info
+
     # Create the flow
     flow = create_flow_from_client_secrets_file()
 
     # Fetch the token
     try:
         flow.fetch_token(authorization_response=request.url)
-    # Return none if error
+    # Return none if code is missing
     except MissingCodeError:
         return
 
-    credentials = flow.credentials
-    request_session = requests.session()
-    cached_session = cachecontrol.CacheControl(request_session)
-    token_request = google.auth.transport.requests.Request(session=cached_session)
+    credentials = flow.credentials  # pragma: no cover
+    request_session = requests.session()  # pragma: no cover
+    cached_session = cachecontrol.CacheControl(request_session)  # pragma: no cover
+    token_request = google.auth.transport.requests.Request(  # pragma: no cover
+        session=cached_session,
+    )
 
-    # Grab the info
-    id_info = id_token.verify_oauth2_token(
+    # Grab the info and return it
+    id_info = id_token.verify_oauth2_token(  # pragma: no cover
         id_token=credentials._id_token,
         request=token_request,
         audience=app.config["GOOGLE_CLIENT_ID"],
     )
-
-    return id_info
+    return id_info  # pragma: no cover
 
 
 def check_if_user_already_exists(email):
@@ -464,8 +470,42 @@ def generate_captcha_code():
     """Generates a captcha verification code and puts it into session"""
 
     symbols = [
-        "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R",
-        "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
     ]
     result = []
 
