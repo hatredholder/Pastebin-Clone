@@ -155,6 +155,7 @@ def test_signup_route_signup_user_already_used_email(client, create_test_user):
     assert b"Email address already exists." in response.data
 
 
+@pytest.mark.email_configured
 def test_signup_route_signup_user_email_verification_enabled(
     client,
     enable_email_verification,
@@ -191,7 +192,7 @@ def test_signup_route_signup_user_email_verification_mail_username_not_set(
     """
     GIVEN a Flask client, email verification enabled, and app
     WHEN a POST request with data is sent to "/signup/" page
-    THEN check if ValueError is raised when MAIL_USERNAME is set to None/unset
+    THEN check if ValueError is raised when MAIL_USERNAME is unset
     """
     # Access "/site/captcha" to generate a captcha code
     response = client.get("/site/captcha/")
@@ -500,6 +501,7 @@ def test_resend_route_template_and_context(client, captured_templates):
     assert type(context.get("form")) == forms.ResendForm
 
 
+@pytest.mark.email_configured
 def test_resend_route_send_email(
     client,
     enable_email_verification,
@@ -683,6 +685,7 @@ def test_verify_email_route_invalid_token(authorized_client, create_test_user):
 # Auth_google route
 
 
+@pytest.mark.oauth_configured
 def test_auth_google(client, enable_social_authentication):
     """
     GIVEN a Flask client and enabled social authentication
@@ -694,6 +697,7 @@ def test_auth_google(client, enable_social_authentication):
     assert response.status_code == 302
 
 
+@pytest.mark.oauth_configured
 def test_auth_google_social_authentication_disabled(client):
     """
     GIVEN a Flask client
@@ -708,6 +712,7 @@ def test_auth_google_social_authentication_disabled(client):
 # Callback route
 
 
+@pytest.mark.oauth_configured
 def test_callback_redirect_to_error_when_testing_disabled(
     app, client, enable_social_authentication,
 ):
