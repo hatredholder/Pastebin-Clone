@@ -1,0 +1,16 @@
+services:
+  db:
+    image: mongo
+    ports:
+      - 27017:27017
+
+  web:
+    build: .
+    command:
+      flask --debug run --host=0.0.0.0
+    env_file:
+      - ./.env
+    ports:
+      - 5000:5000
+    depends_on:
+      - db
