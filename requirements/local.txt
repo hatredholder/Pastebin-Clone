@@ -1,0 +1,10 @@
+-r ./base.txt
+
+# Testing
+# ----------------------------------------------------------------------------
+pytest # https://docs.pytest.org/en/7.2.x/
+pytest-cov # https://pytest-cov.readthedocs.io/en/latest/index.html
+
+# Linting
+# ------------------------------------------------------------------------------
+flake8 # https://github.com/pycqa/flake8

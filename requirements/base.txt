@@ -1,0 +1,24 @@
+# Python
+# ----------------------------------------------------------------------------
+captcha # https://github.com/lepture/captcha
+Pillow # https://github.com/python-pillow/Pillow
+python-dotenv # https://github.com/theskumar/python-dotenv
+timeago # https://github.com/hustcc/timeago
+
+# Flask
+# ----------------------------------------------------------------------------
+Flask # https://flask.palletsprojects.com/en/2.2.x/
+Flask-Login # https://flask-login.readthedocs.io/en/latest/
+Flask-Mail # https://flask-mail.readthedocs.io/en/latest/
+
+# OAuth
+# ----------------------------------------------------------------------------
+google-auth # https://github.com/googleapis/google-auth-library-python
+google-auth-oauthlib # https://github.com/googleapis/google-auth-library-python-oauthlib
+itsdangerous # https://itsdangerous.palletsprojects.com/en/2.1.x/
+requests # https://requests.readthedocs.io/en/latest/
+
+# Mongoengine
+# ----------------------------------------------------------------------------
+mongoengine # http://docs.mongoengine.org/
+Flask-MongoEngine # http://docs.mongoengine.org/projects/flask-mongoengine/en/latest/index.html
