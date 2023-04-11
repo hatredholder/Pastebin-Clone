@@ -46,18 +46,6 @@ git clone git@github.com:hatredholder/Pastebin-Clone.git
 cd Pastebin-Clone
 ```
 
-- [X] *Ensure **Pip** is installed and is up to date*
-```
-python -m ensurepip --upgrade
-```
-
-- [X] *Start a new **Virtualenv**, activate it, install **Python** module requirements on it*
-```
-virtualenv myenv
-source myenv/bin/activate
-pip install -r requirements/base.txt
-```
-
 ### 2. Update enviroment variables in **.env** to match your preferences
 ```
 # Flask Settings
