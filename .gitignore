@@ -1,6 +1,5 @@
 __pycache__
 .cov
 .coverage
-.env
 client_secret.json
 .pytest_cache
