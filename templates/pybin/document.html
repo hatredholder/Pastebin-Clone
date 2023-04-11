@@ -86,7 +86,6 @@
                     <div class="highlighted_code border rounded border-dark">
                         <div class="top_buttons d-flex">
                             <div class="left d-inline-flex">
-                                <!-- TODO: Implement Search by Document Syntax -->
                                 <a class="btn btn-outline-secondary" href="#">
                                     {% if document.syntax != "plaintext" %}
                                         {{ document.syntax }}
@@ -158,7 +157,6 @@
                                 {% if current_user == document.author %}
                                     <a class="btn btn-outline-secondary" href="/delete/{{ document.id }}/">delete</a>
                                 {% else %}
-                                    <!-- TODO: Implement Document Reports -->
                                     <a class="btn btn-outline-secondary" href="#">report</a>
                                 {% endif %}
                             </div>
@@ -201,7 +199,6 @@
                                                         <div class="left d-inline-flex">
                                                             <a class="btn btn-outline-secondary"
                                                                href="/{{ document.id }}#{{ comment.id }}">#</a>
-                                                            <!-- TODO: Implement Search by Document Syntax -->
                                                             <a class="btn btn-outline-secondary" href="#">
                                                                 {% if comment.syntax != "plaintext" %}
                                                                     {{ comment.syntax }}
@@ -267,7 +264,6 @@
                                                             {% if current_user == comment.author %}
                                                                 <a class="btn btn-outline-secondary" href="/delete/{{ comment.id }}/">delete</a>
                                                             {% else %}
-                                                                <!-- TODO: Implement Document Reports -->
                                                                 <a class="btn btn-outline-secondary" href="#">report</a>
                                                             {% endif %}
                                                             <a id="{{ comment.id }}" class="reply-btn btn btn-outline-secondary">reply</a>
@@ -301,7 +297,6 @@
                                                                                 <div class="left d-inline-flex">
                                                                                     <a class="btn btn-outline-secondary"
                                                                                        href="/{{ document.id }}#{{ reply.id }}">#</a>
-                                                                                    <!-- TODO: Implement Search by Document Syntax -->
                                                                                     <a class="btn btn-outline-secondary" href="#">
                                                                                         {% if reply.syntax != "plaintext" %}
                                                                                             {{ reply.syntax }}
@@ -367,7 +362,6 @@
                                                                                     {% if current_user == reply.author %}
                                                                                         <a class="btn btn-outline-secondary" href="/delete/{{ reply.id }}/">delete</a>
                                                                                     {% else %}
-                                                                                        <!-- TODO: Implement Document Reports -->
                                                                                         <a class="btn btn-outline-secondary" href="#">report</a>
                                                                                     {% endif %}
                                                                                     <a id="{{ reply.id }}" class="reply-btn btn btn-outline-secondary">reply</a>
@@ -403,7 +397,6 @@
                                                                                                 <div class="left d-inline-flex">
                                                                                                     <a class="btn btn-outline-secondary"
                                                                                                        href="/{{ document.id }}#{{ reply2.id }}">#</a>
-                                                                                                    <!-- TODO: Implement Search by Document Syntax -->
                                                                                                     <a class="btn btn-outline-secondary" href="#">
                                                                                                         {% if reply2.syntax != "plaintext" %}
                                                                                                             {{ reply2.syntax }}
@@ -469,7 +462,6 @@
                                                                                                     {% if current_user == reply2.author %}
                                                                                                         <a class="btn btn-outline-secondary" href="/delete/{{ reply2.id }}/">delete</a>
                                                                                                     {% else %}
-                                                                                                        <!-- TODO: Implement Document Reports -->
                                                                                                         <a class="btn btn-outline-secondary" href="#">report</a>
                                                                                                     {% endif %}
                                                                                                     <a id="{{ reply2.id }}" class="reply-btn btn btn-outline-secondary">reply</a>
