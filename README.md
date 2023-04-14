@@ -5,9 +5,9 @@
   <span> • </span>
        	<a href="#mag-preview">Preview</a>
   <span> • </span>
-	      <a href="#open_book-instructions">Instructions</a>
+  	<a href="#open_book-instructions">Instructions</a>
   <span> • </span>
-	      <a href="#test_tube-testing">Testing</a>
+	<a href="#test_tube-testing">Testing</a>
   <p></p>
 </div> 
 
@@ -40,7 +40,6 @@
 ## :open_book: Instructions
 
 ### 1. Clone this **repository** onto your local machine, **cd** into it
-
 ```
 git clone git@github.com:hatredholder/Pastebin-Clone.git
 cd Pastebin-Clone
