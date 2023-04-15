@@ -1,6 +1,7 @@
 <h1 align="center">Pybin - Pastebin Clone</h1>
 
 <div align="center">
+
     	<a href="#sparkles-features">Features</a>
   <span> • </span>
        	<a href="#mag-preview">Preview</a>
@@ -8,7 +9,9 @@
   	<a href="#open_book-instructions">Instructions</a>
   <span> • </span>
 	<a href="#test_tube-testing">Testing</a>
+	
   <p></p>
+  
 </div> 
 
 <div align="center">
