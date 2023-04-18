@@ -5,10 +5,11 @@
   <span> • </span>
        	<a href="#mag-preview">Preview</a>
   <span> • </span>
-	      <a href="#open_book-instructions">Instructions</a>
+  	<a href="#open_book-instructions">Instructions</a>
   <span> • </span>
-	      <a href="#test_tube-testing">Testing</a>
+	<a href="#test_tube-testing">Testing</a>
   <p></p>
+  
 </div> 
 
 <div align="center">
@@ -40,22 +41,9 @@
 ## :open_book: Instructions
 
 ### 1. Clone this **repository** onto your local machine, **cd** into it
-
 ```
 git clone git@github.com:hatredholder/Pastebin-Clone.git
 cd Pastebin-Clone
-```
-
-- [X] *Ensure **Pip** is installed and is up to date*
-```
-python -m ensurepip --upgrade
-```
-
-- [X] *Start a new **Virtualenv**, activate it, install **Python** module requirements on it*
-```
-virtualenv myenv
-source myenv/bin/activate
-pip install -r requirements/base.txt
 ```
 
 ### 2. Update enviroment variables in **.env** to match your preferences
