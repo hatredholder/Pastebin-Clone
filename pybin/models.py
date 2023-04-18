@@ -80,6 +80,7 @@ class Comment(db.Document):
     created = db.DateTimeField(default=datetime.datetime.now)
 
     def clean(self):
+        # Set document size in KB
         self.size = float(str(len(self.content) / 1000)[:4])
 
     def __str__(self):
