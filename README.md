@@ -139,12 +139,12 @@ pip install -r requirements/local.txt
 
 ### 2. Run the **tests** and check the **coverage**:
 ```
-pytest --cov
+pytest -k "not email_configured and not oauth_configured" --cov
 ```
 
 ### 3. Generate an HTML **coverage** report:
 ```
-pytest --cov-report html:cov_html --cov
+pytest -k "not email_configured and not oauth_configured" --cov-report html:cov_html --cov
 ```
 
 ### 4. Test the **code quality** (see if there are any PEP8 errors):
