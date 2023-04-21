@@ -714,7 +714,9 @@ def test_auth_google_social_authentication_disabled(client):
 
 @pytest.mark.oauth_configured
 def test_callback_redirect_to_error_when_testing_disabled(
-    app, client, enable_social_authentication,
+    app,
+    client,
+    enable_social_authentication,
 ):
     """
     GIVEN a Flask app, a Flask client and enabled social authentication
@@ -728,7 +730,8 @@ def test_callback_redirect_to_error_when_testing_disabled(
 
 
 def test_callback_redirect_to_signup_from_social_media(
-    client, enable_social_authentication,
+    client,
+    enable_social_authentication,
 ):
     """
     GIVEN a Flask client and enabled social authentication
@@ -746,7 +749,9 @@ def test_callback_redirect_to_signup_from_social_media(
 
 
 def test_callback_login_already_signed_up_user(
-    client, create_test_user, enable_social_authentication,
+    client,
+    create_test_user,
+    enable_social_authentication,
 ):
     """
     GIVEN a Flask client, user object, and enabled social authentication

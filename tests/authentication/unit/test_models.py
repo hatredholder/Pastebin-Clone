@@ -27,7 +27,9 @@ def test_user_model_get_total_rating_method_is_zero(db, create_test_user):
 
 
 def test_user_model_get_total_rating_method_with_rated_paste(
-    db, create_test_user, create_paste_with_rating,
+    db,
+    create_test_user,
+    create_paste_with_rating,
 ):
     """
     GIVEN a User model and Paste(author=create_test_user, rating=1) model
@@ -39,7 +41,9 @@ def test_user_model_get_total_rating_method_with_rated_paste(
 
 
 def test_user_model_get_total_rating_method_with_rated_comment(
-    db, create_test_user, create_comment_with_rating,
+    db,
+    create_test_user,
+    create_comment_with_rating,
 ):
     """
     GIVEN a User model and Comment(author=create_test_user, rating=1) model

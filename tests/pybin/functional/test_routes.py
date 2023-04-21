@@ -333,7 +333,7 @@ def test_document_view_route_5_minute_old_comment(
     response = authorized_client.get(f"/{create_test_comment.uuid_hash}/")
     assert response.status_code == 200
 
-    assert b'edit' not in response.data
+    assert b"edit" not in response.data
 
 
 def test_document_view_route_incorrect_hash(client):
@@ -771,7 +771,9 @@ def test_reply_delete_route_delete_reply(
 
 
 def test_my_pybin_route_template_and_context(
-    client, captured_templates, create_test_user,
+    client,
+    captured_templates,
+    create_test_user,
 ):
     """
     GIVEN a Flask client, captured_templates function and a user object
@@ -801,7 +803,9 @@ def test_my_pybin_route_redirect_incorrect_username(client):
 
 
 def test_my_comments_route_template_and_context(
-    authorized_client, captured_templates, create_test_user,
+    authorized_client,
+    captured_templates,
+    create_test_user,
 ):
     """
     GIVEN a Flask client, captured_templates function and a user object
@@ -927,7 +931,10 @@ def test_profile_route_set_incorrect_website_url(authorized_client, create_test_
     response = authorized_client.post("/user/profile/", data=data)
     assert response.status_code == 200
 
-    assert b"Please make sure your website starts with http:// or https://" in response.data
+    assert (
+        b"Please make sure your website starts with http:// or https://"
+        in response.data
+    )
 
 
 # Avatar Route
@@ -967,7 +974,9 @@ def test_avatar_route_update_avatar(authorized_client):
 # Search_pastes Route
 
 
-def test_search_pastes_route_template_and_context(authorized_client, captured_templates):
+def test_search_pastes_route_template_and_context(
+    authorized_client, captured_templates
+):
     """
     GIVEN an authorized Flask client and captured_templates function
     WHEN the "/search/" page is requested
@@ -991,4 +1000,4 @@ def test_search_pastes_route_with_search_query(authorized_client, create_test_pa
     response = authorized_client.get("/search/?q=untitled")
     assert response.status_code == 200
 
-    assert b'test paste' in response.data
+    assert b"test paste" in response.data

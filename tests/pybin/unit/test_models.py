@@ -92,18 +92,26 @@ def test_reply_model_str_method(create_test_user, create_test_message):
 # Message model
 
 
-def test_message_model_get_last_reply_creation_date_method(create_test_message, create_test_reply):
+def test_message_model_get_last_reply_creation_date_method(
+    create_test_message, create_test_reply
+):
     """
     GIVEN a test user and a test reply object
     WHEN a Message model is created with test user as author
     THEN check if string conversion of created model is equal to expected result
     """
-    assert create_test_message.get_last_reply_creation_date() == create_test_message.created
+    assert (
+        create_test_message.get_last_reply_creation_date()
+        == create_test_message.created
+    )
 
     create_test_message.replies.append(create_test_reply)
     create_test_message.save()
 
-    assert create_test_message.get_last_reply_creation_date() != create_test_message.created
+    assert (
+        create_test_message.get_last_reply_creation_date()
+        != create_test_message.created
+    )
 
 
 def test_message_model_str_method(create_test_user):

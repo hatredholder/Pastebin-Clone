@@ -30,6 +30,7 @@ class SignupForm(FlaskForm):
     """
     Form used in the authentication.signup route
     """
+
     username = wtforms.StringField(
         "Username: ",
         validators=[
@@ -64,6 +65,7 @@ class GoogleSignupForm(FlaskForm):
     """
     Form used in the authentication.signup_from_social_media route
     """
+
     username = wtforms.StringField(
         "Username: ",
         validators=[
@@ -79,6 +81,7 @@ class LoginForm(FlaskForm):
     """
     Form used in the authentication.login route
     """
+
     username = wtforms.StringField(
         "Username: ",
         validators=[
@@ -99,6 +102,7 @@ class PasswordForm(FlaskForm):
     """
     Form used in the authentication.password route
     """
+
     current_password = wtforms.PasswordField(
         "Current Password: ",
     )
@@ -132,6 +136,7 @@ class ResendForm(FlaskForm):
     """
     Form used in the authentication.resend route
     """
+
     username = wtforms.StringField(
         "Username",
     )
