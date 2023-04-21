@@ -578,7 +578,7 @@ class TagListField(StringField):
         :param to_lowercase: Cast all values to lowercase.
         :param separator: The separator that splits the individual tags.
         """
-        super(TagListField, self).__init__(label, validators, **kwargs)
+        super().__init__(label, validators, **kwargs)
         self.remove_duplicates = remove_duplicates
         self.to_lowercase = to_lowercase
         self.separator = separator
