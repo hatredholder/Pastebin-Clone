@@ -7,7 +7,7 @@ timeago # https://github.com/hustcc/timeago
 
 # Flask
 # ----------------------------------------------------------------------------
-Flask==2.2.1 # https://flask.palletsprojects.com/en/2.2.x/
+Flask==2.2.4 # https://flask.palletsprojects.com/en/2.2.x/
 Flask-Login # https://flask-login.readthedocs.io/en/latest/
 Flask-Mail # https://flask-mail.readthedocs.io/en/latest/
 Flask-WTF # https://github.com/wtforms/wtforms
