@@ -149,5 +149,5 @@ pytest -k "not email_configured and not oauth_configured" --cov-report html:cov_
 
 ### 4. Test the **code quality** (see if there are any PEP8 errors):
 ```
-flake8
+ruff --check .
 ```
