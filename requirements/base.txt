@@ -4,6 +4,7 @@ captcha # https://github.com/lepture/captcha
 Pillow # https://github.com/python-pillow/Pillow
 python-dotenv # https://github.com/theskumar/python-dotenv
 timeago # https://github.com/hustcc/timeago
+werkzeug==2.2.3 # https://werkzeug.palletsprojects.com/en/2.2.x/
 
 # Flask
 # ----------------------------------------------------------------------------
