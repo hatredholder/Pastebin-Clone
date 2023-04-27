@@ -7,4 +7,4 @@ pytest-cov # https://pytest-cov.readthedocs.io/en/latest/index.html
 
 # Linting
 # ------------------------------------------------------------------------------
-flake8 # https://github.com/pycqa/flake8
+ruff # https://github.com/charliermarsh/ruff
