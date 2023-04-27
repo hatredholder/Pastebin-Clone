@@ -93,7 +93,7 @@ def test_reply_model_str_method(create_test_user, create_test_message):
 
 
 def test_message_model_get_last_reply_creation_date_method(
-    create_test_message, create_test_reply
+    create_test_message, create_test_reply,
 ):
     """
     GIVEN a test user and a test reply object

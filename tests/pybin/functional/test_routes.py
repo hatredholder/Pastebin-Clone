@@ -975,7 +975,7 @@ def test_avatar_route_update_avatar(authorized_client):
 
 
 def test_search_pastes_route_template_and_context(
-    authorized_client, captured_templates
+    authorized_client, captured_templates,
 ):
     """
     GIVEN an authorized Flask client and captured_templates function
